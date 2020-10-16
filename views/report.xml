@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <report
+            id="quemen_stock_production_lot_reporte_codigo_barras"
+            string="Codigo de barras"
+            model="stock.production.lot"
+            report_type="qweb-pdf"
+            file="quemen.reporte_codigo_barras"
+            name="quemen.reporte_codigo_barras"
+        />
+
+    </data>
+</odoo>
