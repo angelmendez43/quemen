@@ -9,7 +9,6 @@ class Picking(models.Model):
 
     def button_validate(self):
         res = super(Picking, self).button_validate()
-        logging.warn(self.env.user.has_group('quemen.quemen_validar_envio_tienda'))
         if self.env.user.has_group('quemen.quemen_validar_envio_tienda') and self.picking_type_id.code == 'internal':
             return res
         elif self.env.user.has_group('quemen.quemen_validar_envio_tienda') == False and self.picking_type_id.code != 'internal' :
