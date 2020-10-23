@@ -19,5 +19,6 @@
     'data': [
         'views/report.xml',
         'views/reporte_codigo_barras.xml',
+        'data/quemen_data.xml',
     ],
 }
