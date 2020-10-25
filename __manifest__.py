@@ -14,10 +14,11 @@
     'category': 'Uncategorized',
     'version': '0.1',
 
-    'depends': ['stock','base'],
+    'depends': ['stock','base','point_of_sale'],
 
     'data': [
         'views/report.xml',
+        'views/templates.xml',
         'views/reporte_codigo_barras.xml',
         'data/quemen_data.xml',
     ],
