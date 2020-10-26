@@ -21,5 +21,9 @@
         'views/templates.xml',
         'views/reporte_codigo_barras.xml',
         'data/quemen_data.xml',
+        'views/res_users_view.xml',
+        'data/paperformat_ticket.xml',
+        'wizard/reporte_productos_labor_venta_wizard.xml',
+        'views/reporte_productos_labor_venta.xml',
     ],
 }

@@ -1,3 +1,4 @@
 # -*- encoding: utf-8 -*-
 
 from . import reporte_codigo_barras
+from . import reporte_productos_labor_venta
