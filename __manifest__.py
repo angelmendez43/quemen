@@ -25,5 +25,7 @@
         'data/paperformat_ticket.xml',
         'wizard/reporte_productos_labor_venta_wizard.xml',
         'views/reporte_productos_labor_venta.xml',
+        'views/reporte_existencias.xml',
+        'wizard/reporte_existencias_wizard.xml',
     ],
 }

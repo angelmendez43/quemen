@@ -20,5 +20,14 @@
             paperformat="paperformat_ticket"
             />
 
+        <report id="action_reporte_existencias"
+            model="quemen.reporte_existencias.wizard"
+            string="Reporte de existencias"
+            report_type="qweb-pdf"
+            name="quemen.reporte_existencias"
+            file="quemen.reporte_existencias"
+            paperformat="paperformat_ticket"
+            />
+
     </data>
 </odoo>
