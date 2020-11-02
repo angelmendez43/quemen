@@ -1,54 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <template id="reporte_productos_labor_venta">
+    <template id="reporte_formato_salidas">
         <t t-call="web.html_container">
             <div class="article">
 
                 <div class="page">
-                    <t t-set="productos" t-value="productos_vencimiento(data['fecha_vencimiento'])"/>
-                    <center><strong>Reporte de productos para labor de venta</strong></center>
+                    <t t-set="productos" t-value="salida_productos_vencidos(data['fecha_desde'],data['fecha_hasta'])"/>
+                    <center><strong>Formato de salidas</strong></center>
                     <table style="margin: 0 auto;width:100%">
                         <tr>
                             <td>Tienda:</td>
                             <td style="text-align:right">Quemen</td>
                         </tr>
                         <tr>
-                            <td>Sucursal:</td>
-                            <td style="text-align:right"><span t-esc="user.pos_id.name"/></td>
+                            <td>Salida:</td>
+                            <td style="text-align:right">SALIDA POR CADUCIDAD</td>
                         </tr>
                         <tr>
-                            <td>Dirección:</td>
-                            <td style="text-align:right">
-                                <span t-esc="user.pos_id.picking_type_id.warehouse_id.partner_id.street_name"/>
-                                <span t-esc="user.pos_id.picking_type_id.warehouse_id.partner_id.l10n_mx_edi_colony"/>
-                                <span t-esc="user.pos_id.picking_type_id.warehouse_id.partner_id.l10n_mx_edi_locality"/>
-                                <span t-esc="user.pos_id.picking_type_id.warehouse_id.partner_id.city_id.name"/>
-                                <span t-esc="user.pos_id.picking_type_id.warehouse_id.partner_id.state_id.name"/>
-
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Fecha/Hora:</td>
-                            <td style="text-align:right"><span t-esc="fecha_hora_actual()"/></td>
+                            <td>Fecha:</td>
+                            <td style="text-align:right"><span t-esc="data['fecha_desde']" t-options='{"widget": "date"}'/> a <span t-esc="data['fecha_hasta']" t-options='{"widget": "date"}'/></td>
                         </tr>
                         <!-- <tr>
                             <td>Turno:</td>
                             <td style="text-align:right"></td>
                         </tr> -->
                     </table>
-
+                    <center><strong>Lista de detalles de salida de inventario</strong></center>
                     <table style="margin: 0 auto;width:100%">
                         <tr>
-                            <td><strong>Código barras</strong></td>
-                            <td><strong>Existencia</strong></td>
+                            <td><strong>Clave</strong></td>
+                            <td><strong>Cantidad</strong></td>
+                            <td><strong>Caducidad</strong></td>
                         </tr>
                         <t t-foreach="productos" t-as="linea">
                             <tr>
-                                <td>
-                                    <span t-esc="linea.product_id.name"/><br/>
-                                    <span t-esc="linea.lot_id.life_date"/>
+                                <td colspan="3">
+                                    <span t-esc="linea['linea'].product_id.name"/><br/>
                                 </td>
-                                <td style="text-align:right"><span t-esc="linea.quantity"/></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span t-esc="linea['linea'].product_id.barcode"/><br/>
+                                </td>
+                                <td>
+                                    <span t-esc="linea['linea'].qty_done"/><br/>
+                                </td>
+                                <td style="text-align:right"><span t-esc="linea['fecha_vencimiento']"  t-options='{"widget": "date"}'/></td>
                             </tr>
                         </t>
                     </table>

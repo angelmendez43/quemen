@@ -31,10 +31,10 @@
                             <td>Fecha/Hora:</td>
                             <td style="text-align:right"><span t-esc="fecha_hora_actual()"/></td>
                         </tr>
-                        <tr>
+                        <!-- <tr>
                             <td>Turno:</td>
                             <td style="text-align:right"></td>
-                        </tr>
+                        </tr> -->
                     </table>
 
                     <table style="margin: 0 auto;width:100%;">
@@ -45,7 +45,9 @@
                         </tr>
                         <t t-foreach="productos" t-as="dato">
                             <tr>
-                                <td colspan="3"><strong><span t-esc="productos[dato]['categoria']"/></strong></td>
+                                <td><strong><span t-esc="productos[dato]['categoria_padre']"/></strong></td>
+                                <td></td>
+                                <td><strong><span t-esc="productos[dato]['categoria_hija']"/></strong></td>
                             </tr>
                             <t t-foreach="productos[dato]['productos']" t-as="linea">
                                 <tr>

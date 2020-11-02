@@ -2,14 +2,15 @@
 <odoo>
     <data>
 
-        <record id="view_quemen_existencias_wizard" model="ir.ui.view">
-              <field name="name">view.quemen.existencias.wizard.</field>
-              <field name="model">quemen.reporte_existencias.wizard</field>
+        <record id="view_quemen_formato_salidas_wizard" model="ir.ui.view">
+              <field name="name">view.quemen.formato_salidas.wizard.</field>
+              <field name="model">quemen.reporte_formato_salidas.wizard</field>
               <field name="arch" type="xml">
                 <form string="Reporte de existencias">
-                    <!-- <group>
-                        <field name="fecha_vencimiento"/>
-                    </group> -->
+                    <group>
+                        <field name="fecha_desde"/>
+                        <field name="fecha_hasta"/>
+                    </group>
                     <footer>
                         <!-- <button name="print_report" string="Print"  type="object" class="btn-primary"/> -->
                         <button name="print_report" string="Generar reporte" type="object" class="oe_highlight"/>
@@ -21,9 +22,9 @@
 
 
 
-        <act_window id="quemen_action_reporte_existencias"
-            name="Reporte de existencias"
-            res_model="quemen.reporte_existencias.wizard"
+        <act_window id="quemen_action_reporte_formato_salidas"
+            name="Reporte de formato de salidas"
+            res_model="quemen.reporte_formato_salidas.wizard"
             binding_model="pos.order"
             view_mode="form" target="new"/>
 
@@ -31,7 +32,7 @@
 
 
             <!-- <report id="action_planilla" model="hr_gt.planilla.wizard" string="Planilla" report_type="qweb-pdf" name="l10n_gt_extra.reporte_compras" file="l10n_gt_extra.reporte_compras"/> -->
-            <menuitem action="quemen_action_reporte_existencias" id="menu_existencias" parent="point_of_sale.menu_point_rep"/>
+            <menuitem action="quemen_action_reporte_formato_salidas" id="menu_formato_salidas" parent="point_of_sale.menu_point_rep"/>
             <!-- <report id="action_reporte_productos_labor_venta" model="point_of_sale.menu_point_rep" string="Reporte de productos para labor de venta" report_type="qweb-pdf" name="quemen.reporte_productos_labor_venta" file="quemen.reporte_productos_labor_venta" paperformat="paperformat_ticket"/> -->
 
 

@@ -29,5 +29,14 @@
             paperformat="paperformat_ticket"
             />
 
+            <report id="action_reporte_formato_salidas"
+                model="quemen.reporte_formato_salidas.wizard"
+                string="Reporte formato de salidas"
+                report_type="qweb-pdf"
+                name="quemen.reporte_formato_salidas"
+                file="quemen.reporte_formato_salidas"
+                paperformat="paperformat_ticket"
+                />
+
     </data>
 </odoo>

@@ -13,8 +13,8 @@ from operator import itemgetter
 import pytz
 # import odoo.addons.hr_gt.a_letras
 
-class ReportExistencias(models.AbstractModel):
-    _name = 'report.quemen.reporte_existencias'
+class ReportFormatoSalidas(models.AbstractModel):
+    _name = 'report.quemen.reporte_formato_salidas'
 
 
     def verificar_productos_vencidos(self):
@@ -70,7 +70,7 @@ class ReportExistencias(models.AbstractModel):
 
     def productos_existencia(self):
         # logging.warn(fecha_vencimiento)
-        self.verificar_productos_vencidos()
+        # self.verificar_productos_vencidos()
         ubicacion_id = self.env.user.pos_id.picking_type_id.default_location_src_id
         stock_id = self.env['stock.quant'].search([('location_id','=',ubicacion_id.id)])
         logging.warn(stock_id)
@@ -87,6 +87,20 @@ class ReportExistencias(models.AbstractModel):
         logging.warn('product existencias')
         logging.warn(inventario)
         return inventario
+
+
+    def salida_productos_vencidos(self,fecha_desde,fecha_hasta):
+        envios = self.env['stock.picking'].search([('location_id','=',self.env.user.pos_id.picking_type_id.default_location_src_id.id),('scheduled_date','>=',fecha_desde),('scheduled_date','<=',fecha_hasta)])
+        productos = []
+        if envios:
+            logging.warn(envios)
+            for envio in envios:
+                if envio.picking_type_id.devolucion_productos_vencidos:
+                    for linea in envio.move_line_ids_without_package:
+
+                        productos.append({'linea': linea, 'fecha_vencimiento': linea.lot_id.life_date.strftime('%Y-%m-%d')})
+
+        return productos
 
     def fecha_hora_actual(self):
         logging.warn(datetime.datetime.now())
@@ -119,13 +133,16 @@ class ReportExistencias(models.AbstractModel):
     def _get_report_values(self, docids, data=None):
         model = self.env.context.get('active_model')
         docs = self.env[model].browse(self.env.context.get('active_ids', []))
+        logging.warn(docs)
+        logging.warn(data['form'])
         return {
             'doc_ids': self.ids,
             'doc_model': model,
             'data': data['form'],
             'docs': docs,
-            'productos_existencia': self.productos_existencia,
-            'fecha_hora_actual': self.fecha_hora_actual,
+            # 'productos_existencia': self.productos_existencia,
+            # 'fecha_hora_actual': self.fecha_hora_actual,
+            'salida_productos_vencidos': self.salida_productos_vencidos,
             # 'mes_letras': self.mes_letras,
             # 'fecha_hoy': self.fecha_hoy,
             # 'a_letras': odoo.addons.hr_gt.a_letras,

@@ -28,5 +28,7 @@
         'views/reporte_existencias.xml',
         'wizard/reporte_existencias_wizard.xml',
         'views/stock_picking_views.xml',
+        'views/reporte_formato_salidas.xml',
+        'wizard/reporte_formato_salidas_wizard.xml',
     ],
 }
