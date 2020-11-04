@@ -25,7 +25,8 @@
                             <td style="text-align:right"></td>
                         </tr> -->
                     </table>
-                    <center><strong>Lista de detalles de salida de inventario</strong></center>
+                    <center><strong>Lista de detalles de salida de inventario</strong></center><br/>
+                    <center><strong>Salidoa por caducidad</strong></center>
                     <table style="margin: 0 auto;width:100%">
                         <tr>
                             <td><strong>Clave</strong></td>
