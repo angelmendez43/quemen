@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+
+        <record id="view_quemen_reloj_checador_tree" model="ir.ui.view">
+            <field name="name">quemen.reloj_checador.tree</field>
+            <field name="model">quemen.reloj_checador</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Reloj checador">
+                    <field name="empleado_id"/>
+                    <field name="fecha"/>
+                    <field name="hora_entrada" widget="float_time"/>
+                    <field name="hora_salida" widget="float_time"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_quemen_reloj_checador_form" model="ir.ui.view">
+            <field name="name">quemen.reloj_checador.form</field>
+            <field name="model">quemen.reloj_checador</field>
+            <field name="arch" type="xml">
+                <form string="Reloj checador">
+
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="empleado_id"/>
+                                <field name="fecha"/>
+                            </group>
+                            <group>
+                                <field name="hora_entrada" widget="float_time"/>
+                                <field name="hora_salida" widget="float_time"/>
+                            </group>
+                        </group>
+
+                    </sheet>
+                    <div class="o_attachment_preview"/>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="quemen_reloj_checador_view_search" model="ir.ui.view">
+            <field name="name">quemen.reloj_checador.search</field>
+            <field name="model">quemen.reloj_checador</field>
+            <field name="arch" type="xml">
+                <search string="Buscar empleado">
+                    <field name="empleado_id"/>
+                    <field name="fecha"/>
+                    <field name="hora_entrada"/>
+                    <field name="hora_salida"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_quemen_reloj_checador_administrativa" model="ir.actions.act_window">
+            <field name="name">Reloj checador</field>
+            <field name="res_model">quemen.reloj_checador</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain"></field>
+            <field name="context"></field>
+            <field name="search_view_id" ref="quemen_reloj_checador_view_search"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+               Click para crear una nuea entrada
+              </p>
+            </field>
+        </record>
+
+        <menuitem
+            id="menu_quemen_reloj_checador"
+            name="Reloj checador"
+            action="action_quemen_reloj_checador_administrativa"
+            parent="hr.menu_hr_employee_payroll"
+            sequence="75"/>
+
+    </data>
+</odoo>
