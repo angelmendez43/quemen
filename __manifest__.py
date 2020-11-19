@@ -17,6 +17,7 @@
     'depends': ['stock','base','point_of_sale','hr_payroll'],
 
     'data': [
+        'data/paperformat_ticket.xml',
         'views/report.xml',
         'views/templates.xml',
         'views/reporte_codigo_barras.xml',
@@ -26,7 +27,6 @@
         'views/reloj_checador_wizard.xml',
         'views/hr_views.xml',
         'views/res_users_view.xml',
-        'data/paperformat_ticket.xml',
         'wizard/reporte_productos_labor_venta_wizard.xml',
         'views/reporte_productos_labor_venta.xml',
         'views/reporte_existencias.xml',
