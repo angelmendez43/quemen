@@ -18,6 +18,7 @@
 
     'data': [
         'data/paperformat_ticket.xml',
+        'data/ir_sequence_data.xml',
         'views/report.xml',
         'views/templates.xml',
         'views/reporte_codigo_barras.xml',

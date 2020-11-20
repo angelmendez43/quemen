@@ -38,9 +38,6 @@ screens.PaymentScreenWidget.include({
                     args: [[['id', '=', this.pos.pos_session.id ]], []],
                 })
                 .then(function (sesion){
-                    console.log(sesion)
-                    // self.pagos_efectivo(sesion,metodos_pago_efectivo);
-
                     rpc.query({
                             model: 'pos.payment',
                             method: 'search_read',
@@ -56,7 +53,7 @@ screens.PaymentScreenWidget.include({
                                 }
 
                             }
-                            if (efectivo+ sesion[0].cash_register_balance_start > self.pos.config.efectivo_maximo){
+                            if (efectivo > self.pos.config.efectivo_maximo){
                                 self.pos.gui.show_popup("error",{
                                     "title": "Límite de efectivo",
                                     "body":  "Límite de efectivo máximo",
@@ -70,72 +67,12 @@ screens.PaymentScreenWidget.include({
 
 
                 });
-
-            // rpc.query({
-            //         model: 'pos.payment',
-            //         method: 'search_read',
-            //         args: [[['session_id', '=', this.pos.pos_session.id ],['payment_method_id', 'in', metodos_pago_efectivo ]], []],
-            //     })
-            //     .then(function (pagos){
-            //         console.log(pagos)
-            //         var efectivo = 0;
-            //         if (pagos.length > 0 ){
-            //
-            //             for (var i = 0; i < pagos.length; i++) {
-            //                 efectivo += pagos[i].amount
-            //             }
-            //
-            //         }
-            //         if (efectivo > self.pos.config.efectivo_maximo){
-            //             self.pos.gui.show_popup("error",{
-            //                 "title": "Límite de efectivo",
-            //                 "body":  "Límite de efectivo máximo",
-            //             });
-            //         }else{
-            //             _super();
-            //         }
-            //         console.log(efectivo);
-            //         self.renderElement();
-            //     });
         }else{
             this._super();
         }
 
 
     },
-
-    pagos_efectivo: function(sesion,metodos_pago_efectivo){
-        var self = this;
-        var _super = this._super.bind(this)
-        rpc.query({
-                model: 'pos.payment',
-                method: 'search_read',
-                args: [[['session_id', '=', this.pos.pos_session.id ],['payment_method_id', 'in', metodos_pago_efectivo ]], []],
-            })
-            .then(function (pagos){
-                console.log(pagos)
-                var efectivo = 0;
-                if (pagos.length > 0 ){
-
-                    for (var i = 0; i < pagos.length; i++) {
-                        efectivo += pagos[i].amount
-                    }
-
-                }
-                if (efectivo + sesion[0].cash_register_balance_start > self.pos.config.efectivo_maximo){
-                    self.pos.gui.show_popup("error",{
-                        "title": "Límite de efectivo",
-                        "body":  "Límite de efectivo máximo",
-                    });
-                }else{
-                    _super();
-                }
-                console.log(efectivo);
-                self.renderElement();
-            });
-
-        return true;
-    }
 });
 
 

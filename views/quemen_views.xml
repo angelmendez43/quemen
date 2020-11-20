@@ -80,5 +80,85 @@
             parent="hr.menu_hr_employee_payroll"
             sequence="75"/>
 
+            <record id="view_quemen_retiros_tree" model="ir.ui.view">
+                <field name="name">quemen.retiros.tree</field>
+                <field name="model">quemen.retiros</field>
+                <field name="type">tree</field>
+                <field name="arch" type="xml">
+                    <tree string="Retiros POS">
+                        <field name="name"/>
+                        <field name="session_id"/>
+                        <field name="fecha_hora"/>
+                        <field name="motivo"/>
+                        <field name="total"/>
+                    </tree>
+                </field>
+            </record>
+
+            <record id="view_quemen_retiros_form" model="ir.ui.view">
+                <field name="name">quemen.retiros.form</field>
+                <field name="model">quemen.retiros</field>
+                <field name="arch" type="xml">
+                    <form string="Retiros">
+
+                        <sheet>
+                            <div class="oe_title">
+                                <h1>
+                                    <field name="name" readonly="1"/>
+                                </h1>
+                            </div>
+                            <group>
+                                <group>
+                                    <field name="session_id"/>
+                                    <field name="motivo"/>
+                                </group>
+                                <group>
+                                    <field name="fecha_hora"/>
+                                    <field name="total"/>
+                                </group>
+                            </group>
+
+                        </sheet>
+                    </form>
+                </field>
+            </record>
+
+            <record id="quemen_retiros_view_search" model="ir.ui.view">
+                <field name="name">quemen.retiros.search</field>
+                <field name="model">quemen.retiros</field>
+                <field name="arch" type="xml">
+                    <search string="Retiros">
+                        <field name="name"/>
+                        <field name="fecha_hora"/>
+                        <field name="session_id"/>
+                        <field name="motivo"/>
+                        <field name="total"/>
+                    </search>
+                </field>
+            </record>
+
+            <record id="action_quemen_retiros" model="ir.actions.act_window">
+                <field name="name">Retiros POS</field>
+                <field name="res_model">quemen.retiros</field>
+                <field name="view_mode">tree,form</field>
+                <field name="domain"></field>
+                <field name="context"></field>
+                <field name="search_view_id" ref="quemen_retiros_view_search"/>
+                <field name="help" type="html">
+                  <p class="oe_view_nocontent_create">
+                   Click para crear un retiro
+                  </p>
+                </field>
+            </record>
+
+            <menuitem
+                id="menu_quemen_retiros"
+                name="Retiros POS"
+                action="action_quemen_retiros"
+                parent="point_of_sale.menu_point_of_sale"
+                sequence="75"/>
+
+
+
     </data>
 </odoo>
