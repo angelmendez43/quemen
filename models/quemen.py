@@ -32,6 +32,8 @@ class QuemenRetiros(models.Model):
 
     name = fields.Char('Nombre', required=True, copy=False, readonly=True, index=True, default=lambda self: _('New'))
     session_id = fields.Many2one('pos.session','Sesión')
+    cash_box_id = fields.Many2one('account.bank.statement.cashbox','Caja de efectivo')
+    usuario_id = fields.Many2one('res.users','usuario',default=lambda self: self.env.user)
     fecha_hora = fields.Datetime('Hora',default=fields.Datetime.now)
     motivo = fields.Char('Motivo')
     total = fields.Float('Total')

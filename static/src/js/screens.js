@@ -18,12 +18,16 @@ screens.PaymentScreenWidget.include({
     validate_order: function(force_validation) {
         console.log('VALIDATE QUEMEN')
         var self = this;
+        var order = this.pos.get_order();
+        var order_pagos = order.get_paymentlines();
         var _super = this._super.bind(this)
+        var total_efectivo = 0;
         if (this.pos.config.efectivo_maximo > 0){
             var metodos_pago_efectivo = [];
-            for (var i = 0; i < this.pos.payment_methods.length; i++) {
-                if (this.pos.payment_methods[i].is_cash_count){
-                    metodos_pago_efectivo.push(this.pos.payment_methods[i].id)
+            for (var i = 0; i < order_pagos.length; i++) {
+                if (order_pagos[i].payment_method.is_cash_count){
+                    metodos_pago_efectivo.push(order_pagos[i].payment_method.id)
+                    total_efectivo += order_pagos[i].amount
                 }
 
             }
@@ -53,11 +57,15 @@ screens.PaymentScreenWidget.include({
                                 }
 
                             }
-                            if (efectivo > self.pos.config.efectivo_maximo){
+
+                            if (sesion[0].cash_register_total_entry_encoding > self.pos.config.efectivo_maximo){
                                 self.pos.gui.show_popup("error",{
                                     "title": "Límite de efectivo",
                                     "body":  "Límite de efectivo máximo",
                                 });
+                            }else if ((sesion[0].cash_register_total_entry_encoding+total_efectivo) > self.pos.config.efectivo_maximo) {
+                                window.alert('Límite de efectivo, por favor retire efectivo antes de la siguiente venta');
+                                _super();
                             }else{
                                 _super();
                             }

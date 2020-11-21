@@ -89,6 +89,7 @@
                         <field name="name"/>
                         <field name="session_id"/>
                         <field name="fecha_hora"/>
+                        <field name="usuario_id"/>
                         <field name="motivo"/>
                         <field name="total"/>
                     </tree>
@@ -111,8 +112,10 @@
                                 <group>
                                     <field name="session_id"/>
                                     <field name="motivo"/>
+                                    <field name="usuario_id"/>
                                 </group>
                                 <group>
+                                    <field name="cash_box_id"/>
                                     <field name="fecha_hora"/>
                                     <field name="total"/>
                                 </group>

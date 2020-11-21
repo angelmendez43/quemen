@@ -22,6 +22,7 @@
         'views/report.xml',
         'views/templates.xml',
         'views/reporte_codigo_barras.xml',
+        'views/pos_box.xml',
         # 'data/quemen_data.xml',
         'views/quemen_views.xml',
         'views/pos_config_view.xml',
