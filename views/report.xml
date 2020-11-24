@@ -38,5 +38,22 @@
                 paperformat="paperformat_ticket"
                 />
 
+        <report
+            id="quemen_vale_retiro"
+            string="Vale de retiro"
+            model="quemen.retiros"
+            report_type="qweb-pdf"
+            file="quemen.vale_retiro"
+            name="quemen.vale_retiro"
+            paperformat="paperformat_ticket_vale"
+        />
+        <report id="action_reporte_entrega_valores"
+            model="quemen.reporte_entrega_valores.wizard"
+            string="Reporte de entrega de valores"
+            report_type="qweb-pdf"
+            name="quemen.reporte_entrega_valores"
+            file="quemen.reporte_entrega_valores"
+            paperformat="paperformat_ticket"
+            />
     </data>
 </odoo>
