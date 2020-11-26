@@ -4,6 +4,7 @@ odoo.define('quemen.models', function (require) {
 var models = require('point_of_sale.models');
 var gui = require('point_of_sale.gui');
 var core = require('web.core');
+var rpc = require('web.rpc');
 var _t = core._t;
 
 models.PosModel = models.PosModel.extend({
@@ -56,8 +57,47 @@ models.Order = models.Order.extend({
 
         }
 
-    }
+    },
+    remove_orderline: function( line ){
+        this.assert_editable();
+        this.orderlines.remove(line);
+        this.select_orderline(this.get_last_orderline());
+
+        if (line.get_cupon()){
+            rpc.query({
+                    model: 'pos.order',
+                    method: 'habilitar_cupon',
+                    args: [[],line.get_cupon()],
+                })
+                .then(function (estado){
+                });
+        }
+    },
 });
 
+var _super_order_line = models.Orderline.prototype;
+models.Orderline = models.Orderline.extend({
+    initialize: function() {
+        _super_order_line.initialize.apply(this,arguments);
+        this.cupon = this.cupon || false;
+    },
+    export_as_JSON: function() {
+        var json = _super_order_line.export_as_JSON.apply(this,arguments);
 
+        if (this.get_cupon().length > 0){
+            json.cupon = this.get_cupon()[0];
+        }else{
+            json.cupon = false;
+        }
+        return json;
+    },
+    set_cupon: function(cupon){
+        this.cupon = cupon;
+        this.trigger('change',this);
+    },
+
+    get_cupon: function(cupon){
+        return this.cupon;
+    },
+})
 });

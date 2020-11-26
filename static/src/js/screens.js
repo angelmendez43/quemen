@@ -83,6 +83,81 @@ screens.PaymentScreenWidget.include({
     },
 });
 
+var CuponesButton = screens.ActionButtonWidget.extend({
+    template: 'CuponesButton',
+    init: function(parent, options) {
+        this._super(parent, options);
+        this.pos.bind('change:selectedOrder',this.renderElement,this);
+    },
+    button_click: function(){
+        var self = this;
+        var order = this.pos.get_order();
+        var gui = this.pos.gui;
+
+        this.gui.show_popup('textinput',{
+            'title': 'Ingrese cupon',
+            'confirm': function(cupon) {
+                // var error_status = self.apply_coupon(order, codigo_cupon)
+                rpc.query({
+                        model: 'sale.coupon',
+                        method: 'search_read',
+                        args: [[['code', '=', cupon],['state','=','new']], []],
+                    })
+                    .then(function (busqueda){
+                        if(busqueda.length > 0){
+                            self.obtener_programa(busqueda);
+                        }else{
+                            console.log('codigo invalido')
+                        }
+                    });
+            },
+        });
+
+    },
+    obtener_programa: function(busqueda){
+        var self = this;
+        var order = this.pos.get_order();
+        var gui = this.pos.gui;
+        rpc.query({
+                model: 'sale.coupon.program',
+                method: 'search_read',
+                args: [[['id', '=', busqueda[0].program_id[0]]], []],
+            })
+            .then(function (programa){
+                if(programa.length > 0){
+                    var tipo_descuento = programa[0].discount_type;
+
+                    if (tipo_descuento == 'fixed_amount'){
+                        var product_id = self.pos.db.get_product_by_id(programa[0]['discount_line_product_id'][0]);
+                        var descuento = programa[0].discount_fixed_amount;
+                        order.add_product(product_id, { price: descuento*-1, quantity: 1, extras: { price_manually_set: true } });
+                        rpc.query({
+                                model: 'pos.order',
+                                method: 'deshabilitar_cupon',
+                                args: [[],busqueda[0].id],
+                            })
+                            .then(function (res){
+
+                            });
+                        order.get_last_orderline().set_cupon(busqueda[0].code);
+                        console.log(order.get_last_orderline().get_cupon())
+                        
+                    }
+                    console.log(programa)
+                }else{
+                    console.log('codigo invalido')
+                }
+            });
+    },
+});
+
+screens.define_action_button({
+    'name': 'cupones',
+    'widget': CuponesButton,
+    'condition': function(){
+        return this.pos.config.cupones;
+    },
+});
 
 // screens.ScreenWidget.include({
 //     barcode_product_action: function(code){

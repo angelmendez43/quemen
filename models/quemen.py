@@ -25,6 +25,9 @@ class QuemenRelojChecador(models.Model):
     fecha = fields.Date('Fecha')
     hora_entrada = fields.Float('Hora de entrada')
     hora_salida = fields.Float('Hora de salida')
+    horas_laboradas = fields.Float('Horas laboradas')
+    jornada_laborada = fields.Float('Jornada laborada')
+    horas_extras_laboradas = fields.Float('Horas extras laboradas')
 
 class QuemenRetiros(models.Model):
     _name = "quemen.retiros"

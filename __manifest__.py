@@ -41,4 +41,7 @@
         'views/reporte_formato_salidas.xml',
         'wizard/reporte_formato_salidas_wizard.xml',
     ],
+    'qweb': [
+        'static/src/xml/pos.xml',
+    ],
 }

@@ -9,10 +9,18 @@
             <field name="type">tree</field>
             <field name="arch" type="xml">
                 <tree string="Reloj checador">
+                    <field name="ac"/>
                     <field name="empleado_id"/>
+                    <field name="departamento_id"/>
+                    <field name="area_id"/>
+                    <field name="puesto_id"/>
+                    <field name="dia"/>
                     <field name="fecha"/>
                     <field name="hora_entrada" widget="float_time"/>
                     <field name="hora_salida" widget="float_time"/>
+                    <field name="horas_laboradas" widget="float_time"/>
+                    <field name="jornada_laborada" widget="float_time"/>
+                    <field name="horas_extras_laboradas" widget="float_time"/>
                 </tree>
             </field>
         </record>
