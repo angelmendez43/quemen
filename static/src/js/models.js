@@ -35,10 +35,35 @@ models.PosModel = models.PosModel.extend({
     },
 });
 
+var _super_posmodel = models.PosModel.prototype;
+models.PosModel = models.PosModel.extend({
+    add_new_order: function(){
+        var new_order = _super_posmodel.add_new_order.apply(this);
+        if (this.config.cliente_id) {
+            new_order.set_client(this.db.get_partner_by_id(this.config.cliente_id[0]))
+        }
+    }
+})
 
 var _super_order = models.Order.prototype;
 models.Order = models.Order.extend({
+    export_as_JSON: function() {
+        var json = _super_order.export_as_JSON.apply(this,arguments);
+        console.log('jejjee')
+        console.log(this.pos.get_tipo_venta())
+        json.tipo_venta = this.pos.get_tipo_venta();
 
+        console.log('1')
+        console.log(json)
+        return json;
+    },
+    export_for_printing: function() {
+        var json = _super_order.export_for_printing.apply(this,arguments);
+        json.tipo_venta = this.pos.get_tipo_venta();
+        console.log('2')
+        console.log(json)
+        return json;
+    },
     add_product: function(product, options) {
         var self = this;
         var orden = self.pos.get_order();
@@ -74,6 +99,21 @@ models.Order = models.Order.extend({
         }
     },
 });
+
+models.PosModel = models.PosModel.extend({
+    get_tipo_venta: function(){
+        console.log('TIPO VENTA')
+        console.log(this.get('tipo_venta'))
+        console.log(this.tipo_venta)
+        return this.get('tipo_venta')|| this.tipo_venta;
+    },
+    set_tipo_venta: function(tipo_venta){
+        console.log('SET TIPO VENTA')
+        console.log(tipo_venta)
+        this.set('tipo_venta', tipo_venta);
+        // this.db.set_empleado(this.empleado);
+    }
+})
 
 var _super_order_line = models.Orderline.prototype;
 models.Orderline = models.Orderline.extend({

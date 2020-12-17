@@ -7,3 +7,5 @@ class PosConfig(models.Model):
 
     efectivo_maximo = fields.Float(string="Efectivo máxmio")
     cupones = fields.Boolean('Cupones')
+    cliente_id = fields.Many2one('res.partner','Cliente por defecto')
+    tipo_venta = fields.Boolean('Tipo de venta')

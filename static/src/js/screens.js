@@ -57,19 +57,21 @@ screens.PaymentScreenWidget.include({
                                 }
 
                             }
-
-                            if (sesion[0].cash_register_total_entry_encoding > self.pos.config.efectivo_maximo){
+                            console.log(sesion[0].cash_register_total_entry_encoding)
+                            console.log(sesion[0].cash_register_balance_start)
+                            console.log(total_efectivo)
+                            if ((sesion[0].cash_register_total_entry_encoding+sesion[0].cash_register_balance_start) > self.pos.config.efectivo_maximo){
                                 self.pos.gui.show_popup("error",{
                                     "title": "Límite de efectivo",
                                     "body":  "Límite de efectivo máximo",
                                 });
-                            }else if ((sesion[0].cash_register_total_entry_encoding+total_efectivo) > self.pos.config.efectivo_maximo) {
+                            }else if ((sesion[0].cash_register_total_entry_encoding+sesion[0].cash_register_balance_start+total_efectivo) > self.pos.config.efectivo_maximo) {
                                 window.alert('Límite de efectivo, por favor retire efectivo antes de la siguiente venta');
                                 _super();
                             }else{
                                 _super();
                             }
-                            console.log(efectivo+sesion[0].cash_register_balance_start);
+                            // console.log(efectivo+sesion[0].cash_register_balance_start);
                             self.renderElement();
                         });
 
@@ -141,7 +143,7 @@ var CuponesButton = screens.ActionButtonWidget.extend({
                             });
                         order.get_last_orderline().set_cupon(busqueda[0].code);
                         console.log(order.get_last_orderline().get_cupon())
-                        
+
                     }
                     console.log(programa)
                 }else{
@@ -159,6 +161,67 @@ screens.define_action_button({
     },
 });
 
+
+var TipoVentaButton = screens.ActionButtonWidget.extend({
+    template: 'TipoVentaButton',
+    init: function(parent, options) {
+        this._super(parent, options);
+        this.pos.bind('change:selectedOrder',this.renderElement,this);
+    },
+    button_click: function(){
+        var self = this;
+        var order = this.pos.get_order();
+        var lista_ventas = [
+            {
+                'label': 'Mesas',
+                'item':  'mesas',
+            },
+            {
+                'label': 'Mostrador',
+                'item':  'mostrador',
+            },
+            {
+                'label': 'A domicilio',
+                'item':  'domicilio',
+            },
+            {
+                'label': 'Pedidos especiales',
+                'item':  'especial',
+            }
+        ];
+        this.gui.show_popup('selection',{
+            'title': 'Seleccione tipo de venta',
+            'list': lista_ventas,
+            'confirm': function(tipo) {
+                console.log(tipo);
+                self.pos.set_tipo_venta(tipo);
+                self.renderElement();
+
+
+            },
+        });
+
+
+        this.renderElement();
+    },
+    get_name: function(){
+        var tipo_venta = this.pos.get_tipo_venta();
+        if(tipo_venta){
+            return tipo_venta;
+        }else{
+            return "Escoja tipo venta---";
+        }
+    },
+
+});
+
+screens.define_action_button({
+    'name': 'tipo_venta',
+    'widget': TipoVentaButton,
+    'condition': function(){
+        return this.pos.config.tipo_venta;
+    },
+});
 // screens.ScreenWidget.include({
 //     barcode_product_action: function(code){
 //         var self = this;

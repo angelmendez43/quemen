@@ -7,4 +7,11 @@
         </div>
     </t>
 
+    <t t-name="TipoVentaButton">
+        <div class='control-button js_tipo_venta'>
+            <t t-esc="widget.get_name()"/>
+        </div>
+    </t>
+
+
 </templates>

@@ -19,7 +19,7 @@ class reporte_entrega_valores_wizard(models.TransientModel):
 
     fecha_inicio = fields.Datetime('Fecha inicio')
     fecha_fin = fields.Datetime('Fecha fin')
-    tienda_id = fields.Many2one('pos.config','Tienda/Sucursal')
+    tienda_id = fields.Many2one('pos.config','Tienda/Sucursal',default=lambda self: self.env.user.pos_id.id, readonly=True)
     fecha_generacion = fields.Datetime('Fecha/Hora',default=fields.Datetime.now)
 
     def print_report(self):
