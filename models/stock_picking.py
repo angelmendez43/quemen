@@ -11,7 +11,7 @@ class Picking(models.Model):
         logging.warn('123456789')
         logging.warn(self.env.user)
         if self.picking_type_id.code == 'internal':
-            if self.env.user.id == 1 or self.location_dest_id.id == self.env.user.pos_id.picking_type_id.default_location_src_id.id:
+            if self.env.user.id == 2 or self.location_dest_id.id == self.env.user.pos_id.picking_type_id.default_location_src_id.id:
                 return super(Picking, self).button_validate()
             else:
                 return UserError(_('No tiene permisos para validar'))
