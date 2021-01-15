@@ -9,3 +9,4 @@ class PosConfig(models.Model):
     cupones = fields.Boolean('Cupones')
     cliente_id = fields.Many2one('res.partner','Cliente por defecto')
     tipo_venta = fields.Boolean('Tipo de venta')
+    envio_salida_vencimiento_id = fields.Many2one('stock.picking.type','Envio de salida por vencimiento')
