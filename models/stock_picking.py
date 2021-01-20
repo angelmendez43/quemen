@@ -46,6 +46,7 @@ class Picking(models.Model):
                     inventario[linea.location_id.id]['productos'].append(linea)
 
             tiendas_ids = self.env['pos.config'].search([])
+            
             logging.warn('TIENDA E INVENTARIO')
             logging.warn(tiendas_ids)
             logging.warn(inventario)
