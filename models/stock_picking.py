@@ -47,6 +47,7 @@ class Picking(models.Model):
 
             tiendas_ids = self.env['pos.config'].search([])
             logging.warn(tiendas_ids)
+            logging.warn(inventario)
             if tiendas_ids:
                 for tienda in tiendas_ids:
                     if tienda.envio_salida_vencimiento_id and tienda.picking_type_id.default_location_src_id.id in inventario:
