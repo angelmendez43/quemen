@@ -50,7 +50,10 @@ class Picking(models.Model):
             if tiendas_ids:
                 for tienda in tiendas_ids:
                     if tienda.envio_salida_vencimiento_id and tienda.picking_type_id.default_location_src_id.id in inventario:
+                        logging.warn('1')
+                        logging.warn(inventario[tienda.picking_type_id.default_location_src_id.id]['productos'])
                         if len(inventario[tienda.picking_type_id.default_location_src_id.id]['productos']) > 0:
+                            logging.warn('2')
                             stock_quant = []
                             envio = {
                                 'picking_type_id': salida.id,
@@ -58,7 +61,7 @@ class Picking(models.Model):
                                 'location_dest_id': salida.default_location_dest_id.id,
                             }
                             envio_id = self.env['stock.picking'].create(envio)
-
+                            logging.warn('ENVIO')
                             for quant in inventario[tienda.picking_type_id.default_location_src_id.id]['productos']:
                                 # linea_envio = {
                                 #     'product_id': quant.product_id.id,
@@ -98,6 +101,7 @@ class Picking(models.Model):
                                     'picking_id':envio_id.id,
                                 }
                                 self.env['stock.move.line'].create(ml)
+                            envio_id.button_validate()
         logging.warn(inventario)
         logging.warn('termina')
         return inventario
