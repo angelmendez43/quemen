@@ -54,6 +54,7 @@ class Picking(models.Model):
                 for tienda in tiendas_ids:
                     ubicacion_actual = tienda.picking_type_id.default_location_src_id
                     if tienda.envio_salida_vencimiento_id and tienda.picking_type_id.default_location_src_id.id in inventario:
+                        destino_id = tienda.envio_salida_vencimiento_id.default_location_dest_id
                         logging.warn('1')
                         # logging.warn(inventario[tienda.picking_type_id.default_location_src_id.id]['productos'])
                         if len(inventario[tienda.picking_type_id.default_location_src_id.id]['productos']) > 0:
@@ -62,7 +63,7 @@ class Picking(models.Model):
                             envio = {
                                 'picking_type_id': salida.id,
                                 'location_id': ubicacion_actual.id,
-                                'location_dest_id': salida.default_location_dest_id.id,
+                                'location_dest_id': destino_id.id,
                             }
                             logging.warn(envio)
                             envio_id = self.env['stock.picking'].create(envio)
@@ -83,7 +84,7 @@ class Picking(models.Model):
 
                                     'location_id': ubicacion_actual.id,
                                     'product_uom_qty': 0,
-                                    'location_dest_id': salida.default_location_dest_id.id,
+                                    'location_dest_id': destino_id.id,
                                     # 'lot_id': quant.lot_id.id,
                                     'picking_id': envio_id.id
                                 }
@@ -99,7 +100,7 @@ class Picking(models.Model):
                                     'product_id': quant['product_id'],
                                     'location_id': ubicacion_actual.id,
                                     'product_uom_id': quant['product_uom'],
-                                    'location_dest_id': salida.default_location_dest_id.id,
+                                    'location_dest_id': destino_id.id,
                                     'lot_id': quant['lot_id'],
                                     'move_id': quant['move_id'],
                                     'qty_done': quant['product_uom_qty'],
