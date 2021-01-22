@@ -59,7 +59,7 @@ class Picking(models.Model):
                         logging.warn('1')
                         # logging.warn(inventario[tienda.picking_type_id.default_location_src_id.id]['productos'])
                         if len(inventario[tienda.picking_type_id.default_location_src_id.id]['productos']) > 0:
-                            logging.warn('21')
+                            logging.warn('2')
                             stock_quant = []
                             envio = {
                                 'picking_type_id': tienda.envio_salida_vencimiento_id.id,
