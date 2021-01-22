@@ -9,6 +9,7 @@
             report_type="qweb-pdf"
             file="quemen.reporte_codigo_barras"
             name="quemen.reporte_codigo_barras"
+            paperformat="paperformat_codigo_barra"
         />
 
         <report id="action_reporte_productos_labor_venta"

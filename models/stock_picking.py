@@ -35,7 +35,7 @@ class Picking(models.Model):
         logging.warn('entra')
         inventario = {}
         salida = self.env.user.pos_id.envio_salida_vencimiento_id
-        ubicacion_actual = self.env.user.pos_id.picking_type_id.default_location_src_id
+        ubicacion_actual = False
         if stock_quant:
             for linea in stock_quant:
                 if linea.location_id.id not in inventario:
@@ -46,12 +46,13 @@ class Picking(models.Model):
                     inventario[linea.location_id.id]['productos'].append(linea)
 
             tiendas_ids = self.env['pos.config'].search([])
-            
+
             logging.warn('TIENDA E INVENTARIO')
             logging.warn(tiendas_ids)
             logging.warn(inventario)
             if tiendas_ids:
                 for tienda in tiendas_ids:
+                    ubicacion_actual = tienda.picking_type_id.default_location_src_id
                     if tienda.envio_salida_vencimiento_id and tienda.picking_type_id.default_location_src_id.id in inventario:
                         logging.warn('1')
                         # logging.warn(inventario[tienda.picking_type_id.default_location_src_id.id]['productos'])
