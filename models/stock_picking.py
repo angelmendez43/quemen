@@ -55,13 +55,14 @@ class Picking(models.Model):
                     ubicacion_actual = tienda.picking_type_id.default_location_src_id
                     if tienda.envio_salida_vencimiento_id and tienda.picking_type_id.default_location_src_id.id in inventario:
                         destino_id = tienda.envio_salida_vencimiento_id.default_location_dest_id
+                        tipo_envio_id = tienda.envio_salida_vencimiento_id
                         logging.warn('1')
                         # logging.warn(inventario[tienda.picking_type_id.default_location_src_id.id]['productos'])
                         if len(inventario[tienda.picking_type_id.default_location_src_id.id]['productos']) > 0:
                             logging.warn('2')
                             stock_quant = []
                             envio = {
-                                'picking_type_id': salida.id,
+                                'picking_type_id': tipo_envio_id.id,
                                 'location_id': ubicacion_actual.id,
                                 'location_dest_id': destino_id.id,
                             }
