@@ -64,6 +64,7 @@ class Picking(models.Model):
                                 'location_id': ubicacion_actual.id,
                                 'location_dest_id': salida.default_location_dest_id.id,
                             }
+                            logging.warn(envio)
                             envio_id = self.env['stock.picking'].create(envio)
                             logging.warn('ENVIO')
                             for quant in inventario[tienda.picking_type_id.default_location_src_id.id]['productos']:
