@@ -62,7 +62,7 @@ class Picking(models.Model):
                             logging.warn('2')
                             stock_quant = []
                             envio = {
-                                'picking_type_id': tipo_envio_id.id,
+                                'picking_type_id': tienda.envio_salida_vencimiento_id.id,
                                 'location_id': ubicacion_actual.id,
                                 'location_dest_id': destino_id.id,
                             }
