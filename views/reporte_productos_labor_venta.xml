@@ -46,7 +46,7 @@
                             <tr>
                                 <td>
                                     <span t-esc="linea.product_id.name"/><br/>
-                                    <span t-esc="linea.lot_id.life_date"/>
+                                    <span t-esc="linea.lot_id.life_date.strftime('%d/%m/%Y')"/>
                                 </td>
                                 <td style="text-align:right"><span t-esc="linea.quantity"/></td>
                             </tr>

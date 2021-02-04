@@ -56,5 +56,26 @@
             file="quemen.reporte_entrega_valores"
             paperformat="paperformat_ticket"
             />
+
+            <!-- <report
+                string="Lot/Serial Number (PDF)"
+                id="action_report_lot_label"
+                model="stock.production.lot"
+                report_type="qweb-pdf"
+                name="stock.report_lot_label"
+                file="stock.report_lot_label"
+                print_report_name="'Lot-Serial - %s' % object.name"
+            /> -->
+
+            <report
+                    id="stock.action_report_lot_label"
+                    string="Lot/Serial Number (PDF)"
+                    model="stock.production.lot"
+                    report_type="qweb-pdf"
+                    file="quemen.reporte_codigo_barras"
+                    name="quemen.reporte_codigo_barras"
+                    print_report_name="(object.state in ('draft', 'sent') and 'Quotation - %s' % (object.name)) or 'Order - %s' %(object.name)"
+                    paperformat="paperformat_codigo_barra"
+            />
     </data>
 </odoo>
