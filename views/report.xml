@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+f<?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
 
@@ -77,5 +77,15 @@
                     print_report_name="(object.state in ('draft', 'sent') and 'Quotation - %s' % (object.name)) or 'Order - %s' %(object.name)"
                     paperformat="paperformat_codigo_barra"
             />
+        
+        <report
+            id="quemen_salidas"
+            string="Salidas"
+            model="stock.picking"
+            report_type="qweb-pdf"
+            file="quemen.reporte_salidas"
+            name="quemen.reporte_salidas"
+            paperformat="paperformat_ticket"
+        />        
     </data>
 </odoo>
