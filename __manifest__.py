@@ -23,6 +23,7 @@
         'views/vale_retiro.xml',
         'views/templates.xml',
         'views/reporte_codigo_barras.xml',
+        'views/reporte_salidas.xml',
         'views/pos_box.xml',
         'views/reporte_entrega_valores.xml',
         # 'data/quemen_data.xml',
