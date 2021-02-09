@@ -6,3 +6,4 @@ from . import reporte_existencias
 from . import reporte_formato_salidas
 from . import vale_retiro
 from . import reporte_entrega_valores
+from . import reporte_salidas
