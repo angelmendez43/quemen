@@ -49,7 +49,6 @@ class ReportSalidas(models.AbstractModel):
         #             for linea in envio.move_line_ids_without_package:
         #
         #                 productos.append({'linea': linea, 'fecha_vencimiento': linea.lot_id.life_date.strftime('%Y-%m-%d')})
-        logging.warn(movimientos)
         return movimientos
 
 
