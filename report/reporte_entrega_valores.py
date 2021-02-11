@@ -13,9 +13,27 @@ from operator import itemgetter
 import pytz
 # import odoo.addons.hr_gt.a_letras
 
-class ReportExistencias(models.AbstractModel):
-    _name = 'report.quemen.reporte_existencias'
+class ReportEntregaValores(models.AbstractModel):
+    _name = 'report.quemen.reporte_entrega_valores'
 
+
+    def _get_entrega_valores(self, fecha_inicio,fecha_fin):
+        sesiones = self.env['pos.session'].search([('config_id','=',self.env.user.pos_id.id),('start_at','>=',fecha_inicio),('start_at','<=',fecha_fin)],order='start_at asc')
+        fondo_caja = {}
+        retiro_efectivo = {}
+        logging.warn(sesiones)
+        if sesiones:
+            for sesion in sesiones:
+                if sesion.retiros_ids:
+                    fecha_sesion = dateutil.parser.parse(str(sesion.start_at)).date()
+                    if fecha_sesion not in retiro_efectivo:
+                        retiro_efectivo[fecha_sesion] = {'fecha': fecha_sesion, 'retiros': [],'total_retiros': 0}
+
+                    for retiro in sesion.retiros_ids:
+                        retiro_efectivo[fecha_sesion]['retiros'].append(retiro)
+                        retiro_efectivo[fecha_sesion]['total_retiros'] += retiro.total
+
+        return {'retiro_efectivo': retiro_efectivo.values()}
 
     def verificar_productos_vencidos(self):
         logging.warn('verificar para albaran')
@@ -119,13 +137,24 @@ class ReportExistencias(models.AbstractModel):
     def _get_report_values(self, docids, data=None):
         model = self.env.context.get('active_model')
         docs = self.env[model].browse(self.env.context.get('active_ids', []))
+        fecha_inicio = data['form']['fecha_inicio']
+        fecha_fin = data['form']['fecha_fin']
+        tienda_id = data['form']['tienda_id']
+        fecha_generacion = data['form']['fecha_generacion']
+
+        logging.warn(data['form'])
         return {
             'doc_ids': self.ids,
             'doc_model': model,
             'data': data['form'],
             'docs': docs,
-            'productos_existencia': self.productos_existencia,
-            'fecha_hora_actual': self.fecha_hora_actual,
+            'fecha_inicio': fecha_inicio,
+            'fecha_fin': fecha_fin,
+            'tienda_id': tienda_id,
+            'fecha_generacion': fecha_generacion,
+            '_get_entrega_valores': self._get_entrega_valores,
+            # 'productos_existencia': self.productos_existencia,
+            # 'fecha_hora_actual': self.fecha_hora_actual,
             # 'mes_letras': self.mes_letras,
             # 'fecha_hoy': self.fecha_hoy,
             # 'a_letras': odoo.addons.hr_gt.a_letras,
