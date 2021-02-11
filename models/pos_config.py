@@ -10,3 +10,4 @@ class PosConfig(models.Model):
     cliente_id = fields.Many2one('res.partner','Cliente por defecto')
     tipo_venta = fields.Boolean('Tipo de venta')
     envio_salida_vencimiento_id = fields.Many2one('stock.picking.type','Envio de salida por vencimiento')
+    promociones_ids = fields.Many2many('quemen.promociones','quemen_promociones_rel',string="Promociones")

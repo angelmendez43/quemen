@@ -55,6 +55,33 @@
                     </t>
 
                   </table>
+                  <br/>
+                  <br/>
+                  <center>
+                      <table>
+                          <tr>
+                              <td style=" border-top: 1px solid #111;text-align:center"><strong>Nombre y firma <br/>cajera</strong></td>
+                          </tr>
+                          <tr>
+                              <td style="height:1cm"></td>
+                          </tr>
+                          <tr>
+                              <td style=" border-top: 1px solid #111;text-align:center"><strong>Nombre y firma <br/> vendedor</strong></td>
+                          </tr>
+                          <tr>
+                              <td style="height:1cm"></td>
+                          </tr>
+                          <tr>
+                              <td style=" border-top: 1px solid #111;text-align:center"><strong>Nombre y firma <br/> Distribucion</strong></td>
+                          </tr>
+                          <tr>
+                              <td style="height:1cm"></td>
+                          </tr>
+                          <tr>
+                              <td style=" border-top: 1px solid #111;text-align:center"><strong>Nombre y firma <br/> Produccion</strong></td>
+                          </tr>
+                      </table>
+                  </center>
                   <!-- <center><strong>Lista de detalles de salida de inventario</strong></center><br/>
                   <center><strong>Salidoa por caducidad</strong></center>
                   <table style="margin: 0 auto;width:100%">

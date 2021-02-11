@@ -4,6 +4,32 @@ from odoo.exceptions import UserError
 import logging
 import pytz
 
+class QuemenPromociones(models.Model):
+    _name = "quemen.promociones"
+
+    name = fields.Char("Nombre")
+    fecha_inicio = fields.Datetime("Fecha inicio")
+    fecha_fin = fields.Datetime("Fecha fin")
+    combos_ids = fields.One2many('quemen.promociones_combos','promocion_id',string="Combos")
+    dosporuno_ids = fields.One2many('quemen.promociones_dosporuno','promocion_id',string="2X1")
+
+class QuemenPromocionesCombos(models.Model):
+    _name = "quemen.promociones_combos"
+
+    promocion_id = fields.Many2one('quemen.promociones','Promocion')
+    producto_id = fields.Many2one('product.product','Producto')
+    cantidad = fields.Integer('Cantidad compra')
+    porcentaje_descuento = fields.Float('% Descuento')
+    productos_promocion_ids = fields.Many2many('product.product','quemen_productosp_rel',string="Productos promocion")
+
+class QuemenPromocionesDosporUno(models.Model):
+    _name = "quemen.promociones_dosporuno"
+
+    promocion_id = fields.Many2one('quemen.promociones','Promocion')
+    producto_id = fields.Many2one('product.product','Producto')
+    productos_promocion_ids = fields.Many2many('product.product','quemen_dosporuno_rel',string="Productos promocion")
+
+
 class QuemenRelojChecador(models.Model):
     _name = "quemen.reloj_checador"
     _inherit = ['mail.thread', 'mail.activity.mixin']

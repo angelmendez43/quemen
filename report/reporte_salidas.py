@@ -36,7 +36,7 @@ class ReportSalidas(models.AbstractModel):
                         'nombre': linea.product_id.name,
                         'codigo_barra': linea.product_id.barcode,
                         'cantidad': linea.qty_done,
-                        'fecha_caducidad': linea.lot_id.life_date,
+                        'fecha_caducidad': linea.lot_id.life_date.strftime('%d/%m/%Y'),
                         'destino': str(salida.user_id.name) +' ' +str(salida.picking_type_id.default_location_dest_id.name)
                     }
                     movimientos.append(dic)
