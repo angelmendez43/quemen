@@ -27,7 +27,6 @@ class ReportSalidas(models.AbstractModel):
     def salida_productos(self,fecha_desde,fecha_hasta,tipo_operacion):
         tipo_operacion_id = self.env['stock.picking.type'].search([('id','=',tipo_operacion[0])])
         salidas = self.env['stock.picking'].search([('picking_type_id','=', tipo_operacion_id.id),('state','=','done'),('date_done','>=',fecha_desde),('date_done','<=',fecha_hasta)])
-        logging.warn(salidas)
         movimientos = []
         if salidas:
             for salida in salidas:
