@@ -1,74 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="reporte_salidas">
-        <t t-call="web.html_container">
-            <t t-set="data_report_margin_top" t-value="1"/>
-            <t t-set="data_report_header_spacing" t-value="1"/>
-            <t t-set="data_report_dpi" t-value="110"/>
-            <t t-foreach="docs" t-as="o">
-                <div class="article">
-                    <div class="page">
-                        <center><strong>Vale de retiro</strong></center>
-                        <table style="margin: 0 auto;width:100%;">
+      <t t-call="web.html_container">
+          <div class="article">
+
+              <div class="page">
+                  <t t-set="salidas" t-value="salida_productos(data['fecha_desde'],data['fecha_hasta'],data['tipo_operacion_id'])"/>
+                  <center><strong>Formato de salidas</strong></center>
+                  <br/>
+                  <table style="margin: 0 auto;width:100%">
+                      <tr>
+                          <td><strong>Tienda:</strong></td>
+                          <td style="text-align:left"><span t-esc="_get_tienda(data['tienda_id']).name"/></td>
+                      </tr>
+                      <tr>
+                          <td><strong>Salida:</strong></td>
+                          <td style="text-align:left"><span t-esc="_get_tipo_operacion(data['tipo_operacion_id']).name"/></td>
+                      </tr>
+                      <tr>
+                          <td><strong>Fecha:</strong></td>
+                          <td style="text-align:left"><span t-esc="data['fecha_desde']" t-options='{"widget": "date"}'/> al <span t-esc="data['fecha_hasta']" t-options='{"widget": "date"}'/></td>
+                      </tr>
+
+                  </table>
+                  <br/>
+                  <center><strong>Lista de detalles de salida de inventario</strong></center>
+
+                  <table style="margin: 0 auto;width:100%">
+                    <tr>
+                        <th>Clave</th>
+                        <th>Cantidad</th>
+                        <th>Caducidad</th>
+                    </tr>
+                    <tr>
+                        <td><span t-esc="_get_tipo_operacion(data['tipo_operacion_id']).name"/></td>
+                    </tr>
+                    <t t-if='salidas'>
+                        <t t-foreach="salidas" t-as="s">
                             <tr>
-                                <td>Sucursal:</td>
-                                <td><span t-field="o.session_id.config_id.name"/></td>
-                            </tr>
-                            <tr>
-                                <td>Caja:</td>
+                                <td><span t-esc="s['nombre']"/></td>
+                                <td></td>
                                 <td></td>
                             </tr>
                             <tr>
-                                <td>Folio:</td>
-                                <td><span t-field="o.name"/></td>
+                                <td><span t-esc="s['codigo_barra']"/></td>
+                                <td><span t-esc="s['cantidad']"/></td>
+                                <td><span t-esc="s['fecha_caducidad']"/></td>
                             </tr>
-                        </table>
-                        <br/>
-                        Fecha: <span t-field="o.fecha_hora" t-options='{"format": "MM dd y h:mm a"}'/><br/>
-                        Nombre de cajero(a): <span t-field="o.usuario_id.name"/><br/>
-                        <br/>
-                        <table style="margin: 0 auto;width:100%;">
-                            <thead>
-                                <tr>
-                                    <th><span>Cantidad</span></th>
-                                    <th><span>Denominación</span></th>
-                                    <th class="text-right"><span>Importe</span></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <t t-foreach="o.cash_box_id.cashbox_lines_ids" t-as="linea">
-                                    <t t-set="denominacion" t-value="''"/>
-
-                                    <t t-if="linea.denominacion == 'billete'">
-                                        <t t-set="denominacion" t-value="'Billete(s)'"/>
-                                    </t>
-                                    <t t-else="">
-                                        <t t-set="denominacion" t-value="'Moneda(s)'"/>
-                                    </t>
-                                    <tr>
-                                        <td><span t-esc="linea.number"/></td>
-                                        <td><span t-esc="denominacion"/> de <span t-esc="linea.coin_value"/></td>
-                                        <td class="text-right"><span t-esc="linea.subtotal"/></td>
-                                    </tr>
-                                    <tr>
-                                        <td></td>
-                                        <td><strong>Total:</strong></td>
-                                        <td  class="text-right"><span t-esc="o.total"/></td>
-                                    </tr>
-
-                                </t>
-                            </tbody>
-                        </table>
-                        <br/>
-                        <br/>
-                        <table style="margin: 0 auto;width:100%;">
                             <tr>
-                                <td style="border-top: 1px solid #111;text-align:center">Firma</td>
+                                <td colspan="2"><span t-esc="s['destino']"/></td>
+                                <td></td>
                             </tr>
-                        </table>
-                    </div>
-                </div>
-            </t>
-        </t>
+                        </t>
+                    </t>
+
+                  </table>
+                  <!-- <center><strong>Lista de detalles de salida de inventario</strong></center><br/>
+                  <center><strong>Salidoa por caducidad</strong></center>
+                  <table style="margin: 0 auto;width:100%">
+                      <tr>
+                          <td><strong>Clave</strong></td>
+                          <td><strong>Cantidad</strong></td>
+                          <td><strong>Caducidad</strong></td>
+                      </tr>
+                      <t t-foreach="productos" t-as="linea">
+                          <tr>
+                              <td colspan="3">
+                                  <span t-esc="linea['linea'].product_id.name"/><br/>
+                              </td>
+                          </tr>
+                          <tr>
+                              <td>
+                                  <span t-esc="linea['linea'].product_id.barcode"/><br/>
+                              </td>
+                              <td>
+                                  <span t-esc="linea['linea'].qty_done"/><br/>
+                              </td>
+                              <td style="text-align:right"><span t-esc="linea['fecha_vencimiento']"  t-options='{"widget": "date"}'/></td>
+                          </tr>
+                      </t>
+                  </table>
+                  <br/>
+                  <br/>
+                  <center>
+                      <table>
+                          <tr>
+                              <td style=" border-top: 1px solid #111;text-align:center"><strong>Nombre y firma de cajero</strong></td>
+                          </tr>
+                          <tr>
+                              <td style="height:1cm"></td>
+                          </tr>
+                          <tr>
+                              <td style=" border-top: 1px solid #111;text-align:center"><strong>Nombre y firma del vendedor</strong></td>
+                          </tr>
+                      </table>
+                  </center> -->
+              </div>
+          </div>
+
+      </t>
+
+
     </template>
 </odoo>
