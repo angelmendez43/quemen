@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<odoo>
-
-        <record id="quemen_validar_envio_tienda" model="res.groups">
-           <field name="name">Validar envio tiendas</field>
-       </record>
-
-</odoo>
