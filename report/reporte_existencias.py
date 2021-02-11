@@ -22,7 +22,6 @@ class ReportExistencias(models.AbstractModel):
         stock_quant = self.env['stock.quant'].search([('quantity','>',0)])
         timezone = pytz.timezone(self._context.get('tz') or self.env.user.tz or 'UTC')
         fecha_hoy = datetime.datetime.now().astimezone(timezone).strftime('%Y-%m-%d')
-        logging.warn(fecha_hoy)
         inventario = {}
         if stock_quant:
             for linea in stock_quant:
