@@ -60,12 +60,14 @@ screens.PaymentScreenWidget.include({
                             console.log(sesion[0].cash_register_total_entry_encoding)
                             console.log(sesion[0].cash_register_balance_start)
                             console.log(total_efectivo)
-                            if ((sesion[0].cash_register_total_entry_encoding+sesion[0].cash_register_balance_start) > self.pos.config.efectivo_maximo){
+                            if ((sesion[0].cash_register_total_entry_encoding) > self.pos.config.efectivo_maximo){
                                 self.pos.gui.show_popup("error",{
                                     "title": "Límite de efectivo",
                                     "body":  "Límite de efectivo máximo",
                                 });
-                            }else if ((sesion[0].cash_register_total_entry_encoding+sesion[0].cash_register_balance_start+total_efectivo) > self.pos.config.efectivo_maximo) {
+                            // }else if ((sesion[0].cash_register_total_entry_encoding+sesion[0].cash_register_balance_start+total_efectivo) > self.pos.config.efectivo_maximo) {
+                            }else if ((sesion[0].cash_register_total_entry_encoding+total_efectivo) > self.pos.config.efectivo_maximo) {
+
                                 window.alert('Límite de efectivo, por favor retire efectivo antes de la siguiente venta');
                                 _super();
                             }else{
