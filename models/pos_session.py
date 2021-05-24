@@ -10,7 +10,6 @@ class PosSession(models.Model):
     retiros_ids = fields.One2many('quemen.retiros','session_id','Retiros')
 
     def action_pos_session_validate(self):
-        res = super(PosSession, self).action_pos_session_validate()
         logging.warn('test')
         pedidos_facturar =[]
         pagos = {}
@@ -45,7 +44,7 @@ class PosSession(models.Model):
             }
             factura_id = self.env['account.move'].create(factura)
             if factura_id:
-                factura_id.post()
+                factura_id.action_post()
                 for pago in pagos:
                     pago_dic = {'payment_type': 'inbound','payment_date': fields.Date.today(),
                     'partner_type': 'customer','partner_id':factura_id.partner_id.id,'payment_method_id':1,
@@ -61,4 +60,5 @@ class PosSession(models.Model):
             #     logging.warn(factura_id)
             # else:
                 # raise ValidationError(_("Another session is already opened for this point of sale."))
+        res = super(PosSession, self).action_pos_session_validate()
         return res
