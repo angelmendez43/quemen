@@ -105,7 +105,11 @@ models.PosModel = models.PosModel.extend({
         console.log('TIPO VENTA')
         console.log(this.get('tipo_venta'))
         console.log(this.tipo_venta)
-        return this.get('tipo_venta')|| this.tipo_venta;
+        var tipo_venta = "mostrador";
+        if (this.get('tipo_venta')){
+          tipo_venta = this.get('tipo_venta')
+        }
+        return tipo_venta|| this.tipo_venta;
     },
     set_tipo_venta: function(tipo_venta){
         console.log('SET TIPO VENTA')

@@ -211,7 +211,8 @@ var TipoVentaButton = screens.ActionButtonWidget.extend({
         if(tipo_venta){
             return tipo_venta;
         }else{
-            return "Escoja tipo venta---";
+            // return "Escoja tipo venta---";
+            return "mostrador";
         }
     },
 
