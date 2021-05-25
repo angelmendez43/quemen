@@ -31,3 +31,21 @@ class PosOrder(models.Model):
         if sesion.config_id.tipo_venta:
             res['tipo_venta'] = ui_order['tipo_venta'] or ""
         return res
+
+    def obtener_inventario_producto(self,producto,tipo_ubicacion,lote):
+        cantidad_producto = 0
+        producto_id = self.env['product.product'].search([('id','=',producto)])
+        tipo_ubicacion_id = self.env['stock.picking.type'].search([('id','=',tipo_ubicacion)])
+        lote_id = False
+        logging.warn(lote_id)
+        if producto_id and tipo_ubicacion_id:
+            if lote:
+                lote_id = self.env['stock.production.lot'].search([('name','=',lote)])
+                if lote_id:
+                    existencia = self.env['stock.quant']._get_available_quantity(producto_id,tipo_ubicacion_id.default_location_src_id,lote_id)
+                    cantidad_producto = existencia
+                    logging.warn(existencia)
+            else:
+                existencia = self.env['stock.quant']._get_available_quantity(producto_id,tipo_ubicacion_id.default_location_src_id)
+                cantidad_producto = existencia
+        return cantidad_producto

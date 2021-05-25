@@ -64,22 +64,54 @@ models.Order = models.Order.extend({
         console.log(json)
         return json;
     },
+    agregar_lote: function(pack_lot_lines,options,orderline) {
+        var self = this;
+        pack_lot_lines.models[0]["attributes"]["lot_name"] = options.lote
+        this.pos.gui.show_popup('packlotline', {
+            'title': _t('Lot/Serial Number(s) Requred'),
+            'pack_lot_lines': pack_lot_lines,
+            'order_line': orderline,
+            'order': this,
+        });
+        this.pos.gui.current_popup.click_confirm();
+
+        return true;
+    },
     add_product: function(product, options) {
         var self = this;
         var orden = self.pos.get_order();
         _super_order.add_product.apply(this,arguments)
         var orderline = orden.get_selected_orderline();
+        var tipo_ubicacion = this.pos.config.picking_type_id[0];
         if (orderline.has_product_lot){
-            var pack_lot_lines =  orderline.compute_lot_lines();
-            pack_lot_lines.models[0]["attributes"]["lot_name"] = options.lote
-            this.pos.gui.show_popup('packlotline', {
-                'title': _t('Lot/Serial Number(s) Requred'),
-                'pack_lot_lines': pack_lot_lines,
-                'order_line': orderline,
-                'order': this,
-            });
-            this.pos.gui.current_popup.click_confirm();
+          rpc.query({
+                  model: 'pos.order',
+                  method: 'obtener_inventario_producto',
+                  args: [[],product.id,tipo_ubicacion,options.lote],
+              })
+              .then(function (existencia){
+                  if (existencia > 0){
+                      var pack_lot_lines =  orderline.compute_lot_lines();
+                      self.agregar_lote(pack_lot_lines,options,orderline)
+                  }else {
+                      window.alert('No hay existencia')
+                      self.pos.gui.close_popup();
+                      self.remove_orderline(orderline);
+                  }
+              });
 
+        }else{
+          rpc.query({
+                  model: 'pos.order',
+                  method: 'obtener_inventario_producto',
+                  args: [[],product.id,tipo_ubicacion,false],
+              })
+              .then(function (existencia){
+                  if (existencia == 0){
+                      window.alert('No hay existencia')
+                      self.remove_orderline(orderline);
+                  }
+              });
         }
 
     },
@@ -87,24 +119,22 @@ models.Order = models.Order.extend({
         this.assert_editable();
         this.orderlines.remove(line);
         this.select_orderline(this.get_last_orderline());
-
-        if (line.get_cupon()){
-            rpc.query({
-                    model: 'pos.order',
-                    method: 'habilitar_cupon',
-                    args: [[],line.get_cupon()],
-                })
-                .then(function (estado){
-                });
+        if (this.pos.config.cupones){
+            if (line.get_cupon()){
+                rpc.query({
+                        model: 'pos.order',
+                        method: 'habilitar_cupon',
+                        args: [[],line.get_cupon()],
+                    })
+                    .then(function (estado){
+                    });
+            }
         }
     },
 });
 
 models.PosModel = models.PosModel.extend({
     get_tipo_venta: function(){
-        console.log('TIPO VENTA')
-        console.log(this.get('tipo_venta'))
-        console.log(this.tipo_venta)
         var tipo_venta = "mostrador";
         if (this.get('tipo_venta')){
           tipo_venta = this.get('tipo_venta')
