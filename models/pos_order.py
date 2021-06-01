@@ -42,8 +42,10 @@ class PosOrder(models.Model):
             if lote:
                 lote_id = self.env['stock.production.lot'].search([('name','=',lote)])
                 if lote_id:
-                    existencia = self.env['stock.quant']._get_available_quantity(producto_id,tipo_ubicacion_id.default_location_src_id,lote_id)
-                    cantidad_producto = existencia
+                    quant = self.env['stock.quant'].search([('product_id','=',producto_id.id),('lot_id','=',lote_id.id),('location_id','=',tipo_ubicacion_id.default_location_src_id.id)])
+                    # existencia = self.env['stock.quant']._get_available_quantity(producto_id,tipo_ubicacion_id.default_location_src_id,lote_id)
+                    if quant:
+                        cantidad_producto = quant.quantity
             else:
                 quant = self.env['stock.quant'].search([('product_id','=',producto_id.id),('location_id','=',tipo_ubicacion_id.default_location_src_id.id)])
                 if quant:
