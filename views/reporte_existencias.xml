@@ -5,7 +5,8 @@
             <div class="article">
 
                 <div class="page">
-                    <t t-set="productos" t-value="productos_existencia()"/>
+                    <t t-set="productos" t-value="productos_existencia(tienda_id)"/>
+                    <t t-set="obtener_tienda" t-value="obtener_tienda(tienda_id)"/>
                     <center><strong>Reporte de existencias</strong></center>
                     <table style="margin: 0 auto;width:100%">
                         <tr>
@@ -19,11 +20,11 @@
                         <tr>
                             <td>Dirección:</td>
                             <td style="text-align:right">
-                                <span t-esc="user.pos_id.picking_type_id.warehouse_id.partner_id.street_name"/>
-                                <span t-esc="user.pos_id.picking_type_id.warehouse_id.partner_id.l10n_mx_edi_colony"/>
-                                <span t-esc="user.pos_id.picking_type_id.warehouse_id.partner_id.l10n_mx_edi_locality"/>
-                                <span t-esc="user.pos_id.picking_type_id.warehouse_id.partner_id.city_id.name"/>
-                                <span t-esc="user.pos_id.picking_type_id.warehouse_id.partner_id.state_id.name"/>
+                                <!-- <span t-esc="user.pos_id.picking_type_id.warehouse_id.partner_id.street_name"/> -->
+                                <!-- <span t-esc="user.pos_id.picking_type_id.warehouse_id.partner_id.l10n_mx_edi_colony"/>
+                                <span t-esc="user.pos_id.picking_type_id.warehouse_id.partner_id.l10n_mx_edi_locality"/> -->
+                                <span t-esc="obtener_tienda.picking_type_id.warehouse_id.partner_id.city_id.name"/>
+                                <span t-esc="obtener_tienda.picking_type_id.warehouse_id.partner_id.state_id.name"/>
 
                             </td>
                         </tr>

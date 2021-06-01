@@ -17,6 +17,7 @@ from odoo.fields import Date, Datetime
 class reporte_productos_labor_venta_wizard(models.TransientModel):
     _name = 'quemen.reporte_productos_labor_venta.wizard'
 
+    tienda_id = fields.Many2one('pos.config', 'Tienda/Sucursal', default=lambda self: self.env.user.pos_id.id)
     fecha_vencimiento = fields.Date('Fecha de vencimiento de productos')
 
     def print_report(self):

@@ -18,6 +18,7 @@
 
     'data': [
         'data/paperformat_ticket.xml',
+        'security/ir.model.access.csv',
         'data/ir_sequence_data.xml',
         'views/report.xml',
         'views/vale_retiro.xml',
@@ -26,7 +27,7 @@
         'views/reporte_salidas.xml',
         'views/pos_box.xml',
         'views/reporte_entrega_valores.xml',
-        # 'data/quemen_data.xml',
+        'data/quemen_data.xml',
         'views/quemen_views.xml',
         'views/stock_quant_views.xml',
         'views/pos_session_view.xml',
@@ -44,6 +45,7 @@
         'views/reporte_salidas.xml',
         'wizard/reporte_salidas_wizard.xml',
         'wizard/reporte_formato_salidas_wizard.xml',
+        'views/report_quemen.xml'
     ],
     'qweb': [
         'static/src/xml/pos.xml',

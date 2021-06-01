@@ -8,6 +8,7 @@
               <field name="arch" type="xml">
                 <form string="Productos labor de venta">
                     <group>
+                        <field name="tienda_id"/>
                         <field name="fecha_vencimiento"/>
                     </group>
                     <footer>

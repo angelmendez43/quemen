@@ -17,7 +17,7 @@ class ReportEntregaValores(models.AbstractModel):
     _name = 'report.quemen.reporte_entrega_valores'
 
 
-    def _get_entrega_valores(self, fecha_inicio,fecha_fin):
+    def _get_entrega_valores(self, fecha_inicio,fecha_fin, tienda_id):
         sesiones = self.env['pos.session'].search([('config_id','=',self.env.user.pos_id.id),('start_at','>=',fecha_inicio),('start_at','<=',fecha_fin)],order='start_at asc')
         fondo_caja = {}
         retiro_efectivo = {}
@@ -25,6 +25,8 @@ class ReportEntregaValores(models.AbstractModel):
         if sesiones:
             for sesion in sesiones:
                 if sesion.retiros_ids:
+                    logging.warn("Sesion")
+                    logging.warn(sesion.config_id.name)
                     fecha_sesion = dateutil.parser.parse(str(sesion.start_at)).date()
                     if fecha_sesion not in retiro_efectivo:
                         retiro_efectivo[fecha_sesion] = {'fecha': fecha_sesion, 'retiros': [],'total_retiros': 0}
@@ -86,11 +88,12 @@ class ReportEntregaValores(models.AbstractModel):
 
         return inventario
 
-    def productos_existencia(self):
+    def productos_existencia(self, tienda_id):
         # logging.warn(fecha_vencimiento)
         self.verificar_productos_vencidos()
         ubicacion_id = self.env.user.pos_id.picking_type_id.default_location_src_id
         stock_id = self.env['stock.quant'].search([('location_id','=',ubicacion_id.id)])
+        logging.warn("stock_id")
         logging.warn(stock_id)
         inventario = {}
         if stock_id:
@@ -142,6 +145,8 @@ class ReportEntregaValores(models.AbstractModel):
         tienda_id = data['form']['tienda_id']
         fecha_generacion = data['form']['fecha_generacion']
 
+        logging.warn("tienda_id")
+        logging.warn(tienda_id)
         logging.warn(data['form'])
         return {
             'doc_ids': self.ids,

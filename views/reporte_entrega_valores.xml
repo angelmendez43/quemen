@@ -32,7 +32,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <t t-foreach="_get_entrega_valores(fecha_inicio,fecha_fin)['retiro_efectivo']" t-as="entrega">
+                            <t t-foreach="_get_entrega_valores(fecha_inicio,fecha_fin, tienda_id)['retiro_efectivo']" t-as="entrega">
                                 <tr>
                                     <td colspan="4"><span t-esc="entrega['fecha']" t-options='{"widget": "date"}'/></td>
                                 </tr>

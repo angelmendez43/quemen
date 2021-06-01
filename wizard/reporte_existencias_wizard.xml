@@ -7,6 +7,9 @@
               <field name="model">quemen.reporte_existencias.wizard</field>
               <field name="arch" type="xml">
                 <form string="Reporte de existencias">
+                  <group>
+                    <field name="tienda_id"/>
+                  </group>
                     <!-- <group>
                         <field name="fecha_vencimiento"/>
                     </group> -->
