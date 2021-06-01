@@ -8,7 +8,6 @@
               <field name="arch" type="xml">
                 <form string="Reporte de existencias">
                     <group>
-                        <field name="tienda_id"/>
                         <field name="fecha_desde"/>
                         <field name="fecha_hasta"/>
                         <field name="tipo_operacion_id"/>

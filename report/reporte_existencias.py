@@ -68,15 +68,23 @@ class ReportExistencias(models.AbstractModel):
 
         return inventario
 
-    def productos_existencia(self):
+    def productos_existencia(self, tienda_id):
+
         # logging.warn(fecha_vencimiento)
+        tiendas_id = self.env['pos.config'].search([('id','=',tienda_id[0])])
+        logging.warn("tienda_id")
+        logging.warn(tiendas_id)
         self.verificar_productos_vencidos()
-        ubicacion_id = self.env.user.pos_id.picking_type_id.default_location_src_id
+        ubicacion_id = tiendas_id.picking_type_id.default_location_src_id
+
         stock_id = self.env['stock.quant'].search([('location_id','=',ubicacion_id.id)])
+        logging.warn("stock_id")
         logging.warn(stock_id)
         inventario = {}
         if stock_id:
             for linea in stock_id:
+                logging.warn("linea")
+                logging.warn(linea.product_id.name)
                 if linea.lot_id and linea.lot_id.life_date:
                     if str(linea.product_id.categ_id.parent_id.id)+'/'+str(linea.product_id.categ_id.id) not in inventario:
                         inventario[str(linea.product_id.categ_id.parent_id.id)+'/'+str(linea.product_id.categ_id.id)] = {'productos': [],'categoria_padre': linea.product_id.categ_id.parent_id.name, 'categoria_hija': linea.product_id.categ_id.name }
@@ -87,6 +95,13 @@ class ReportExistencias(models.AbstractModel):
         logging.warn('product existencias')
         logging.warn(inventario)
         return inventario
+
+
+    def obtener_tienda(self, tienda_id):
+
+        tienda = self.env['pos.config'].search([('id','=',tienda_id[0])])
+
+        return tienda;
 
     def fecha_hora_actual(self):
         logging.warn(datetime.datetime.now())
@@ -119,13 +134,16 @@ class ReportExistencias(models.AbstractModel):
     def _get_report_values(self, docids, data=None):
         model = self.env.context.get('active_model')
         docs = self.env[model].browse(self.env.context.get('active_ids', []))
+        tienda_id = data['form']['tienda_id']
         return {
             'doc_ids': self.ids,
             'doc_model': model,
             'data': data['form'],
             'docs': docs,
+            'tienda_id': tienda_id,
             'productos_existencia': self.productos_existencia,
             'fecha_hora_actual': self.fecha_hora_actual,
+            'obtener_tienda': self.obtener_tienda
             # 'mes_letras': self.mes_letras,
             # 'fecha_hoy': self.fecha_hoy,
             # 'a_letras': odoo.addons.hr_gt.a_letras,

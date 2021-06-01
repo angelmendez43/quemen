@@ -16,9 +16,14 @@ import pytz
 class ReportProductosLaborVenta(models.AbstractModel):
     _name = 'report.quemen.reporte_productos_labor_venta'
 
-    def productos_vencimiento(self,fecha_vencimiento):
-        logging.warn(fecha_vencimiento)
-        ubicacion_id = self.env.user.pos_id.picking_type_id.default_location_src_id
+    def productos_vencimiento(self,fecha_vencimiento, tienda_id):
+        logging.warn("tienda_id")
+        logging.warn(tienda_id)
+
+        tienda_id = self.env['pos.config'].search([('id','=',tienda_id[0])])
+
+        ubicacion_id = tienda_id.picking_type_id.default_location_src_id
+
         stock_id = self.env['stock.quant'].search([('location_id','=',ubicacion_id.id)])
         inventario = []
         if stock_id:
@@ -36,6 +41,12 @@ class ReportProductosLaborVenta(models.AbstractModel):
         timezone = pytz.timezone(self._context.get('tz') or self.env.user.tz or 'UTC')
         fecha_hora = datetime.datetime.now().astimezone(timezone).strftime('%d/%m/%Y %H:%M:%S')
         return fecha_hora
+
+    def obtener_tienda(self, tienda_id):
+        tienda = self.env['pos.config'].search([('id','=',tienda_id[0])])
+
+        return tienda;
+
     # def pagos_deducciones(self,o):
     #     ingresos = 0
     #     descuentos = 0
@@ -61,6 +72,7 @@ class ReportProductosLaborVenta(models.AbstractModel):
     def _get_report_values(self, docids, data=None):
         model = self.env.context.get('active_model')
         docs = self.env[model].browse(self.env.context.get('active_ids', []))
+        tienda_id = data['form']['tienda_id']
         return {
             'doc_ids': self.ids,
             'doc_model': model,
@@ -68,6 +80,7 @@ class ReportProductosLaborVenta(models.AbstractModel):
             'docs': docs,
             'productos_vencimiento': self.productos_vencimiento,
             'fecha_hora_actual': self.fecha_hora_actual,
+            'obtener_tienda': self.obtener_tienda
             # 'mes_letras': self.mes_letras,
             # 'fecha_hoy': self.fecha_hoy,
             # 'a_letras': odoo.addons.hr_gt.a_letras,

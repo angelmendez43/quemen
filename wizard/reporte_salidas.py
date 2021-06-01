@@ -20,7 +20,7 @@ class reporte_salidas_wizard(models.TransientModel):
     fecha_desde = fields.Date('Fecha desde')
     fecha_hasta = fields.Date('Fecha hasta')
     tipo_operacion_id = fields.Many2one('stock.picking.type','Tipo de operacion')
-    tienda_id = fields.Many2one('pos.config','Tienda')
+    
 
     def print_report(self):
         data = {

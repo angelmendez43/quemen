@@ -5,7 +5,7 @@
             <div class="article">
 
                 <div class="page">
-                    <t t-set="productos" t-value="productos_vencimiento(data['fecha_vencimiento'])"/>
+                    <t t-set="productos" t-value="productos_vencimiento(data['fecha_vencimiento'], data['tienda_id'])"/>
                     <center><strong>Reporte de productos para labor de venta</strong></center>
                     <table style="margin: 0 auto;width:100%">
                         <tr>

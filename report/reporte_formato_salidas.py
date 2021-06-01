@@ -68,11 +68,15 @@ class ReportFormatoSalidas(models.AbstractModel):
 
         return inventario
 
-    def productos_existencia(self):
+    def productos_existencia(self, tienda_id):
         # logging.warn(fecha_vencimiento)
         # self.verificar_productos_vencidos()
-        ubicacion_id = self.env.user.pos_id.picking_type_id.default_location_src_id
+        tienda_id = self.env['pos.config'].search([('id','=',tienda_id[0])])
+
+
+        ubicacion_id = tienda_id.picking_type_id.default_location_src_id
         stock_id = self.env['stock.quant'].search([('location_id','=',ubicacion_id.id)])
+        logging.warn("Stock_id")
         logging.warn(stock_id)
         inventario = {}
         if stock_id:
@@ -93,8 +97,9 @@ class ReportFormatoSalidas(models.AbstractModel):
         envios = self.env['stock.picking'].search([('location_id','=',self.env.user.pos_id.picking_type_id.default_location_src_id.id),('scheduled_date','>=',fecha_desde),('scheduled_date','<=',fecha_hasta)])
         productos = []
         if envios:
-            logging.warn(envios)
             for envio in envios:
+                logging.warn("Envio")
+                logging.warn(envio)
                 if envio.picking_type_id.devolucion_productos_vencidos:
                     for linea in envio.move_line_ids_without_package:
 
@@ -108,6 +113,13 @@ class ReportFormatoSalidas(models.AbstractModel):
         timezone = pytz.timezone(self._context.get('tz') or self.env.user.tz or 'UTC')
         fecha_hora = datetime.datetime.now().astimezone(timezone).strftime('%d/%m/%Y %H:%M:%S')
         return fecha_hora
+
+    def obtener_tienda(self, tienda_id):
+
+        tienda = self.env['pos.config'].search([('id','=',tienda_id[0])])
+
+        return tienda
+
     # def pagos_deducciones(self,o):
     #     ingresos = 0
     #     descuentos = 0
@@ -133,8 +145,8 @@ class ReportFormatoSalidas(models.AbstractModel):
     def _get_report_values(self, docids, data=None):
         model = self.env.context.get('active_model')
         docs = self.env[model].browse(self.env.context.get('active_ids', []))
-        logging.warn(docs)
-        logging.warn(data['form'])
+        tienda_id = data['form']['tienda_id']
+
         return {
             'doc_ids': self.ids,
             'doc_model': model,
@@ -142,6 +154,7 @@ class ReportFormatoSalidas(models.AbstractModel):
             'docs': docs,
             # 'productos_existencia': self.productos_existencia,
             # 'fecha_hora_actual': self.fecha_hora_actual,
+            'obtener_tienda': self.obtener_tienda,
             'salida_productos_vencidos': self.salida_productos_vencidos,
             # 'mes_letras': self.mes_letras,
             # 'fecha_hoy': self.fecha_hoy,
