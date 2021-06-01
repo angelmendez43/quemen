@@ -18,7 +18,7 @@
 
     'data': [
         'data/paperformat_ticket.xml',
-        'security/ir.model.access.csv',
+        # 'security/ir.model.access.csv',
         'data/ir_sequence_data.xml',
         'views/report.xml',
         'views/vale_retiro.xml',

@@ -5,6 +5,8 @@ var screens = require('point_of_sale.screens');
 var models = require('point_of_sale.models');
 // var pos_db = require('point_of_sale.DB');
 var rpc = require('web.rpc');
+var PosBaseWidget = require('point_of_sale.BaseWidget');
+
 // var gui = require('point_of_sale.gui');
 // var core = require('web.core');
 // var PopupWidget = require('point_of_sale.popups');
@@ -13,6 +15,192 @@ var rpc = require('web.rpc');
 // var _t = core._t;
 
 models.load_fields('pos.config', 'efectivo_maximo');
+screens.ActionpadWidget.include({
+  renderElement: function(){
+      console.log('Am here');
+      PosBaseWidget.prototype.renderElement.call(this);
+      var self = this;
+      this._super();
+
+      this.$('.pay').click(function(){
+          var order = self.pos.get_order();
+          var has_valid_product_lot = _.every(order.orderlines.models, function(line){
+              return line.has_valid_product_lot();
+          });
+          order.get_orderlines().forEach(function(l) {
+              if (l.has_product_lot && l.pack_lot_lines.length > 0) {
+                  // var lote = l.pack_lot_lines.models[0].get_lot_name();
+                  // console.log(lote)
+                  // var product = l.product;
+                  // console.log(l)
+                  // var tipo_ubicacion = l.pos.config.picking_type_id[0];
+                  rpc.query({
+                          model: 'pos.order',
+                          method: 'obtener_inventario_producto',
+                          args: [[],l.product.id,l.pos.config.picking_type_id[0],l.pack_lot_lines.models[0].get_lot_name()],
+                      })
+                      .then(function (existencia){
+                          console.log(l.product.display_name)
+                          console.log(existencia)
+                          console.log(l.quantity)
+                          if (l.quantity > existencia){
+                              self.gui.show_screen('products');
+                              self.gui.show_popup("error",{
+                                  "title": "No hay existencia producto",
+                                  "body":  l.product.display_name,
+                              });
+
+                          }
+                      });
+
+
+              }else{
+                  rpc.query({
+                          model: 'pos.order',
+                          method: 'obtener_inventario_producto',
+                          args: [[],l.product.id,l.pos.config.picking_type_id[0],false],
+                      })
+                      .then(function (existencia){
+                          console.log(l.product.display_name)
+                          console.log(existencia)
+                          console.log(l.quantity)
+                          if (l.quantity > existencia){
+                              self.gui.show_screen('products');
+                              self.gui.show_popup("error",{
+                                  "title": "No hay existencia producto",
+                                  "body":  l.product.display_name,
+                              });
+                          }
+                      });
+              }
+          });
+
+
+
+
+          if(!has_valid_product_lot){
+              self.gui.show_popup('confirm',{
+                  'title': _t('Empty Serial/Lot Number'),
+                  'body':  _t('One or more product(s) required serial/lot number.'),
+                  confirm: function(){
+                      self.gui.show_screen('payment');
+                  },
+              });
+          }else{
+              self.gui.show_screen('payment');
+          }
+      });
+      this.$('.set-customer').click(function(){
+          self.gui.show_screen('clientlist');
+      });
+
+  },
+  // renderElement: function() {
+  //     var self = this;
+  //     this._super();
+  //
+  //     this.$('.pay').click(function(){
+  //         console.log('zz')
+  //         var order = self.pos.get_order();
+  //         var has_valid_product_lot = _.every(order.orderlines.models, function(line){
+  //             return line.has_valid_product_lot();
+  //         });
+  //         if(!has_valid_product_lot){
+  //             self.gui.show_popup('confirm',{
+  //                 'title': _t('Empty Serial/Lot Number'),
+  //                 'body':  _t('One or more product(s) required serial/lot number.'),
+  //                 confirm: function(){
+  //                     self.gui.show_screen('payment');
+  //                 },
+  //             });
+  //         }else{
+  //             self.gui.show_screen('payment');
+  //         }
+  //     });
+  //     this.$('.set-customer').click(function(){
+  //         self.gui.show_screen('clientlist');
+  //     });
+  // }
+    //
+    // set_value: function(val) {
+    //     var self = this;
+    //     var gui = this.pos.gui;
+    //     var mode = this.numpad_state.get('mode');
+    //     var empleado = this.pos.get_empleado();
+    //     var orderline = this.pos.get_order().get_selected_orderline();
+    //
+    //     var _super_sin_this = this._super;
+    //     var _super_con_this = _super_sin_this.bind(this);
+    //
+    //     if (!(orderline.mp_dirty)) {
+    //         if (mode == 'quantity') {
+    //             if (empleado.responsable) {
+    //
+    //                 self.gui.show_popup('passinput',{
+    //                     'title': 'Ingrese clave',
+    //                     'confirm': function(clave_empleado) {
+    //                         if (clave_empleado == this.pos.user.pos_security_pin) {
+    //                             _super_con_this(val);
+    //                         }
+    //                         else {
+    //                             gui.show_popup('confirm',{
+    //                                 'title': 'Error',
+    //                                 'body': 'Pin de seguridad incorrecto',
+    //                                 'confirm': function(data) {
+    //                                 },
+    //                             });
+    //                         }
+    //                     },
+    //                 });
+    //             }
+    //             else {
+    //                 gui.show_popup('confirm',{
+    //                     'title': 'Error',
+    //                     'body': 'No tiene permisos para modificar pedidos que ya se enviaron',
+    //                     'confirm': function(data) {
+    //                     },
+    //                 });
+    //
+    //             }
+    //         }
+    //         else if (mode == 'discount') {
+    //             if (empleado.descuentos) {
+    //                 self.gui.show_popup('passinput',{
+    //                     'title': 'Ingrese clave',
+    //                     'confirm': function(clave_empleado) {
+    //                         if (clave_empleado == this.pos.user.pos_security_pin) {
+    //                             _super_con_this(val);
+    //                         }
+    //                         else {
+    //                             gui.show_popup('confirm',{
+    //                                 'title': 'Error',
+    //                                 'body': 'Pin de seguridad incorrecto',
+    //                                 'confirm': function(data) {
+    //                                 },
+    //                             });
+    //                         }
+    //                     },
+    //                 });
+    //             }
+    //             else {
+    //                 gui.show_popup('confirm',{
+    //                     'title': 'Error',
+    //                     'body': 'No tiene permisos para hacer descuentos',
+    //                     'confirm': function(data) {
+    //                     },
+    //                 });
+    //             }
+    //         }
+    //         else {
+    //             this._super(val);
+    //         }
+    //     }
+    //     else {
+    //         this._super(val);
+    //     }
+    // },
+});
+
 
 screens.PaymentScreenWidget.include({
     validate_order: function(force_validation) {
