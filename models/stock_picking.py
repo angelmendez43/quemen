@@ -8,16 +8,17 @@ from datetime import datetime
 class Picking(models.Model):
     _inherit = "stock.picking"
 
-    def button_validate(self):
-        logging.warn('123456789')
-        logging.warn(self.env.user)
-        if self.picking_type_id.code == 'internal':
-            if self.env.user.id == 2 or self.location_dest_id.id == self.env.user.pos_id.picking_type_id.default_location_src_id.id:
-                return super(Picking, self).button_validate()
-            else:
-                return UserError(_('No tiene permisos para validar'))
-        else:
-            return super(Picking, self).button_validate()
+    # def button_validate(self):
+    #     logging.warn('123456789')
+    #     logging.warn(self.env.user)
+    #     if self.picking_type_id.code == 'internal':
+    #         if self.env.user.id == 2 or self.location_dest_id.id == self.env.user.pos_id.picking_type_id.default_location_src_id.id:
+    #             return super(Picking, self).button_validate()
+    #         else:
+    #             return UserError(_('No tiene permisos para validar'))
+    #     else:
+    #         return super(Picking, self).button_validate()
+    #         ____________________________________________________
         # if self.env.user.pos_id.picking_type_id
         # if self.env.user.has_group('quemen.quemen_validar_envio_tienda') and self.picking_type_id.code == 'internal':
         #     return res
