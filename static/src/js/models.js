@@ -49,19 +49,13 @@ var _super_order = models.Order.prototype;
 models.Order = models.Order.extend({
     export_as_JSON: function() {
         var json = _super_order.export_as_JSON.apply(this,arguments);
-        console.log('jejjee')
-        console.log(this.pos.get_tipo_venta())
         json.tipo_venta = this.pos.get_tipo_venta();
 
-        console.log('1')
-        console.log(json)
         return json;
     },
     export_for_printing: function() {
         var json = _super_order.export_for_printing.apply(this,arguments);
         json.tipo_venta = this.pos.get_tipo_venta();
-        console.log('2')
-        console.log(json)
         return json;
     },
     agregar_lote: function(pack_lot_lines,options,orderline) {
@@ -83,7 +77,7 @@ models.Order = models.Order.extend({
         _super_order.add_product.apply(this,arguments)
         var orderline = orden.get_selected_orderline();
         var tipo_ubicacion = this.pos.config.picking_type_id[0];
-        if (orderline.has_product_lot){
+        if (orderline.has_product_lot && (typeof options !== 'undefined')){
           rpc.query({
                   model: 'pos.order',
                   method: 'obtener_inventario_producto',
@@ -99,6 +93,9 @@ models.Order = models.Order.extend({
                       self.remove_orderline(orderline);
                   }
               });
+
+        }else if(orderline.has_product_lot && (typeof options == 'undefined')){
+            return;
 
         }else{
           rpc.query({
@@ -142,8 +139,6 @@ models.PosModel = models.PosModel.extend({
         return tipo_venta|| this.tipo_venta;
     },
     set_tipo_venta: function(tipo_venta){
-        console.log('SET TIPO VENTA')
-        console.log(tipo_venta)
         this.set('tipo_venta', tipo_venta);
         // this.db.set_empleado(this.empleado);
     }

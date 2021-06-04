@@ -6,6 +6,8 @@ var models = require('point_of_sale.models');
 // var pos_db = require('point_of_sale.DB');
 var rpc = require('web.rpc');
 var PosBaseWidget = require('point_of_sale.BaseWidget');
+var core = require('web.core');
+var _t = core._t;
 
 // var gui = require('point_of_sale.gui');
 // var core = require('web.core');
@@ -34,25 +36,55 @@ screens.ActionpadWidget.include({
                   // var product = l.product;
                   // console.log(l)
                   // var tipo_ubicacion = l.pos.config.picking_type_id[0];
+
                   rpc.query({
-                          model: 'pos.order',
-                          method: 'obtener_inventario_producto',
-                          args: [[],l.product.id,l.pos.config.picking_type_id[0],l.pack_lot_lines.models[0].get_lot_name()],
-                      })
-                      .then(function (existencia){
-                          console.log(l.product.display_name)
-                          console.log(existencia)
-                          console.log(l.quantity)
-                          if (l.quantity > existencia){
-                              self.gui.show_screen('products');
-                              self.gui.show_popup("error",{
-                                  "title": "No hay existencia producto",
-                                  "body":  l.product.display_name,
-                              });
+                                  model: 'stock.production.lot',
+                                  method: 'search_read',
+                                  args: [[['name', '=', l.pack_lot_lines.models[0].get_lot_name()]], ['id']],
+                              })
+                              .then(function (lote){
+                                  console.log('rpc')
+                                  console.log(lote)
+                                  if (lote.length == 0){
+                                    console.log('es cero')
+                                    self.gui.show_screen('products');
+                                    self.gui.show_popup('confirm',{
+                                        'title': _t('Lote invalido'),
+                                        'body':  l.pack_lot_lines.models[0].get_lot_name(),
+                                        confirm: function(){
+                                            self.gui.show_screen('products');
+                                        },
+                                    });
+                                  }else{
 
-                          }
-                      });
+                                      rpc.query({
+                                              model: 'pos.order',
+                                              method: 'obtener_inventario_producto',
+                                              args: [[],l.product.id,l.pos.config.picking_type_id[0],l.pack_lot_lines.models[0].get_lot_name()],
+                                          })
+                                          .then(function (existencia){
+                                              console.log(l.product.display_name)
+                                              console.log(existencia)
+                                              console.log(l.quantity)
+                                              if (l.quantity > existencia){
+                                                  self.gui.show_screen('products');
+                                                  self.gui.show_popup('confirm',{
+                                                      'title': _t('No hay existencia producto'),
+                                                      'body':  l.product.display_name,
+                                                      confirm: function(){
+                                                          self.gui.show_screen('products');
+                                                      },
+                                                  });
+                                                  // self.gui.show_popup("error",{
+                                                  //     "title": "No hay existencia producto",
+                                                  //     "body":  l.product.display_name,
+                                                  // });
 
+                                              }
+                                          });
+
+                                  }
+                          });
 
               }else{
                   rpc.query({
@@ -66,10 +98,18 @@ screens.ActionpadWidget.include({
                           console.log(l.quantity)
                           if (l.quantity > existencia){
                               self.gui.show_screen('products');
-                              self.gui.show_popup("error",{
-                                  "title": "No hay existencia producto",
-                                  "body":  l.product.display_name,
+
+                              self.gui.show_popup('confirm',{
+                                  'title': _t('No hay existencia producto'),
+                                  'body':  l.product.display_name,
+                                  confirm: function(){
+                                      self.gui.show_screen('products');
+                                  },
                               });
+                              // self.gui.show_popup("error",{
+                              //     "title": "No hay existencia producto",
+                              //     "body":  l.product.display_name,
+                              // });
                           }
                       });
               }
@@ -204,7 +244,6 @@ screens.ActionpadWidget.include({
 
 screens.PaymentScreenWidget.include({
     validate_order: function(force_validation) {
-        console.log('VALIDATE QUEMEN')
         var self = this;
         var order = this.pos.get_order();
         var order_pagos = order.get_paymentlines();
@@ -219,10 +258,6 @@ screens.PaymentScreenWidget.include({
                 }
 
             }
-            console.log(metodos_pago_efectivo)
-
-
-
 
             rpc.query({
                     model: 'pos.session',
@@ -236,7 +271,6 @@ screens.PaymentScreenWidget.include({
                             args: [[['session_id', '=', self.pos.pos_session.id ],['payment_method_id', 'in', metodos_pago_efectivo ]], []],
                         })
                         .then(function (pagos){
-                            console.log(pagos)
                             var efectivo = 0;
                             if (pagos.length > 0 ){
 
@@ -245,9 +279,6 @@ screens.PaymentScreenWidget.include({
                                 }
 
                             }
-                            console.log(sesion[0].cash_register_total_entry_encoding)
-                            console.log(sesion[0].cash_register_balance_start)
-                            console.log(total_efectivo)
                             if ((sesion[0].cash_register_total_entry_encoding) > self.pos.config.efectivo_maximo){
                                 self.pos.gui.show_popup("error",{
                                     "title": "Límite de efectivo",
@@ -299,7 +330,14 @@ var CuponesButton = screens.ActionButtonWidget.extend({
                         if(busqueda.length > 0){
                             self.obtener_programa(busqueda);
                         }else{
-                            console.log('codigo invalido')
+                            self.gui.show_popup('confirm',{
+                                'title': _t('Codigo invalido'),
+                                'body':  cupon,
+                                confirm: function(){
+                                    console.log('')
+                                },
+                            });
+                            // console.log('codigo invalido')
                         }
                     });
             },
@@ -332,12 +370,19 @@ var CuponesButton = screens.ActionButtonWidget.extend({
 
                             });
                         order.get_last_orderline().set_cupon(busqueda[0].code);
-                        console.log(order.get_last_orderline().get_cupon())
+                        // console.log(order.get_last_orderline().get_cupon())
 
                     }
-                    console.log(programa)
+                    // console.log(programa)
                 }else{
-                    console.log('codigo invalido')
+                    self.gui.show_popup('confirm',{
+                        'title': _t('Codigo invalido'),
+                        'body':  cupon,
+                        confirm: function(){
+                            console.log('')
+                        },
+                    });
+                    // console.log('codigo invalido')
                 }
             });
     },
