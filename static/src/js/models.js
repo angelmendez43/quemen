@@ -78,40 +78,60 @@ models.Order = models.Order.extend({
         var orderline = orden.get_selected_orderline();
         var tipo_ubicacion = this.pos.config.picking_type_id[0];
         if (orderline.has_product_lot && (typeof options !== 'undefined')){
-          rpc.query({
-                  model: 'pos.order',
-                  method: 'obtener_inventario_producto',
-                  args: [[],product.id,tipo_ubicacion,options.lote],
-              })
-              .then(function (existencia){
-                  if (existencia > 0){
-                      var pack_lot_lines =  orderline.compute_lot_lines();
-                      self.agregar_lote(pack_lot_lines,options,orderline)
-                  }else {
-                      window.alert('No hay existencia')
-                      self.pos.gui.close_popup();
-                      self.remove_orderline(orderline);
-                  }
-              });
+            var pack_lot_lines =  orderline.compute_lot_lines();
 
+            self.agregar_lote(pack_lot_lines,options,orderline)
+            self.pos.gui.close_popup();
         }else if(orderline.has_product_lot && (typeof options == 'undefined')){
             return;
 
         }else{
-          rpc.query({
-                  model: 'pos.order',
-                  method: 'obtener_inventario_producto',
-                  args: [[],product.id,tipo_ubicacion,false],
-              })
-              .then(function (existencia){
-                  if (existencia == 0){
-                      window.alert('No hay existencia')
-                      self.remove_orderline(orderline);
-                  }
-              });
+            return;
         }
 
     },
+    // add_product: function(product, options) {
+    //     var self = this;
+    //     var orden = self.pos.get_order();
+    //     _super_order.add_product.apply(this,arguments)
+    //     var orderline = orden.get_selected_orderline();
+    //     var tipo_ubicacion = this.pos.config.picking_type_id[0];
+    //     if (orderline.has_product_lot && (typeof options !== 'undefined')){
+    //       rpc.query({
+    //               model: 'pos.order',
+    //               method: 'obtener_inventario_producto',
+    //               args: [[],product.id,tipo_ubicacion,options.lote],
+    //           })
+    //           .then(function (existencia){
+    //               if (existencia > 0){
+    //                   var pack_lot_lines =  orderline.compute_lot_lines();
+    //                   self.agregar_lote(pack_lot_lines,options,orderline)
+    //                   self.pos.gui.close_popup();
+    //               }else {
+    //                   window.alert('No hay existencia')
+    //                   self.pos.gui.close_popup();
+    //                   self.remove_orderline(orderline);
+    //               }
+    //           });
+    //
+    //     }else if(orderline.has_product_lot && (typeof options == 'undefined')){
+    //         return;
+    //
+    //     }else{
+    //       rpc.query({
+    //               model: 'pos.order',
+    //               method: 'obtener_inventario_producto',
+    //               args: [[],product.id,tipo_ubicacion,false],
+    //           })
+    //           .then(function (existencia){
+    //               if (existencia == 0){
+    //                   window.alert('No hay existencia')
+    //                   self.remove_orderline(orderline);
+    //               }
+    //           });
+    //     }
+    //
+    // },
     remove_orderline: function( line ){
         this.assert_editable();
         this.orderlines.remove(line);
