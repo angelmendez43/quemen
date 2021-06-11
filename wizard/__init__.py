@@ -7,3 +7,4 @@ from . import reloj_checador_wizard
 from . import pos_box
 from . import reporte_entrega_valores
 from . import reporte_salidas
+from . import reporte_retiros_sesion

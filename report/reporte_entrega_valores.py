@@ -90,8 +90,9 @@ class ReportEntregaValores(models.AbstractModel):
 
     def productos_existencia(self, tienda_id):
         # logging.warn(fecha_vencimiento)
+        tiendas_id = self.env['pos.config'].search([('id','=',tienda_id[0])])
         self.verificar_productos_vencidos()
-        ubicacion_id = self.env.user.pos_id.picking_type_id.default_location_src_id
+        ubicacion_id = tienda_id.picking_type_id.default_location_src_id
         stock_id = self.env['stock.quant'].search([('location_id','=',ubicacion_id.id)])
         logging.warn("stock_id")
         logging.warn(stock_id)
@@ -145,9 +146,6 @@ class ReportEntregaValores(models.AbstractModel):
         tienda_id = data['form']['tienda_id']
         fecha_generacion = data['form']['fecha_generacion']
 
-        logging.warn("tienda_id")
-        logging.warn(tienda_id)
-        logging.warn(data['form'])
         return {
             'doc_ids': self.ids,
             'doc_model': model,
