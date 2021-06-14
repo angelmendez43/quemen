@@ -45,7 +45,10 @@
         'views/reporte_salidas.xml',
         'wizard/reporte_salidas_wizard.xml',
         'wizard/reporte_formato_salidas_wizard.xml',
-        'views/report_quemen.xml'
+        'views/report_quemen.xml',
+        'views/reportes_retiro_view.xml',
+        'views/reporte_retiros_sesion.xml'
+
     ],
     'qweb': [
         'static/src/xml/pos.xml',
