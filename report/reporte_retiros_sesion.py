@@ -17,7 +17,7 @@ class ReporteRetiros(models.AbstractModel):
     _name = 'report.quemen.reporte_retiros_sesion'
 
     def _get_entrega_valores(self, retiro_id):
-
+        #punto_venta
         punto_venta = self.env.user.pos_id.name
         retiros_pos = self.env['quemen.retiros'].search([('id', '=', retiro_id[0])])
         hora_fecha = retiros_pos.fecha_hora
