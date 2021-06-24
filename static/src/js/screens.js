@@ -17,6 +17,22 @@ var _t = core._t;
 // var _t = core._t;
 
 models.load_fields('pos.config', 'efectivo_maximo');
+// screens.NumpadWidget.include({
+//   start: function(event) {
+//       this._super(event);
+//   },
+//   clickDeleteLastChar: function(event) {
+//
+//       this.orderline_remove;
+//       console.log('hola')
+//       console.log(event)
+//       // this.pos.get_order().get_last_orderline().remove_orderline()
+//       // this.orderline_remove(this.pos.get_order().get_last_orderline())
+//       this._super(event);
+//       // return this.state.deleteLastChar();
+//   },
+// });
+
 screens.ActionpadWidget.include({
   renderElement: function(){
       console.log('Am here');

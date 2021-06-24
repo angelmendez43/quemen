@@ -79,7 +79,6 @@ models.Order = models.Order.extend({
         var tipo_ubicacion = this.pos.config.picking_type_id[0];
         if (orderline.has_product_lot && (typeof options !== 'undefined')){
             var pack_lot_lines =  orderline.compute_lot_lines();
-
             self.agregar_lote(pack_lot_lines,options,orderline)
             self.pos.gui.close_popup();
         }else if(orderline.has_product_lot && (typeof options == 'undefined')){
