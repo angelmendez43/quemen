@@ -17,21 +17,23 @@ var _t = core._t;
 // var _t = core._t;
 
 models.load_fields('pos.config', 'efectivo_maximo');
-// screens.NumpadWidget.include({
-//   start: function(event) {
-//       this._super(event);
-//   },
-//   clickDeleteLastChar: function(event) {
-//
-//       this.orderline_remove;
-//       console.log('hola')
-//       console.log(event)
-//       // this.pos.get_order().get_last_orderline().remove_orderline()
-//       // this.orderline_remove(this.pos.get_order().get_last_orderline())
-//       this._super(event);
-//       // return this.state.deleteLastChar();
-//   },
-// });
+screens.NumpadWidget.include({
+  start: function(event) {
+      this._super(event);
+  },
+  clickDeleteLastChar: function(event) {
+
+      this.orderline_remove;
+      console.log('hola')
+      console.log(event)
+      var linea = this.pos.get_order().get_selected_orderline();
+      this.pos.get_order().remove_orderline(linea);
+      // this.pos.get_order().get_last_orderline().remove_orderline()
+      // this.orderline_remove(this.pos.get_order().get_last_orderline())
+      this._super(event);
+      // return this.state.deleteLastChar();
+  },
+});
 
 screens.ActionpadWidget.include({
   renderElement: function(){
@@ -474,6 +476,57 @@ screens.define_action_button({
         return this.pos.config.tipo_venta;
     },
 });
+
+screens.ProductScreenWidget.include({
+  /**
+   * Processes the buffer of keys filled by _onKeypadKeyDown and
+   * distinguishes between the actual keystrokes and scanner inputs.
+   *
+   * @private
+  */
+  _handleBufferedKeys: function () {
+      // If more than 2 keys are recorded in the buffer, chances are high that the input comes
+      // from a barcode scanner. In this case, we don't do anything.
+      if (this.buffered_key_events.length > 2) {
+          this.buffered_key_events = [];
+          return;
+      }
+
+      for (var i = 0; i < this.buffered_key_events.length; ++i) {
+          var ev = this.buffered_key_events[i];
+          if ((ev.key >= "0" && ev.key <= "9") || ev.key === ".") {
+              if( ev.key === "."){
+                  break;
+              }else{
+                this.numpad.state.appendNewChar(ev.key);
+              }
+
+          }
+          else {
+              switch (ev.key){
+                  case "Backspace":
+                      var linea = this.pos.get_order().get_selected_orderline();
+                      this.pos.get_order().remove_orderline(linea);
+                      break;
+                  case "Delete":
+                      this.numpad.state.resetValue();
+                      break;
+                  case ",":
+                      // this.numpad.state.appendNewChar(".");
+                      break;
+                  case "+":
+                      this.numpad.state.positiveSign();
+                      break;
+                  case "-":
+                      this.numpad.state.negativeSign();
+                      break;
+              }
+          }
+      }
+      this.buffered_key_events = [];
+  },
+
+})
 // screens.ScreenWidget.include({
 //     barcode_product_action: function(code){
 //         var self = this;
