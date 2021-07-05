@@ -59,6 +59,21 @@
                             <label for="promociones_ids" string="Promociones"/>
                         </div>
                     </div>
+
+                    <!-- <div class="col-xs-12 col-md-6 o_setting_box">
+                        <div class="o_setting_right_pane">
+                            <field name="producto_porciones" string="Tipo de operacion entrada porciones"/>
+                        </div>
+                    </div> -->
+
+                    <div class="col-xs-12 col-md-6 o_setting_box">
+                        <div class="o_setting_left_pane">
+                            <field name="producto_porciones"/>
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="producto_porciones" string="Tipo de operacion entrada porciones"/>
+                        </div>
+                    </div>
             </sheet>
         </field>
     </record>

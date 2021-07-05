@@ -11,3 +11,4 @@ class PosConfig(models.Model):
     tipo_venta = fields.Boolean('Tipo de venta')
     envio_salida_vencimiento_id = fields.Many2one('stock.picking.type','Envio de salida por vencimiento')
     promociones_ids = fields.Many2many('quemen.promociones','quemen_promociones_rel',string="Promociones")
+    producto_porciones = fields.Many2one('stock.picking.type', string="tipo de operacion entrada porciones")
