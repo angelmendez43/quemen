@@ -27,6 +27,65 @@ class Picking(models.Model):
         # else:
         #     raise UserError(_('No tiene permisos para validar'))
 
+    # def button_validate(self):
+    #     res = super(Picking, self).button_validate()
+    #     # productos = self.enviando_producto()
+    #     # logging.warn("PRODUCTOS")
+    #     # logging.warn(productos)
+    #
+    #     return res
+
+    def enviando_producto(self):
+        lista_id = {}
+        lista_objeto = {}
+        lineas = self.move_line_ids_without_package
+
+        for linea in lineas:
+            if (linea.product_id.producto_porciones.name != False) and (linea.product_id.porciones > 0):
+                tipo_de_operacion = self.env.user.pos_id.producto_porciones.id
+                warehouse_id = self.env.user.pos_id.producto_porciones.warehouse_id.id
+                sequence_code = self.env.user.pos_id.producto_porciones.sequence_code
+                logging.warn("linea.product_id.producto_porciones.name")
+                logging.warn(linea.product_id.producto_porciones.name)
+                logging.warn(linea.product_id.producto_porciones.id)
+
+                if linea.product_id.id not in lista_id:
+                    producto_id = linea.product_id.producto_porciones.id
+
+                    hecho = linea.qty_done
+                    product_uom_qty = linea.product_uom_qty
+                    product_uom_id = linea.product_uom_id.id
+                    location_id = linea.location_id.id
+                    location_dest_id = linea.location_dest_id.id
+
+                    lista_id[lineas.product_id.id]={
+                    'product_id': producto_id,
+                    'qty_done': hecho,
+                    'product_uom_qty': product_uom_qty,
+                    'product_uom_id': product_uom_id,
+                    'location_id': location_id,
+                    'location_dest_id': location_dest_id
+                    }
+
+                    #lista_objeto = {'picking_type_id': tipo_de_operacion}
+
+        transferencia_id = self.env['stock.picking'].create({ 'picking_type_id': tipo_de_operacion })
+
+        for lneas in lista_id:
+            lineas_transferencia_id = self.env['stock.move.line'].create({
+            'picking_id': transferencia_id.id,
+            'product_id': lista_id[lneas]['product_id'],
+            'qty_done': lista_id[lneas]['qty_done'],
+            'product_uom_qty': lista_id[lneas]['product_uom_qty'],
+            'product_uom_id': lista_id[lneas]['product_uom_id'],
+            'location_id': lista_id[lneas]['location_id'],
+            'location_dest_id': lista_id[lneas]['location_dest_id']
+            })
+
+        return transferencia_id, lineas_transferencia_id
+
+
+
     def verificar_productos_vencidos(self):
         logging.warn('verificar para albaran')
         stock_quant = self.env['stock.quant'].search([('quantity','>',0)])
