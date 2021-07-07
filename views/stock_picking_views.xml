@@ -8,6 +8,7 @@
             <field name="arch" type="xml">
                 <field name="warehouse_id" position="after">
                     <field name="devolucion_productos_vencidos"/>
+                    <field name="porciones"/>
                 </field>
             </field>
         </record>

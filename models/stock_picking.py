@@ -59,7 +59,7 @@ class Picking(models.Model):
         logging.warn(lista_almacenes)
 
 
-        if (self.picking_type_id.code == 'internal') and (int(self.picking_type_id.warehouse_id.id) in lista_almacenes):
+        if (self.picking_type_id.code == 'internal') and (self.picking_type_id.porciones) and (int(self.picking_type_id.warehouse_id.id) in lista_almacenes):
             logging.warn("Estamos entrando C=")
             for linea in lineas:
                 if (int(linea.product_id.producto_porciones.id) > 0):
@@ -230,3 +230,4 @@ class StockPickingType(models.Model):
     _inherit = "stock.picking.type"
 
     devolucion_productos_vencidos = fields.Boolean('¿Desea utilizar este tipo de albaran para devolucion productos vencidos automatico?')
+    porciones = fields.Boolean('Porciones?')
