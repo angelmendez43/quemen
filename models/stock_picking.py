@@ -27,62 +27,115 @@ class Picking(models.Model):
         # else:
         #     raise UserError(_('No tiene permisos para validar'))
 
-    # def button_validate(self):
-    #     res = super(Picking, self).button_validate()
-    #     # productos = self.enviando_producto()
-    #     # logging.warn("PRODUCTOS")
-    #     # logging.warn(productos)
-    #
-    #     return res
+    def button_validate(self):
+        super(Picking, self).button_validate()
+
+        transferencia_id = self.enviando_producto()
+
+        if  transferencia_id:
+            transferencia_id.button_validate()
+            logging.warn(transferencia_id)
+
+        return
 
     def enviando_producto(self):
         lista_id = {}
         lista_objeto = {}
+        lista_almacenes = []
+        transferencia_id = False
         lineas = self.move_line_ids_without_package
+        tipo_de_operacion = self.env.user.pos_id.producto_porciones.id
+        ubicacion_id = self.location_id
+        ubicacion_dest_id = self.location_dest_id
 
-        for linea in lineas:
-            if (linea.product_id.producto_porciones.name != False) and (linea.product_id.porciones > 0):
-                tipo_de_operacion = self.env.user.pos_id.producto_porciones.id
-                warehouse_id = self.env.user.pos_id.producto_porciones.warehouse_id.id
-                sequence_code = self.env.user.pos_id.producto_porciones.sequence_code
-                logging.warn("linea.product_id.producto_porciones.name")
-                logging.warn(linea.product_id.producto_porciones.name)
-                logging.warn(linea.product_id.producto_porciones.id)
+        tiendas_almacenes= self.env['pos.config'].search([])
 
-                if linea.product_id.id not in lista_id:
-                    producto_id = linea.product_id.producto_porciones.id
+        for tienda_almacen in tiendas_almacenes:
+            if tienda_almacen.producto_porciones and tienda_almacen.producto_porciones.warehouse_id:
+                lista_almacenes.append(tienda_almacen.producto_porciones.warehouse_id.id)
 
-                    hecho = linea.qty_done
-                    product_uom_qty = linea.product_uom_qty
-                    product_uom_id = linea.product_uom_id.id
-                    location_id = linea.location_id.id
-                    location_dest_id = linea.location_dest_id.id
 
-                    lista_id[lineas.product_id.id]={
-                    'product_id': producto_id,
-                    'qty_done': hecho,
-                    'product_uom_qty': product_uom_qty,
-                    'product_uom_id': product_uom_id,
-                    'location_id': location_id,
-                    'location_dest_id': location_dest_id
-                    }
+        logging.warn("lista_almacenes")
+        logging.warn(lista_almacenes)
 
-                    #lista_objeto = {'picking_type_id': tipo_de_operacion}
 
-        transferencia_id = self.env['stock.picking'].create({ 'picking_type_id': tipo_de_operacion })
+        if (self.picking_type_id.code == 'internal') and (int(self.picking_type_id.warehouse_id.id) in lista_almacenes):
+            logging.warn("Estamos entrando C=")
+            for linea in lineas:
+                if (int(linea.product_id.producto_porciones.id) > 0):
 
-        for lneas in lista_id:
-            lineas_transferencia_id = self.env['stock.move.line'].create({
-            'picking_id': transferencia_id.id,
-            'product_id': lista_id[lneas]['product_id'],
-            'qty_done': lista_id[lneas]['qty_done'],
-            'product_uom_qty': lista_id[lneas]['product_uom_qty'],
-            'product_uom_id': lista_id[lneas]['product_uom_id'],
-            'location_id': lista_id[lneas]['location_id'],
-            'location_dest_id': lista_id[lneas]['location_dest_id']
-            })
+                    warehouse_id = self.env.user.pos_id.producto_porciones.warehouse_id.id
+                    sequence_code = self.env.user.pos_id.producto_porciones.sequence_code
 
-        return transferencia_id, lineas_transferencia_id
+
+                    product_porciones_id= self.env['product.product'].search([('product_tmpl_id','=',linea.product_id.producto_porciones.id)])
+                    qty_done = 0
+                    cantidad_entera = 0
+                    cantidad_porcion = 0
+                    if linea.product_id.id not in lista_id:
+                        producto_id = linea.product_id.producto_porciones.id
+
+                        logging.warn("linea.product_id.producto_porciones.name")
+                        logging.warn(linea.product_id.producto_porciones.name)
+                        hecho = linea.qty_done
+                        product_uom_qty = linea.product_uom_qty
+                        product_uom_id = linea.product_uom_id.id
+                        location_id = linea.location_id.id
+                        location_dest_id = linea.location_dest_id.id
+                        lot_id = linea.lot_id.name
+                        cantidad_entera = linea.qty_done
+                        cantidad_porcion = linea.product_id.porciones
+                        qty_done = cantidad_entera * cantidad_porcion
+                        logging.warn("linea.qty_done * linea.product_id.producto_porciones.porciones")
+                        logging.warn(qty_done)
+                        lista_id[linea.product_id.id]={
+                        'product_id': product_porciones_id.id,
+                        'qty_done': hecho,
+                        'product_uom_qty': product_uom_qty,
+                        'product_uom_id': product_uom_id,
+                        'location_id': location_id,
+                        'location_dest_id': location_dest_id,
+                        'lot_id': lot_id,
+                        'qty_done': qty_done
+                        }
+
+        if  len(lista_id)>0:
+
+            transferencia_id = self.env['stock.picking'].create({
+            'picking_type_id': tipo_de_operacion,
+            'location_id': location_dest_id,
+            'location_dest_id': location_id, })
+
+            for lneas in lista_id:
+                logging.warn("lista_id[lneas]['product_id']")
+                logging.warn(lista_id[lneas]['product_id'])
+
+                lotes = self.env['stock.production.lot'].search([('name', '=', lista_id[lneas]['lot_id']), ('product_id', '=', lista_id[lneas]['product_id'])])
+                lote2_id = False
+                if len(lotes)>0:
+                    logging.warn(">0")
+                    lote2_id = lotes
+                    logging.warn(lote2_id)
+                else:
+                    logging.warn("else")
+                    lote2_id = self.env['stock.production.lot'].create({
+                    'name': lista_id[lneas]['lot_id'],
+                    'product_id': lista_id[lneas]['product_id']})
+                    logging.warn(lote2_id)
+
+                lineas_transferencia_id = self.env['stock.move.line'].create({
+                'picking_id': transferencia_id.id,
+                'product_id': lista_id[lneas]['product_id'],
+                'qty_done': lista_id[lneas]['qty_done'],
+                'product_uom_qty': lista_id[lneas]['product_uom_qty'],
+                'product_uom_id': lista_id[lneas]['product_uom_id'],
+                'location_id': lista_id[lneas]['location_id'],
+                'location_dest_id': lista_id[lneas]['location_dest_id'],
+                'qty_done': lista_id[lneas]['qty_done'],
+                'lot_id': lote2_id.id
+                })
+
+        return transferencia_id
 
 
 
