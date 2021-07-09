@@ -120,6 +120,7 @@ class Picking(models.Model):
                     logging.warn("else")
                     lote2_id = self.env['stock.production.lot'].create({
                     'name': lista_id[lneas]['lot_id'],
+                    'company_id': self.env.company.id,
                     'product_id': lista_id[lneas]['product_id']})
                     logging.warn(lote2_id)
 
