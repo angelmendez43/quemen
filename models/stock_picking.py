@@ -28,15 +28,16 @@ class Picking(models.Model):
         #     raise UserError(_('No tiene permisos para validar'))
 
     def button_validate(self):
-        super(Picking, self).button_validate()
+        res = super(Picking, self).button_validate()
 
         transferencia_id = self.enviando_producto()
 
         if  transferencia_id:
             transferencia_id.button_validate()
             logging.warn(transferencia_id)
-
-        return
+            return res
+        else:
+            return es
 
     def enviando_producto(self):
         lista_id = {}
