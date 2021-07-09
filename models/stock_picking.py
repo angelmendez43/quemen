@@ -35,9 +35,7 @@ class Picking(models.Model):
         if  transferencia_id:
             transferencia_id.button_validate()
             logging.warn(transferencia_id)
-            return res
-        else:
-            return res
+        return res
 
     def enviando_producto(self):
         lista_id = {}
