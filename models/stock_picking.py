@@ -83,6 +83,7 @@ class Picking(models.Model):
                         location_id = linea.location_id.id
                         location_dest_id = linea.location_dest_id.id
                         lot_id = linea.lot_id.name
+                        life_date = linea.lot_id.life_date
                         cantidad_entera = linea.qty_done
                         cantidad_porcion = linea.product_id.porciones
                         qty_done = cantidad_entera * cantidad_porcion
@@ -96,6 +97,7 @@ class Picking(models.Model):
                         'location_id': location_id,
                         'location_dest_id': location_dest_id,
                         'lot_id': lot_id,
+                        'life_date': life_date,
                         'qty_done': qty_done
                         }
 
@@ -121,6 +123,7 @@ class Picking(models.Model):
                     lote2_id = self.env['stock.production.lot'].create({
                     'name': lista_id[lneas]['lot_id'],
                     'company_id': self.env.company.id,
+                    'life_date': lista_id[lneas]['life_date'],
                     'product_id': lista_id[lneas]['product_id']})
                     logging.warn(lote2_id)
 
