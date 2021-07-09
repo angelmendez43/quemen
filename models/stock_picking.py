@@ -103,8 +103,8 @@ class Picking(models.Model):
 
             transferencia_id = self.env['stock.picking'].create({
             'picking_type_id': tipo_de_operacion,
-            'location_id': location_dest_id,
-            'location_dest_id': location_id, })
+            'location_id': ubicacion_id.id,
+            'location_dest_id': ubicacion_dest_id.id, })
 
             for lneas in lista_id:
                 logging.warn("lista_id[lneas]['product_id']")
@@ -129,8 +129,8 @@ class Picking(models.Model):
                 'qty_done': lista_id[lneas]['qty_done'],
                 'product_uom_qty': lista_id[lneas]['product_uom_qty'],
                 'product_uom_id': lista_id[lneas]['product_uom_id'],
-                'location_id': lista_id[lneas]['location_id'],
-                'location_dest_id': lista_id[lneas]['location_dest_id'],
+                'location_id': ubicacion_id.id,
+                'location_dest_id': ubicacion_dest_id.id,
                 'qty_done': lista_id[lneas]['qty_done'],
                 'lot_id': lote2_id.id
                 })
