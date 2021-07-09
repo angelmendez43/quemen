@@ -37,7 +37,7 @@ class Picking(models.Model):
             logging.warn(transferencia_id)
             return res
         else:
-            return es
+            return res
 
     def enviando_producto(self):
         lista_id = {}
