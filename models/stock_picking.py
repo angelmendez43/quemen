@@ -45,8 +45,8 @@ class Picking(models.Model):
         transferencia_id = False
         lineas = self.move_line_ids_without_package
         tipo_de_operacion = self.env.user.pos_id.producto_porciones.id
-        ubicacion_id = self.location_id
-        ubicacion_dest_id = self.location_dest_id
+        ubicacion_id = self.env.user.pos_id.producto_porciones.default_location_src_id
+        ubicacion_dest_id = self.env.user.pos_id.producto_porciones.default_location_dest_id
 
         tiendas_almacenes= self.env['pos.config'].search([])
 
