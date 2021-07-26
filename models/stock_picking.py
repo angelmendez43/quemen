@@ -28,15 +28,14 @@ class Picking(models.Model):
         #     raise UserError(_('No tiene permisos para validar'))
 
     def button_validate(self):
-        super(Picking, self).button_validate()
+        res = super(Picking, self).button_validate()
 
         transferencia_id = self.enviando_producto()
 
         if  transferencia_id:
             transferencia_id.button_validate()
             logging.warn(transferencia_id)
-
-        return
+        return res
 
     def enviando_producto(self):
         lista_id = {}
@@ -45,8 +44,8 @@ class Picking(models.Model):
         transferencia_id = False
         lineas = self.move_line_ids_without_package
         tipo_de_operacion = self.env.user.pos_id.producto_porciones.id
-        ubicacion_id = self.location_id
-        ubicacion_dest_id = self.location_dest_id
+        ubicacion_id = self.env.user.pos_id.producto_porciones.default_location_src_id
+        ubicacion_dest_id = self.env.user.pos_id.producto_porciones.default_location_dest_id
 
         tiendas_almacenes= self.env['pos.config'].search([])
 
@@ -59,7 +58,7 @@ class Picking(models.Model):
         logging.warn(lista_almacenes)
 
 
-        if (self.picking_type_id.code == 'internal') and (int(self.picking_type_id.warehouse_id.id) in lista_almacenes):
+        if (self.picking_type_id.code == 'internal') and (self.picking_type_id.porciones) and (int(self.picking_type_id.warehouse_id.id) in lista_almacenes):
             logging.warn("Estamos entrando C=")
             for linea in lineas:
                 if (int(linea.product_id.producto_porciones.id) > 0):
@@ -83,6 +82,7 @@ class Picking(models.Model):
                         location_id = linea.location_id.id
                         location_dest_id = linea.location_dest_id.id
                         lot_id = linea.lot_id.name
+                        life_date = linea.lot_id.life_date
                         cantidad_entera = linea.qty_done
                         cantidad_porcion = linea.product_id.porciones
                         qty_done = cantidad_entera * cantidad_porcion
@@ -96,6 +96,7 @@ class Picking(models.Model):
                         'location_id': location_id,
                         'location_dest_id': location_dest_id,
                         'lot_id': lot_id,
+                        'life_date': life_date,
                         'qty_done': qty_done
                         }
 
@@ -103,8 +104,8 @@ class Picking(models.Model):
 
             transferencia_id = self.env['stock.picking'].create({
             'picking_type_id': tipo_de_operacion,
-            'location_id': location_dest_id,
-            'location_dest_id': location_id, })
+            'location_id': ubicacion_id.id,
+            'location_dest_id': ubicacion_dest_id.id, })
 
             for lneas in lista_id:
                 logging.warn("lista_id[lneas]['product_id']")
@@ -120,6 +121,8 @@ class Picking(models.Model):
                     logging.warn("else")
                     lote2_id = self.env['stock.production.lot'].create({
                     'name': lista_id[lneas]['lot_id'],
+                    'company_id': self.env.company.id,
+                    'life_date': lista_id[lneas]['life_date'],
                     'product_id': lista_id[lneas]['product_id']})
                     logging.warn(lote2_id)
 
@@ -129,8 +132,8 @@ class Picking(models.Model):
                 'qty_done': lista_id[lneas]['qty_done'],
                 'product_uom_qty': lista_id[lneas]['product_uom_qty'],
                 'product_uom_id': lista_id[lneas]['product_uom_id'],
-                'location_id': lista_id[lneas]['location_id'],
-                'location_dest_id': lista_id[lneas]['location_dest_id'],
+                'location_id': ubicacion_id.id,
+                'location_dest_id': ubicacion_dest_id.id,
                 'qty_done': lista_id[lneas]['qty_done'],
                 'lot_id': lote2_id.id
                 })
@@ -230,3 +233,4 @@ class StockPickingType(models.Model):
     _inherit = "stock.picking.type"
 
     devolucion_productos_vencidos = fields.Boolean('¿Desea utilizar este tipo de albaran para devolucion productos vencidos automatico?')
+    porciones = fields.Boolean('Porciones?')
