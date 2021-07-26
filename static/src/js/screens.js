@@ -17,6 +17,7 @@ var _t = core._t;
 // var _t = core._t;
 
 models.load_fields('pos.config', 'efectivo_maximo');
+models.load_fields('product.product', 'type');
 screens.ActionpadWidget.include({
   renderElement: function(){
       console.log('Am here');
@@ -56,7 +57,6 @@ screens.ActionpadWidget.include({
                                         },
                                     });
                                   }else{
-
                                       rpc.query({
                                               model: 'pos.order',
                                               method: 'obtener_inventario_producto',
@@ -87,31 +87,38 @@ screens.ActionpadWidget.include({
                           });
 
               }else{
-                  rpc.query({
-                          model: 'pos.order',
-                          method: 'obtener_inventario_producto',
-                          args: [[],l.product.id,l.pos.config.picking_type_id[0],false],
-                      })
-                      .then(function (existencia){
-                          console.log(l.product.display_name)
-                          console.log(existencia)
-                          console.log(l.quantity)
-                          if (l.quantity > existencia){
-                              self.gui.show_screen('products');
 
-                              self.gui.show_popup('confirm',{
-                                  'title': _t('No hay existencia producto'),
-                                  'body':  l.product.display_name,
-                                  confirm: function(){
-                                      self.gui.show_screen('products');
-                                  },
-                              });
-                              // self.gui.show_popup("error",{
-                              //     "title": "No hay existencia producto",
-                              //     "body":  l.product.display_name,
-                              // });
-                          }
-                      });
+
+                  console.log("Las lineas");
+                  console.log(l.product.type);
+                  if (l.product.type == 'product') {
+                    rpc.query({
+                            model: 'pos.order',
+                            method: 'obtener_inventario_producto',
+                            args: [[],l.product.id,l.pos.config.picking_type_id[0],false],
+                        })
+                        .then(function (existencia){
+                            console.log(l.product.display_name)
+                            console.log(existencia)
+                            console.log(l.quantity)
+                            if (l.quantity > existencia){
+                                self.gui.show_screen('products');
+
+                                self.gui.show_popup('confirm',{
+                                    'title': _t('No hay existencia producto'),
+                                    'body':  l.product.display_name,
+                                    confirm: function(){
+                                        self.gui.show_screen('products');
+                                    },
+                                });
+                                // self.gui.show_popup("error",{
+                                //     "title": "No hay existencia producto",
+                                //     "body":  l.product.display_name,
+                                // });
+                            }
+                        });
+                  }
+
               }
           });
 
