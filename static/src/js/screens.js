@@ -48,8 +48,39 @@ screens.ActionpadWidget.include({
           var has_valid_product_lot = _.every(order.orderlines.models, function(line){
               return line.has_valid_product_lot();
           });
+          // Crear mi for each
+          //Llave id producto-lote
+          //No
+          var dicc_prod_lotes = {}
+          order.get_orderlines().forEach(function(prod){
+            console.log("prod");
+            console.log(prod);
+            if (prod.has_product_lot == true && prod.pack_lot_lines.length > 0 ) {
+              var id_lote = prod.product.id +"-"+ prod.pack_lot_lines.models[0]['changed']['lot_name'];
+              console.log("prod.pack_lot_lines.models[0]['changed']['lot_name']");
+              console.log(prod.pack_lot_lines.models[0]['changed']['lot_name']);
+              if (!(id_lote in dicc_prod_lotes)) {
+                dicc_prod_lotes[id_lote]=0
+              }
+
+              if ( id_lote in dicc_prod_lotes) {
+                dicc_prod_lotes[id_lote]+=prod.get_quantity();
+              }
+
+
+            }
+
+          });
+          console.log("Diccionario lote_id");
+          console.log(dicc_prod_lotes);
+
           order.get_orderlines().forEach(function(l) {
-              if (l.has_product_lot && l.pack_lot_lines.length > 0) {
+            //Tiene chequesito y no tiene fecha
+            //o no tiene chequesito
+
+            if ( (l.product.to_make_mrp == true && order.get_fecha() == undefined) || l.product.to_make_mrp == false ) {
+
+              if (l.has_product_lot && l.pack_lot_lines.length > 0 ) {
                   // var lote = l.pack_lot_lines.models[0].get_lot_name();
                   // console.log(lote)
                   // var product = l.product;
@@ -81,24 +112,28 @@ screens.ActionpadWidget.include({
                                               args: [[],l.product.id,l.pos.config.picking_type_id[0],l.pack_lot_lines.models[0].get_lot_name()],
                                           })
                                           .then(function (existencia){
-                                              console.log(l.product.display_name)
-                                              console.log(existencia)
-                                              console.log(l.quantity)
-                                              if (l.quantity > existencia){
-                                                  self.gui.show_screen('products');
-                                                  self.gui.show_popup('confirm',{
-                                                      'title': _t('No hay existencia producto'),
-                                                      'body':  l.product.display_name,
-                                                      confirm: function(){
-                                                          self.gui.show_screen('products');
-                                                      },
-                                                  });
-                                                  // self.gui.show_popup("error",{
-                                                  //     "title": "No hay existencia producto",
-                                                  //     "body":  l.product.display_name,
-                                                  // });
 
+                                              var lot_prod_id = l.product.id+"-"+l.pack_lot_lines.models[0]['changed']['lot_name'];
+                                              if (lot_prod_id in dicc_prod_lotes) { //Verificación si el producto-lote esta en el diccionario_productos_lotes (dicc_prod_lotes)
+                                                console.log("Existencia de lotes :");
+                                                console.log(dicc_prod_lotes);
+                                                if (dicc_prod_lotes[lot_prod_id] > existencia){ //La cantidad del producto-lote es mayor que la existencia
+                                                    self.gui.show_screen('products');
+                                                    self.gui.show_popup('confirm',{
+                                                        'title': _t('No hay existencia producto'),
+                                                        'body':  l.product.display_name,
+                                                        confirm: function(){
+                                                            self.gui.show_screen('products');
+                                                        },
+                                                    });
+                                                    // self.gui.show_popup("error",{
+                                                    //     "title": "No hay existencia producto",
+                                                    //     "body":  l.product.display_name,
+                                                    // });
+
+                                                }
                                               }
+
                                           });
 
                                   }
@@ -106,10 +141,9 @@ screens.ActionpadWidget.include({
 
               }else{
 
-
                   console.log("Las lineas");
                   console.log(l.product.type);
-                  if (l.product.type == 'product') {
+                  if (l.product.type == 'product' ) {
                     rpc.query({
                             model: 'pos.order',
                             method: 'obtener_inventario_producto',
@@ -138,6 +172,9 @@ screens.ActionpadWidget.include({
                   }
 
               }
+
+            }
+
           });
 
 
@@ -324,10 +361,34 @@ screens.PaymentScreenWidget.include({
 
                 });
         }else{
+
             this._super();
         }
 
+        // search rpc buscar el pedido
+        // verificar que me retorne el objeto del pedido
+        // rpc.query({
+        //   model: 'pos.order',
+        //   method: 'search_read',
+        //   args: [[['pos_reference', '=', order.name.toString()]], []],
+        //
 
+            rpc.query({
+              model: 'pos.order',
+              method: 'texto_total',
+              args: [[],order.get_total_with_tax()],
+            },{
+              timeout: 5000,
+            }).then(function(total){
+              order.set_totalString(total);
+              // console.log("order.get_totalString()");
+              // console.log(order.get_totalString());
+              // self.$('.pos-receipt-container').html(QWeb.render('OrderReceipt', receipt_env));
+              // console.log("El total en letras funcion correcta");
+              // console.log(total);
+              // console.log("que es receipt_env");
+              // console.log(receipt_env);
+            });
     },
 });
 

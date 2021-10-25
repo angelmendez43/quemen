@@ -56,6 +56,8 @@ models.Order = models.Order.extend({
     export_for_printing: function() {
         var json = _super_order.export_for_printing.apply(this,arguments);
         json.tipo_venta = this.pos.get_tipo_venta();
+        
+        //probar aquí el rpc
         return json;
     },
     agregar_lote: function(pack_lot_lines,options,orderline) {
