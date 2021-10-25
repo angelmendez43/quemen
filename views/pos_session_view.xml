@@ -5,6 +5,9 @@
         <field name="model">pos.session</field>
         <field name="inherit_id" ref="point_of_sale.view_pos_session_form"/>
         <field name="arch" type="xml">
+          <group>
+            <field name="factura_global_id"/>
+          </group>
             <xpath expr="//page[1]" position="after">
                 <page name="retiros" string="Retiros">
                     <group>
