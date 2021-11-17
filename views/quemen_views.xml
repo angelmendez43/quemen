@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+
+        <record id="view_quemen_reloj_checador_tree" model="ir.ui.view">
+            <field name="name">quemen.reloj_checador.tree</field>
+            <field name="model">quemen.reloj_checador</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Reloj checador">
+                    <field name="ac"/>
+                    <field name="empleado_id"/>
+                    <field name="departamento_id"/>
+                    <field name="area_id"/>
+                    <field name="puesto_id"/>
+                    <field name="dia"/>
+                    <field name="fecha"/>
+                    <field name="hora_entrada" widget="float_time"/>
+                    <field name="hora_salida" widget="float_time"/>
+                    <field name="horas_laboradas" widget="float_time"/>
+                    <field name="jornada_laborada" widget="float_time"/>
+                    <field name="horas_extras_laboradas" widget="float_time"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_quemen_reloj_checador_form" model="ir.ui.view">
+            <field name="name">quemen.reloj_checador.form</field>
+            <field name="model">quemen.reloj_checador</field>
+            <field name="arch" type="xml">
+                <form string="Reloj checador">
+
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="empleado_id"/>
+                                <field name="fecha"/>
+                            </group>
+                            <group>
+                                <field name="hora_entrada" widget="float_time"/>
+                                <field name="hora_salida" widget="float_time"/>
+                            </group>
+                        </group>
+
+                    </sheet>
+                    <div class="o_attachment_preview"/>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="quemen_reloj_checador_view_search" model="ir.ui.view">
+            <field name="name">quemen.reloj_checador.search</field>
+            <field name="model">quemen.reloj_checador</field>
+            <field name="arch" type="xml">
+                <search string="Buscar empleado">
+                    <field name="empleado_id"/>
+                    <field name="fecha"/>
+                    <field name="hora_entrada"/>
+                    <field name="hora_salida"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_quemen_reloj_checador_administrativa" model="ir.actions.act_window">
+            <field name="name">Reloj checador</field>
+            <field name="res_model">quemen.reloj_checador</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain"></field>
+            <field name="context"></field>
+            <field name="search_view_id" ref="quemen_reloj_checador_view_search"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+               Click para crear una nuea entrada
+              </p>
+            </field>
+        </record>
+
+        <menuitem
+            id="menu_quemen_reloj_checador"
+            name="Reloj checador"
+            action="action_quemen_reloj_checador_administrativa"
+            parent="hr.menu_hr_employee_payroll"
+            sequence="75"/>
+
+            <record id="view_quemen_retiros_tree" model="ir.ui.view">
+                <field name="name">quemen.retiros.tree</field>
+                <field name="model">quemen.retiros</field>
+                <field name="type">tree</field>
+                <field name="arch" type="xml">
+                    <tree string="Retiros POS">
+                        <field name="name"/>
+                        <field name="session_id"/>
+                        <field name="fecha_hora"/>
+                        <field name="usuario_id"/>
+                        <field name="motivo"/>
+                        <field name="total"/>
+                    </tree>
+                </field>
+            </record>
+
+            <record id="view_quemen_retiros_form" model="ir.ui.view">
+                <field name="name">quemen.retiros.form</field>
+                <field name="model">quemen.retiros</field>
+                <field name="arch" type="xml">
+                    <form string="Retiros">
+
+                        <sheet>
+                            <div class="oe_title">
+                                <h1>
+                                    <field name="name" readonly="1"/>
+                                </h1>
+                            </div>
+                            <group>
+                                <group>
+                                    <field name="session_id"/>
+                                    <field name="motivo"/>
+                                    <field name="usuario_id"/>
+                                </group>
+                                <group>
+                                    <field name="cash_box_id"/>
+                                    <field name="fecha_hora"/>
+                                    <field name="total"/>
+                                </group>
+                            </group>
+
+                        </sheet>
+                    </form>
+                </field>
+            </record>
+
+            <record id="view_quemen_promociones_form" model="ir.ui.view">
+                <field name="name">quemen.promociones.form</field>
+                <field name="model">quemen.promociones</field>
+                <field name="arch" type="xml">
+                    <form string="Promociones">
+
+                        <sheet>
+                            <div class="oe_title">
+                                <h1>
+                                    <field name="name"/>
+                                </h1>
+                            </div>
+                            <group>
+                                <group>
+                                    <field name="fecha_inicio"/>
+                                    <field name="fecha_fin"/>
+                                </group>
+                                <group>
+                                  <field name="combos_ids">
+                                      <tree string="Combos" editable="bottom">
+                                          <field name="producto_id"/>
+                                          <field name="cantidad"/>
+                                          <field name="porcentaje_descuento"/>
+                                          <field name="productos_promocion_ids" widget="many2many_tags"/>
+                                      </tree>
+                                  </field>
+                                  <field name="dosporuno_ids">
+                                      <tree string="2x1" editable="bottom">
+                                          <field name="producto_id"/>
+                                          <field name="productos_promocion_ids" widget="many2many_tags"/>
+                                      </tree>
+                                  </field>
+                                </group>
+                            </group>
+
+                        </sheet>
+                    </form>
+                </field>
+            </record>
+
+            <record id="quemen_retiros_view_search" model="ir.ui.view">
+                <field name="name">quemen.retiros.search</field>
+                <field name="model">quemen.retiros</field>
+                <field name="arch" type="xml">
+                    <search string="Retiros">
+                        <field name="name"/>
+                        <field name="fecha_hora"/>
+                        <field name="session_id"/>
+                        <field name="motivo"/>
+                        <field name="total"/>
+                    </search>
+                </field>
+            </record>
+
+            <record id="quemen_promociones_view_search" model="ir.ui.view">
+                <field name="name">quemen.promociones.search</field>
+                <field name="model">quemen.promociones</field>
+                <field name="arch" type="xml">
+                    <search string="Promociones">
+                        <field name="name"/>
+                        <field name="fecha_inicio"/>
+                        <field name="fecha_fin"/>
+                    </search>
+                </field>
+            </record>
+
+            <record id="action_quemen_retiros" model="ir.actions.act_window">
+                <field name="name">Retiros POS</field>
+                <field name="res_model">quemen.retiros</field>
+                <field name="view_mode">tree,form</field>
+                <field name="domain"></field>
+                <field name="context"></field>
+                <field name="search_view_id" ref="quemen_retiros_view_search"/>
+                <field name="help" type="html">
+                  <p class="oe_view_nocontent_create">
+                   Click para crear un retiro
+                  </p>
+                </field>
+            </record>
+
+            <record id="action_quemen_promociones" model="ir.actions.act_window">
+                <field name="name">Promociones</field>
+                <field name="res_model">quemen.promociones</field>
+                <field name="view_mode">tree,form</field>
+                <field name="domain"></field>
+                <field name="context"></field>
+                <field name="search_view_id" ref="quemen_promociones_view_search"/>
+                <field name="help" type="html">
+                  <p class="oe_view_nocontent_create">
+                   Click para crear una promo
+                  </p>
+                </field>
+            </record>
+
+            <menuitem
+                id="menu_quemen_retiros"
+                name="Retiros POS"
+                action="action_quemen_retiros"
+                parent="point_of_sale.menu_point_of_sale"
+                sequence="75"/>
+
+            <menuitem
+                id="menu_quemen_promociones"
+                name="Promociones"
+                action="action_quemen_promociones"
+                parent="point_of_sale.menu_point_of_sale"
+                sequence="100"/>
+
+    </data>
+</odoo>

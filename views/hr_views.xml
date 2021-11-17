@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="quemen_view_employee_form" model="ir.ui.view">
+            <field name="name">quemen.hr.employee.form</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+                <field name="parent_id" position="after">
+                    <field name="id_reloj"/>
+                    <field name="hora_entrada" widget="float_time"/>
+                    <field name="hora_salida" widget="float_time"/>
+                </field>
+            </field>
+        </record>
+
+
+    </data>
+</odoo>
