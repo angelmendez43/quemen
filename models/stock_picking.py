@@ -144,11 +144,18 @@ class Picking(models.Model):
 
     def verificar_productos_vencidos(self):
         logging.warn('verificar para albaran')
-        stock_quant = self.env['stock.quant'].search([('quantity','>',0)])
+        stock_quant = self.env['stock.quant'].sudo().search([('quantity','>',0)])
         timezone = pytz.timezone(self._context.get('tz') or self.env.user.tz or 'UTC')
         fecha_hoy = datetime.now().astimezone(timezone).strftime('%Y-%m-%d')
+        # Sumarle un dia a la fecha de HOY
         logging.warn(fecha_hoy)
         logging.warn('entra')
+        dia_actual = datetime.now().astimezone(timezone).strftime('%d')
+        mes_ao_actual = datetime.now().astimezone(timezone).strftime('%Y-%m')
+        dia_mañana = int(dia_actual) + 1
+        if dia_mañana<10:
+            dia_mañana = '0'+str(dia_mañana)
+        fecha_mañana = str(mes_ao_actual)+'-'+str(dia_mañana)
         inventario = {}
         salida = self.env.user.pos_id.envio_salida_vencimiento_id
         ubicacion_actual = False
@@ -157,7 +164,7 @@ class Picking(models.Model):
                 if linea.location_id.id not in inventario:
                     inventario[linea.location_id.id] = {'productos':[],'bodega':linea.location_id}
 
-                if linea.lot_id and linea.lot_id.life_date and linea.lot_id.life_date.strftime('%Y-%m-%d') == fecha_hoy:
+                if linea.lot_id and linea.lot_id.life_date and linea.lot_id.life_date.strftime('%Y-%m-%d') == fecha_mañana:
                     logging.warn(linea.lot_id.life_date)
                     inventario[linea.location_id.id]['productos'].append(linea)
 
