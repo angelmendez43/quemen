@@ -55,27 +55,27 @@ class QuemenRelojChecador(models.Model):
     jornada_laborada = fields.Float('Jornada laborada')
     horas_extras_laboradas = fields.Float('Horas extras laboradas')
 
-class QuemenRetiros(models.Model):
-    _name = "quemen.retiros"
-    _description = "Retiros de POS"
-
-    name = fields.Char('Nombre', required=True, copy=False, readonly=True, index=True, default=lambda self: _('New'))
-    session_id = fields.Many2one('pos.session','Sesión')
-    cash_box_id = fields.Many2one('account.bank.statement.cashbox','Caja de efectivo')
-    usuario_id = fields.Many2one('res.users','usuario',default=lambda self: self.env.user)
-    fecha_hora = fields.Datetime('Hora',default=fields.Datetime.now)
-    motivo = fields.Char('Motivo')
-    total = fields.Float('Total')
-
-    @api.model
-    def create(self, vals):
-        if vals.get('name', _('New')) == _('New'):
-            seq_date = None
-            if 'company_id' in vals:
-                vals['name'] = self.env['ir.sequence'].with_context(force_company=vals['company_id']).next_by_code(
-                    'quemen.retiros', sequence_date=seq_date) or _('New')
-            else:
-                vals['name'] = self.env['ir.sequence'].next_by_code('quemen.retiros', sequence_date=seq_date) or _('New')
-
-        result = super(QuemenRetiros, self).create(vals)
-        return result
+# class QuemenRetiros(models.Model):
+#     _name = "quemen.retiros"
+#     _description = "Retiros de POS"
+#
+#     name = fields.Char('Nombre', required=True, copy=False, readonly=True, index=True, default=lambda self: _('New'))
+#     session_id = fields.Many2one('pos.session','Sesión')
+#     cash_box_id = fields.Many2one('account.bank.statement.cashbox','Caja de efectivo')
+#     usuario_id = fields.Many2one('res.users','usuario',default=lambda self: self.env.user)
+#     fecha_hora = fields.Datetime('Hora',default=fields.Datetime.now)
+#     motivo = fields.Char('Motivo')
+#     total = fields.Float('Total')
+#
+#     @api.model
+#     def create(self, vals):
+#         if vals.get('name', _('New')) == _('New'):
+#             seq_date = None
+#             if 'company_id' in vals:
+#                 vals['name'] = self.env['ir.sequence'].with_context(force_company=vals['company_id']).next_by_code(
+#                     'quemen.retiros', sequence_date=seq_date) or _('New')
+#             else:
+#                 vals['name'] = self.env['ir.sequence'].next_by_code('quemen.retiros', sequence_date=seq_date) or _('New')
+#
+#         result = super(QuemenRetiros, self).create(vals)
+#         return result
