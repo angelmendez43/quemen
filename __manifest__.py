@@ -32,7 +32,7 @@
         'data/quemen_data.xml',
         'views/quemen_views.xml',
         # 'views/stock_quant_views.xml',
-        'views/pos_session_view.xml',
+        # 'views/pos_session_view.xml',
         'views/pos_config_view.xml',
         'wizard/reporte_entrega_valores_wizard.xml',
         'views/reloj_checador_wizard.xml',
