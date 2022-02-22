@@ -24,7 +24,7 @@
         'data/ir_sequence_data.xml',
         'views/report.xml',
         'views/vale_retiro.xml',
-        'views/templates.xml',
+        # 'views/templates.xml',
         'views/reporte_codigo_barras.xml',
         'views/reporte_salidas.xml',
         'views/pos_box.xml',
