@@ -8,13 +8,17 @@
           <group>
             <field name="factura_global_id"/>
           </group>
-            <xpath expr="//page[1]" position="after">
+            <!-- <xpath expr="//page[1]" position="after">
                 <page name="retiros" string="Retiros">
                     <group>
                         <field name="retiros_ids"/>
                     </group>
                 </page>
-            </xpath>
+            </xpath> -->
+
+            <!-- <group>
+                <field name="retiros_ids"/>
+            </group> -->
         </field>
     </record>
 

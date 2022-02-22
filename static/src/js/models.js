@@ -1,8 +1,12 @@
 odoo.define('quemen.models', function (require) {
 "use strict";
-
+const { Context } = owl;
 var models = require('point_of_sale.models');
-var gui = require('point_of_sale.gui');
+
+// var gui = require('point_of_sale.gui');
+
+var { Gui } = require('point_of_sale.Gui');
+
 var core = require('web.core');
 var rpc = require('web.rpc');
 var _t = core._t;
@@ -39,6 +43,7 @@ var _super_posmodel = models.PosModel.prototype;
 models.PosModel = models.PosModel.extend({
     add_new_order: function(){
         var new_order = _super_posmodel.add_new_order.apply(this);
+        console.log("Que es esto?")
         if (this.config.cliente_id) {
             new_order.set_client(this.db.get_partner_by_id(this.config.cliente_id[0]))
         }
@@ -56,12 +61,13 @@ models.Order = models.Order.extend({
     export_for_printing: function() {
         var json = _super_order.export_for_printing.apply(this,arguments);
         json.tipo_venta = this.pos.get_tipo_venta();
-        
+
         //probar aquí el rpc
         return json;
     },
     agregar_lote: function(pack_lot_lines,options,orderline) {
         var self = this;
+
         pack_lot_lines.models[0]["attributes"]["lot_name"] = options.lote
         this.pos.gui.show_popup('packlotline', {
             'title': _t('Lot/Serial Number(s) Requred'),
@@ -78,6 +84,7 @@ models.Order = models.Order.extend({
         var orden = self.pos.get_order();
         _super_order.add_product.apply(this,arguments)
         var orderline = orden.get_selected_orderline();
+        console.log("Estamos agregando un producto")
         var tipo_ubicacion = this.pos.config.picking_type_id[0];
         if (orderline.has_product_lot && (typeof options !== 'undefined')){
             var pack_lot_lines =  orderline.compute_lot_lines();
@@ -133,26 +140,30 @@ models.Order = models.Order.extend({
     //     }
     //
     // },
-    remove_orderline: function( line ){
-        this.assert_editable();
-        this.orderlines.remove(line);
-        this.select_orderline(this.get_last_orderline());
-        if (this.pos.config.cupones){
-            if (line.get_cupon()){
-                rpc.query({
-                        model: 'pos.order',
-                        method: 'habilitar_cupon',
-                        args: [[],line.get_cupon()],
-                    })
-                    .then(function (estado){
-                    });
-            }
-        }
-    },
+
+
+    // remove_orderline: function( line ){
+    //     this.assert_editable();
+    //     this.orderlines.remove(line);
+    //     this.select_orderline(this.get_last_orderline());
+    //     if (this.pos.config.cupones){
+    //         if (line.get_cupon()){
+    //             rpc.query({
+    //                     model: 'pos.order',
+    //                     method: 'habilitar_cupon',
+    //                     args: [[],line.get_cupon()],
+    //                 })
+    //                 .then(function (estado){
+    //                 });
+    //         }
+    //     }
+    // },
+
 });
 
 models.PosModel = models.PosModel.extend({
     get_tipo_venta: function(){
+      console.log("Hey funcion de get_tipo_venta")
         var tipo_venta = "mostrador";
         if (this.get('tipo_venta')){
           tipo_venta = this.get('tipo_venta')
@@ -160,34 +171,35 @@ models.PosModel = models.PosModel.extend({
         return tipo_venta|| this.tipo_venta;
     },
     set_tipo_venta: function(tipo_venta){
+      console.log("Hey en la funcion de set_tipo_venta")
         this.set('tipo_venta', tipo_venta);
         // this.db.set_empleado(this.empleado);
     }
 })
 
-var _super_order_line = models.Orderline.prototype;
-models.Orderline = models.Orderline.extend({
-    initialize: function() {
-        _super_order_line.initialize.apply(this,arguments);
-        this.cupon = this.cupon || false;
-    },
-    export_as_JSON: function() {
-        var json = _super_order_line.export_as_JSON.apply(this,arguments);
-
-        if (this.get_cupon().length > 0){
-            json.cupon = this.get_cupon()[0];
-        }else{
-            json.cupon = false;
-        }
-        return json;
-    },
-    set_cupon: function(cupon){
-        this.cupon = cupon;
-        this.trigger('change',this);
-    },
-
-    get_cupon: function(cupon){
-        return this.cupon;
-    },
-})
+// var _super_order_line = models.Orderline.prototype;
+// models.Orderline = models.Orderline.extend({
+//     initialize: function() {
+//         _super_order_line.initialize.apply(this,arguments);
+//         this.cupon = this.cupon || false;
+//     },
+//     export_as_JSON: function() {
+//         var json = _super_order_line.export_as_JSON.apply(this,arguments);
+//
+//         if (this.get_cupon().length > 0){
+//             json.cupon = this.get_cupon()[0];
+//         }else{
+//             json.cupon = false;
+//         }
+//         return json;
+//     },
+//     set_cupon: function(cupon){
+//         this.cupon = cupon;
+//         this.trigger('change',this);
+//     },
+//
+//     get_cupon: function(cupon){
+//         return this.cupon;
+//     },
+// })
 });
