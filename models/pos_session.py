@@ -11,6 +11,7 @@ class PosSession(models.Model):
     # retiros_ids = fields.One2many('quemen.retiros','session_id','Retiros')
 
 
+
     # def action_pos_session_validate(self, balancing_account=False, amount_to_balance=0, bank_payment_method_diffs=None):
     #     logging.warn('test')
     #     pedidos_facturar =[]
