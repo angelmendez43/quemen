@@ -54,12 +54,12 @@ class Picking(models.Model):
                 lista_almacenes.append(tienda_almacen.producto_porciones.warehouse_id.id)
 
 
-        logging.warn("lista_almacenes")
-        logging.warn(lista_almacenes)
+        # logging.warn("lista_almacenes")
+        # logging.warn(lista_almacenes)
 
 
         if (self.picking_type_id.code == 'internal') and (self.picking_type_id.porciones) and (int(self.picking_type_id.warehouse_id.id) in lista_almacenes):
-            logging.warn("Estamos entrando C=")
+            # logging.warn("Estamos entrando C=")
             for linea in lineas:
                 if (int(linea.product_id.producto_porciones.id) > 0):
 
@@ -74,8 +74,8 @@ class Picking(models.Model):
                     if linea.product_id.id not in lista_id:
                         producto_id = linea.product_id.producto_porciones.id
 
-                        logging.warn("linea.product_id.producto_porciones.name")
-                        logging.warn(linea.product_id.producto_porciones.name)
+                        # logging.warn("linea.product_id.producto_porciones.name")
+                        # logging.warn(linea.product_id.producto_porciones.name)
                         hecho = linea.qty_done
                         product_uom_qty = linea.product_uom_qty
                         product_uom_id = linea.product_uom_id.id
@@ -86,8 +86,8 @@ class Picking(models.Model):
                         cantidad_entera = linea.qty_done
                         cantidad_porcion = linea.product_id.porciones
                         qty_done = cantidad_entera * cantidad_porcion
-                        logging.warn("linea.qty_done * linea.product_id.producto_porciones.porciones")
-                        logging.warn(qty_done)
+                        # logging.warn("linea.qty_done * linea.product_id.producto_porciones.porciones")
+                        # logging.warn(qty_done)
                         lista_id[linea.product_id.id]={
                         'product_id': product_porciones_id.id,
                         'qty_done': hecho,
@@ -108,23 +108,23 @@ class Picking(models.Model):
             'location_dest_id': ubicacion_dest_id.id, })
 
             for lneas in lista_id:
-                logging.warn("lista_id[lneas]['product_id']")
-                logging.warn(lista_id[lneas]['product_id'])
+                # logging.warn("lista_id[lneas]['product_id']")
+                # logging.warn(lista_id[lneas]['product_id'])
 
                 lotes = self.env['stock.production.lot'].search([('name', '=', lista_id[lneas]['lot_id']), ('product_id', '=', lista_id[lneas]['product_id'])])
                 lote2_id = False
                 if len(lotes)>0:
-                    logging.warn(">0")
+                    # logging.warn(">0")
                     lote2_id = lotes
-                    logging.warn(lote2_id)
+                    # logging.warn(lote2_id)
                 else:
-                    logging.warn("else")
+                    # logging.warn("else")
                     lote2_id = self.env['stock.production.lot'].create({
                     'name': lista_id[lneas]['lot_id'],
                     'company_id': self.env.company.id,
                     'life_date': lista_id[lneas]['life_date'],
                     'product_id': lista_id[lneas]['product_id']})
-                    logging.warn(lote2_id)
+                    # logging.warn(lote2_id)
 
                 lineas_transferencia_id = self.env['stock.move.line'].create({
                 'picking_id': transferencia_id.id,
@@ -148,8 +148,8 @@ class Picking(models.Model):
         timezone = pytz.timezone(self._context.get('tz') or self.env.user.tz or 'UTC')
         fecha_hoy = datetime.now().astimezone(timezone).strftime('%Y-%m-%d')
         # Sumarle un dia a la fecha de HOY
-        logging.warn(fecha_hoy)
-        logging.warn('entra')
+        # logging.warn(fecha_hoy)
+        # logging.warn('entra')
 
         dia_actual = datetime.now().astimezone(timezone).strftime('%d')
         mes_ao_actual = datetime.now().astimezone(timezone).strftime('%Y-%m')
@@ -164,38 +164,38 @@ class Picking(models.Model):
             for linea in stock_quant:
                 if linea.location_id.id not in inventario:
                     inventario[linea.location_id.id] = {'productos':[],'bodega':linea.location_id}
-                logging.warn("Que paso?")
+                # logging.warn("Que paso?")
                 if linea.lot_id and linea.lot_id.life_date and (linea.lot_id.life_date.astimezone(timezone).strftime('%Y-%m-%d') == fecha_mañana or linea.lot_id.life_date.astimezone(timezone).strftime('%Y-%m-%d') <= fecha_mañana or linea.lot_id.life_date.astimezone(timezone).strftime('%Y-%m-%d') == fecha_hoy):
-                    logging.warn("Nombre del producto")
-                    logging.warn(linea.product_id.name)
-                    logging.warn(linea.lot_id.life_date)
+                    # logging.warn("Nombre del producto")
+                    # logging.warn(linea.product_id.name)
+                    # logging.warn(linea.lot_id.life_date)
                     inventario[linea.location_id.id]['productos'].append(linea)
 
             tiendas_ids = self.env['pos.config'].search([])
 
-            logging.warn('TIENDA E INVENTARIO')
-            logging.warn(tiendas_ids)
-            logging.warn(inventario)
+            # logging.warn('TIENDA E INVENTARIO')
+            # logging.warn(tiendas_ids)
+            # logging.warn(inventario)
             if tiendas_ids:
                 for tienda in tiendas_ids:
                     ubicacion_actual = tienda.picking_type_id.default_location_src_id
                     if tienda.envio_salida_vencimiento_id and tienda.picking_type_id.default_location_src_id.id in inventario:
                         destino_id = tienda.envio_salida_vencimiento_id.default_location_dest_id
                         tipo_envio_id = tienda.envio_salida_vencimiento_id
-                        logging.warn('1')
+                        # logging.warn('1')
                         # logging.warn(inventario[tienda.picking_type_id.default_location_src_id.id]['productos'])
                         if len(inventario[tienda.picking_type_id.default_location_src_id.id]['productos']) > 0:
-                            logging.warn('2')
+                            # logging.warn('2')
                             stock_quant_lista = []
                             envio = {
                                 'picking_type_id': tienda.envio_salida_vencimiento_id.id,
                                 'location_id': ubicacion_actual.id,
                                 'location_dest_id': destino_id.id,
                             }
-                            logging.warn(envio)
+                            # logging.warn(envio)
                             envio_id = self.env['stock.picking'].create(envio)
-                            logging.warn(envio_id)
-                            logging.warn('ENVIO')
+                            # logging.warn(envio_id)
+                            # logging.warn('ENVIO')
                             for quant in inventario[tienda.picking_type_id.default_location_src_id.id]['productos']:
                                 # linea_envio = {
                                 #     'product_id': quant.product_id.id,
@@ -217,16 +217,16 @@ class Picking(models.Model):
                                     'picking_id': envio_id.id
                                 }
                                 move_id = self.env['stock.move'].create(move)
-                                logging.warn("move_id")
-                                logging.warn(move_id)
+                                # logging.warn("move_id")
+                                # logging.warn(move_id)
                                 move['move_id'] = move_id.id
-                                logging.warn("move")
+                                # logging.warn("move")
                                 move['lot_id'] = quant.lot_id.id
-                                logging.warn("quant.quantity")
-                                logging.warn(quant.quantity)
+                                # logging.warn("quant.quantity")
+                                # logging.warn(quant.quantity)
                                 move['product_uom_qty'] = quant.quantity
-                                logging.warn("move['product_uom_qty']")
-                                logging.warn(move['product_uom_qty'])
+                                # logging.warn("move['product_uom_qty']")
+                                # logging.warn(move['product_uom_qty'])
                                 stock_quant_lista.append(move)
 
                             envio_id.action_confirm()
@@ -251,8 +251,8 @@ class Picking(models.Model):
 
 #                             envio_id.button_validate()
 #                             logging.warn(envio_id)
-        logging.warn(inventario)
-        logging.warn('termina')
+        # logging.warn(inventario)
+        # logging.warn('termina')
         return inventario
 
 class StockPickingType(models.Model):
