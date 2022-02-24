@@ -56,4 +56,5 @@
     'qweb': [
         # 'static/src/xml/pos.xml',
     ],
+    'license': 'LGPL-3',
 }
