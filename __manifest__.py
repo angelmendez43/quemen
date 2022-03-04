@@ -18,7 +18,7 @@
 
     'data': [
         'data/paperformat_ticket.xml',
-
+        'data/planificacion_productos_vencidos.xml',
         # 'security/ir.model.access.csv',
 
         'data/ir_sequence_data.xml',
