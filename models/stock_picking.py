@@ -148,9 +148,6 @@ class Picking(models.Model):
         timezone = pytz.timezone(self._context.get('tz') or self.env.user.tz or 'UTC')
         fecha_hoy = datetime.now().astimezone(timezone).strftime('%Y-%m-%d')
         # Sumarle un dia a la fecha de HOY
-        logging.warning('Fecha hoy')
-        logging.warning(fecha_hoy)
-        logging.warning('entra')
 
         dia_actual = datetime.now().astimezone(timezone).strftime('%d')
         mes_ao_actual = datetime.now().astimezone(timezone).strftime('%Y-%m')
@@ -165,39 +162,26 @@ class Picking(models.Model):
             for linea in stock_quant:
                 if linea.location_id.id not in inventario:
                     inventario[linea.location_id.id] = {'productos':[],'bodega':linea.location_id}
-                logging.warn("Que paso?")
                 if linea.lot_id and linea.lot_id.expiration_date and (linea.lot_id.expiration_date.astimezone(timezone).strftime('%Y-%m-%d') == fecha_mañana or linea.lot_id.expiration_date.astimezone(timezone).strftime('%Y-%m-%d') <= fecha_mañana or linea.lot_id.life_date.astimezone(timezone).strftime('%Y-%m-%d') == fecha_hoy):
-                    logging.warning("Nombre del producto")
-                    logging.warning(linea.product_id.name)
-                    logging.warning('Fecha de expiración')
-                    logging.warning(linea.lot_id.expiration_date)
                     inventario[linea.location_id.id]['productos'].append(linea)
 
             tiendas_ids = self.env['pos.config'].search([])
 
-            logging.warning('TIENDA E INVENTARIO')
-            logging.warning(tiendas_ids)
-            logging.warning(inventario)
             if tiendas_ids:
                 for tienda in tiendas_ids:
                     ubicacion_actual = tienda.picking_type_id.default_location_src_id
                     if tienda.envio_salida_vencimiento_id and tienda.picking_type_id.default_location_src_id.id in inventario:
                         destino_id = tienda.envio_salida_vencimiento_id.default_location_dest_id
                         tipo_envio_id = tienda.envio_salida_vencimiento_id
-                        logging.warning('1')
                         # logging.warn(inventario[tienda.picking_type_id.default_location_src_id.id]['productos'])
                         if len(inventario[tienda.picking_type_id.default_location_src_id.id]['productos']) > 0:
-                            logging.warning('2')
                             stock_quant_lista = []
                             envio = {
                                 'picking_type_id': tienda.envio_salida_vencimiento_id.id,
                                 'location_id': ubicacion_actual.id,
                                 'location_dest_id': destino_id.id,
                             }
-                            logging.warning(envio)
                             envio_id = self.env['stock.picking'].create(envio)
-                            logging.warning(envio_id)
-                            logging.warning('ENVIO')
                             for quant in inventario[tienda.picking_type_id.default_location_src_id.id]['productos']:
                                 # linea_envio = {
                                 #     'product_id': quant.product_id.id,
