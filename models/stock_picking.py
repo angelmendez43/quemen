@@ -34,7 +34,6 @@ class Picking(models.Model):
 
         if  transferencia_id:
             transferencia_id.button_validate()
-            logging.warn(transferencia_id)
         return res
 
     def enviando_producto(self):
@@ -143,7 +142,6 @@ class Picking(models.Model):
 
 
     def verificar_productos_vencidos(self):
-        logging.warning('verificar para albaran')
         stock_quant = self.env['stock.quant'].sudo().search([('quantity','>',0)])
         timezone = pytz.timezone(self._context.get('tz') or self.env.user.tz or 'UTC')
         fecha_hoy = datetime.now().astimezone(timezone).strftime('%Y-%m-%d')
@@ -203,16 +201,9 @@ class Picking(models.Model):
                                     'picking_id': envio_id.id
                                 }
                                 move_id = self.env['stock.move'].create(move)
-                                logging.warning("move_id")
-                                logging.warning(move_id)
                                 move['move_id'] = move_id.id
-                                logging.warning("move")
                                 move['lot_id'] = quant.lot_id.id
-                                logging.warning("quant.quantity")
-                                logging.warning(quant.quantity)
                                 move['product_uom_qty'] = quant.quantity
-                                logging.warning("move['product_uom_qty']")
-                                logging.warning(move['product_uom_qty'])
                                 stock_quant_lista.append(move)
 
                             envio_id.action_confirm()
@@ -228,17 +219,10 @@ class Picking(models.Model):
 #                                     'qty_done': quant['product_uom_qty'],
 #                                     'picking_id':envio_id.id,
 #                                 }
-#                                 logging.warn("Que es ml")
-#                                 logging.warn(ml)
-#                                 logging.warn("Antes")
 #                                 move_line_id = self.env['stock.move.line'].create(ml)
-#                                 logging.warn("despues dentro del for")
-#                                 logging.warn(move_line_id)
 
 #                             envio_id.button_validate()
-#                             logging.warn(envio_id)
-        logging.warning(inventario)
-        logging.warning('termina')
+
         return inventario
 
 class StockPickingType(models.Model):
