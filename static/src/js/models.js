@@ -79,25 +79,30 @@ models.Order = models.Order.extend({
 
         return true;
     },
-    add_product: function(product, options) {
-        var self = this;
-        var orden = self.pos.get_order();
-        _super_order.add_product.apply(this,arguments)
-        var orderline = orden.get_selected_orderline();
-        console.log("Estamos agregando un producto")
-        var tipo_ubicacion = this.pos.config.picking_type_id[0];
-        if (orderline.has_product_lot && (typeof options !== 'undefined')){
-            var pack_lot_lines =  orderline.compute_lot_lines();
-            self.agregar_lote(pack_lot_lines,options,orderline)
-            self.pos.gui.close_popup();
-        }else if(orderline.has_product_lot && (typeof options == 'undefined')){
-            return;
+    // add_product: function(product, options) {
+    //     var self = this;
+    //     var orden = self.pos.get_order();
+    //     _super_order.add_product.apply(this,arguments)
+    //     var orderline = orden.get_selected_orderline();
+    //     console.log("Estamos agregando un producto")
+    //     var tipo_ubicacion = this.pos.config.picking_type_id[0];
+    //     if (orderline.has_product_lot && (typeof options !== 'undefined')){
+    //         console.log("Esta parte es de models")
+    //         console.log(orderline)
+    //         var pack_lot_lines =  orderline.compute_lot_lines();
+    //         self.agregar_lote(pack_lot_lines,options,orderline)
+    //         self.pos.gui.close_popup();
+    //     }else if(orderline.has_product_lot && (typeof options == 'undefined')){
+    //         return;
+    //
+    //     }else{
+    //         return;
+    //     }
+    //
+    // },
 
-        }else{
-            return;
-        }
 
-    },
+    
     // add_product: function(product, options) {
     //     var self = this;
     //     var orden = self.pos.get_order();
@@ -163,7 +168,7 @@ models.Order = models.Order.extend({
 
 models.PosModel = models.PosModel.extend({
     get_tipo_venta: function(){
-      console.log("Hey funcion de get_tipo_venta")
+
         var tipo_venta = "mostrador";
         if (this.get('tipo_venta')){
           tipo_venta = this.get('tipo_venta')
@@ -171,7 +176,7 @@ models.PosModel = models.PosModel.extend({
         return tipo_venta|| this.tipo_venta;
     },
     set_tipo_venta: function(tipo_venta){
-      console.log("Hey en la funcion de set_tipo_venta")
+
         this.set('tipo_venta', tipo_venta);
         // this.db.set_empleado(this.empleado);
     }

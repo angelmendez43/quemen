@@ -17,10 +17,9 @@
     'depends': ['stock','base','point_of_sale','hr_payroll'],
 
     'data': [
-        # 'data/paperformat_ticket.xml',
-
+        'data/paperformat_ticket.xml',
+        'data/planificacion_productos_vencidos.xml',
         # 'security/ir.model.access.csv',
-
         # 'data/ir_sequence_data.xml',
         # 'views/report.xml',
         # 'views/vale_retiro.xml',
