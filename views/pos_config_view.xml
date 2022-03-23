@@ -31,16 +31,7 @@
                             <label for="cliente_id" string="Cliente por defecto"/>
                         </div>
                     </div>
-                    <!-- <div class="row mt16 o_settings_container">
-                        <div class="col-xs-12 col-md-6 o_setting_box">
-                            <div class="o_setting_left_pane">
-                                <field name="cupones"/>
-                            </div>
-                            <div class="o_setting_right_pane">
-                                <label for="cupones" string="Cupones"/>
-                            </div>
-                        </div>
-                    </div> -->
+                    
                     <div class="row mt16 o_settings_container">
                         <div class="col-xs-12 col-md-6 o_setting_box">
                             <div class="o_setting_left_pane">
@@ -51,20 +42,6 @@
                             </div>
                         </div>
                     </div>
-                    <!-- <div class="col-xs-12 col-md-6 o_setting_box">
-                        <div class="o_setting_left_pane">
-                            <field name="promociones_ids"/>
-                        </div>
-                        <div class="o_setting_right_pane">
-                            <label for="promociones_ids" string="Promociones"/>
-                        </div>
-                    </div> -->
-
-                    <!-- <div class="col-xs-12 col-md-6 o_setting_box">
-                        <div class="o_setting_right_pane">
-                            <field name="producto_porciones" string="Tipo de operacion entrada porciones"/>
-                        </div>
-                    </div> -->
 
                     <div class="col-xs-12 col-md-6 o_setting_box">
                         <div class="o_setting_left_pane">
@@ -78,27 +55,7 @@
         </field>
     </record>
 
-    <record id="quemen_view_account_bnk_stmt_cashbox" model="ir.ui.view">
-        <field name="name">quemen.account.bnk_stmt_cashbox.form</field>
-        <field name="model">account.bank.statement.cashbox</field>
-        <field name="inherit_id" ref="account.view_account_bnk_stmt_cashbox"/>
-        <field name="arch" type="xml">
-            <field name="coin_value" position="after">
-                <field name="denominacion"/>
-            </field>
-        </field>
-    </record>
 
-    <record id="quemen_account_cashbox_line_view_tree" model="ir.ui.view">
-        <field name="name">quemen.account.cashbox.line.tree</field>
-        <field name="model">account.cashbox.line</field>
-        <field name="inherit_id" ref="point_of_sale.account_cashbox_line_view_tree"/>
-        <field name="arch" type="xml">
-            <field name="coin_value" position="before">
-                <field name="denominacion"/>
-            </field>
-        </field>
-    </record>
 
 
 </odoo>

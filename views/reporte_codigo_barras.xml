@@ -9,12 +9,8 @@
                         <div class="row">
                             <div class="col-12">
                                 <t t-set="fecha" t-value="fecha_barras(o)"/>
-                                <table class="table table-condensed" style="border-bottom: 0px solid white !important;width: 3in;">                                    <!-- <tr>
-                                      <th style="text-align: center;">
-                                        <span t-field="o.product_id.display_name"/>
-                                      </th>
-                                    </tr> -->
-
+                                <table class="table table-condensed" style="border-bottom: 0px solid white !important;width: 3in;">
+                                    <!-- Cambio -->
                                     <td style="text-align: center; vertical-align: middle;border: 0px solid white !important;" class="col-12">
                                       <!-- % ('Code128', o.product_id.barcode+o.name, 600, 150) -->
                                         <img t-if="o.product_id.name" t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', o.product_id.barcode+o.name, 600, 150)" style="width:100%;height:20%;"/>
@@ -30,26 +26,6 @@
                                         </div>
                                     </td>
 
-                                    <!-- <tr>
-                                        <td colspan="2" style="text-align: center;height:1cm">
-                                            <span t-field="o.product_id.barcode"/><span t-field="o.name"/>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="2" style="text-align: center;">
-                                            <span t-field="o.product_id.display_name"/>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align: center;">
-                                            ELAB.<br/>
-                                            <span t-esc="fecha['elab']"/>
-                                        </td>
-                                        <td style="text-align: center;">
-                                            CAD.<br/>
-                                            <span t-esc="fecha['cad']"/>
-                                        </td>
-                                    </tr> -->
                                 </table>
                             </div>
                         </div>
