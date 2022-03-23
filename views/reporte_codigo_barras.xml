@@ -16,6 +16,7 @@
                                     </tr> -->
 
                                     <td style="text-align: center; vertical-align: middle;border: 0px solid white !important;" class="col-12">
+                                      <!-- % ('Code128', o.product_id.barcode+o.name, 600, 150) -->
                                         <img t-if="o.product_id.name" t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', o.product_id.barcode+o.name, 600, 150)" style="width:100%;height:20%;"/>
                                         <span t-field="o.product_id.barcode"/><span t-field="o.name"/><br/>
                                         <span t-field="o.product_id.display_name"/><br/>

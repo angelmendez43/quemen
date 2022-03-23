@@ -59,9 +59,9 @@ class CaodigoBarras(models.AbstractModel):
 
         # conversion a fecha formato especial fecha caducidad
 
-        dia_cad = datetime.datetime.strptime(str(o.life_date),'%Y-%m-%d %H:%M:%S').strftime("%d")
-        mes_cad = datetime.datetime.strptime(str(o.life_date),'%Y-%m-%d %H:%M:%S').strftime("%m")
-        anio_cad = datetime.datetime.strptime(str(o.life_date),'%Y-%m-%d %H:%M:%S').strftime("%Y")
+        dia_cad = datetime.datetime.strptime(str(o.expiration_date),'%Y-%m-%d %H:%M:%S').strftime("%d")
+        mes_cad = datetime.datetime.strptime(str(o.expiration_date),'%Y-%m-%d %H:%M:%S').strftime("%m")
+        anio_cad = datetime.datetime.strptime(str(o.expiration_date),'%Y-%m-%d %H:%M:%S').strftime("%Y")
 
         cad = str(dia_cad) +'-'+self.mes_abreviado(int(mes_cad))+'-'+str(anio_cad)
 
@@ -70,12 +70,12 @@ class CaodigoBarras(models.AbstractModel):
 
     @api.model
     def _get_report_values(self, docids, data=None):
-        self.model = 'stock.production.lot'
-        docs = self.env[self.model].browse(docids)
+        # self.model = 'stock.production.lot'
+        docs = self.env['stock.production.lot'].browse(docids)
 
         return {
             'doc_ids': docids,
-            'doc_model': self.model,
+            'doc_model': 'stock.production.lot',
             'docs': docs,
             'fecha_barras': self.fecha_barras,
         }
