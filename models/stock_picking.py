@@ -54,12 +54,12 @@ class Picking(models.Model):
                 lista_almacenes.append(tienda_almacen.producto_porciones.warehouse_id.id)
 
 
-        logging.warn("lista_almacenes")
-        logging.warn(lista_almacenes)
+        # logging.warn("lista_almacenes")
+        # logging.warn(lista_almacenes)
 
 
         if (self.picking_type_id.code == 'internal') and (self.picking_type_id.porciones) and (int(self.picking_type_id.warehouse_id.id) in lista_almacenes):
-            logging.warn("Estamos entrando C=")
+            # logging.warn("Estamos entrando C=")
             for linea in lineas:
                 if (int(linea.product_id.producto_porciones.id) > 0):
 
@@ -74,8 +74,8 @@ class Picking(models.Model):
                     if linea.product_id.id not in lista_id:
                         producto_id = linea.product_id.producto_porciones.id
 
-                        logging.warn("linea.product_id.producto_porciones.name")
-                        logging.warn(linea.product_id.producto_porciones.name)
+                        # logging.warn("linea.product_id.producto_porciones.name")
+                        # logging.warn(linea.product_id.producto_porciones.name)
                         hecho = linea.qty_done
                         product_uom_qty = linea.product_uom_qty
                         product_uom_id = linea.product_uom_id.id
@@ -86,8 +86,8 @@ class Picking(models.Model):
                         cantidad_entera = linea.qty_done
                         cantidad_porcion = linea.product_id.porciones
                         qty_done = cantidad_entera * cantidad_porcion
-                        logging.warn("linea.qty_done * linea.product_id.producto_porciones.porciones")
-                        logging.warn(qty_done)
+                        # logging.warn("linea.qty_done * linea.product_id.producto_porciones.porciones")
+                        # logging.warn(qty_done)
                         lista_id[linea.product_id.id]={
                         'product_id': product_porciones_id.id,
                         'qty_done': hecho,
@@ -108,23 +108,23 @@ class Picking(models.Model):
             'location_dest_id': ubicacion_dest_id.id, })
 
             for lneas in lista_id:
-                logging.warn("lista_id[lneas]['product_id']")
-                logging.warn(lista_id[lneas]['product_id'])
+                # logging.warn("lista_id[lneas]['product_id']")
+                # logging.warn(lista_id[lneas]['product_id'])
 
                 lotes = self.env['stock.production.lot'].search([('name', '=', lista_id[lneas]['lot_id']), ('product_id', '=', lista_id[lneas]['product_id'])])
                 lote2_id = False
                 if len(lotes)>0:
-                    logging.warn(">0")
+                    # logging.warn(">0")
                     lote2_id = lotes
-                    logging.warn(lote2_id)
+                    # logging.warn(lote2_id)
                 else:
-                    logging.warn("else")
+                    # logging.warn("else")
                     lote2_id = self.env['stock.production.lot'].create({
                     'name': lista_id[lneas]['lot_id'],
                     'company_id': self.env.company.id,
                     'life_date': lista_id[lneas]['life_date'],
                     'product_id': lista_id[lneas]['product_id']})
-                    logging.warn(lote2_id)
+                    # logging.warn(lote2_id)
 
                 lineas_transferencia_id = self.env['stock.move.line'].create({
                 'picking_id': transferencia_id.id,
