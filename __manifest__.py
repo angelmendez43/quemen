@@ -22,6 +22,7 @@
         # 'security/ir.model.access.csv',
 
         'data/ir_sequence_data.xml',
+        'views/report_deliveryslip_t.xml',
         'views/report.xml',
         'views/vale_retiro.xml',
         # 'views/templates.xml',
