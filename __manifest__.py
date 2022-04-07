@@ -57,5 +57,13 @@
     'qweb': [
         # 'static/src/xml/pos.xml',
     ],
+    'assets':{
+        'point_of_sale.assets': [
+            'quemen/static/src/js/models.js',
+        ],
+        # 'web.assets_qweb':[
+        #     'pos_ticket_mx/static/src/xml/**/*',
+        # ],
+    },      
     'license': 'LGPL-3',
 }
