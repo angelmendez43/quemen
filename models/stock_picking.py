@@ -160,7 +160,7 @@ class Picking(models.Model):
             for linea in stock_quant:
                 if linea.location_id.id not in inventario:
                     inventario[linea.location_id.id] = {'productos':[],'bodega':linea.location_id}
-                if linea.lot_id and linea.lot_id.expiration_date and (linea.lot_id.expiration_date.astimezone(timezone).strftime('%Y-%m-%d') == fecha_mañana or linea.lot_id.expiration_date.astimezone(timezone).strftime('%Y-%m-%d') <= fecha_mañana or linea.lot_id.life_date.astimezone(timezone).strftime('%Y-%m-%d') == fecha_hoy):
+                if linea.lot_id and linea.lot_id.expiration_date and (linea.lot_id.expiration_date.astimezone(timezone).strftime('%Y-%m-%d') == fecha_mañana or linea.lot_id.expiration_date.astimezone(timezone).strftime('%Y-%m-%d') <= fecha_mañana or linea.lot_id.expiration_date.astimezone(timezone).strftime('%Y-%m-%d') == fecha_hoy):
                     inventario[linea.location_id.id]['productos'].append(linea)
 
             tiendas_ids = self.env['pos.config'].search([])
