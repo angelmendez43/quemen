@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <report
+    id="action_reporte_retiros"
+    string="Reporte de retiros"
+    model="pos.session"
+    report_type="qweb-pdf"
+    file="quemen.reporte_retiros_sesion"
+    name="quemen.reporte_retiros_sesion"
+    paperformat="paperformat_ticket"
+    menu="True"
+    />
+
+    <record id="view_quemen_reportes_retiro" model="ir.ui.view">
+
+      <field name="name">Reporte de retiros wizard</field>
+      <field name="model">quemen.reporte_retiros_sesion.wizard</field>
+      <field name="arch" type="xml">
+        <form string="Reporte de retiros">
+          <group string="Retiros">
+            <field name="retiro_id"/>
+          </group>
+          <footer>
+            <button name="print_report" string="Print"  type="object" class="btn-primary"/>
+            <button string="Cancel" class="btn-default" special="cancel" />
+          </footer>
+        </form>
+      </field>
+    </record>
+
+    <act_window id="quemen_action_reportes_retiro"
+
+      name="Reporte retiros"
+      res_model="quemen.reporte_retiros_sesion.wizard"
+      binding_model="pos.session"
+      view_mode="form" target="new"
+      />
+
+</odoo>
