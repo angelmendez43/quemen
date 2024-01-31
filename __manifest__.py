@@ -12,7 +12,7 @@
     'website': "",
 
     'category': 'Uncategorized',
-    'version': '1.0',
+    'version': '1.01',
 
     'depends': ['stock','base','point_of_sale','hr_payroll','mrp'],
 
