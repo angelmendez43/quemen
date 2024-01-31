@@ -57,7 +57,7 @@ class Picking(models.Model):
         # logging.warn(lista_almacenes)
 
 
-        if (self.picking_type_id.code == 'internal') and (self.picking_type_id.porciones) and (int(self.picking_type_id.warehouse_id.id) in lista_almacenes):
+        if (self.picking_type_id.code == 'internal') and (self.picking_type_id.tipo_operacion_porcion_id) and (int(self.picking_type_id.warehouse_id.id) in lista_almacenes):
             # logging.warn("Estamos entrando C=")
             for linea in lineas:
                 if (int(linea.product_id.producto_porciones.id) > 0):
@@ -142,7 +142,7 @@ class Picking(models.Model):
 
 
     def verificar_productos_vencidos(self):
-        stock_quant = self.env['stock.quant'].sudo().search([('quantity','>',0)])
+        stock_quant = self.env['stock.quant'].sudo().search([('quantity','>',0),('removal_date','!=',False)])
         timezone = pytz.timezone(self._context.get('tz') or self.env.user.tz or 'UTC')
         fecha_hoy = datetime.now().astimezone(timezone).strftime('%Y-%m-%d')
         # Sumarle un dia a la fecha de HOY
@@ -163,16 +163,16 @@ class Picking(models.Model):
                 if linea.lot_id and linea.lot_id.expiration_date and (linea.lot_id.expiration_date.astimezone(timezone).strftime('%Y-%m-%d') == fecha_mañana or linea.lot_id.expiration_date.astimezone(timezone).strftime('%Y-%m-%d') <= fecha_mañana or linea.lot_id.expiration_date.astimezone(timezone).strftime('%Y-%m-%d') == fecha_hoy):
                     inventario[linea.location_id.id]['productos'].append(linea)
 
-            tiendas_ids = self.env['pos.config'].search([])
-
+            tiendas_ids = self.env['pos.config'].search([('envio_salida_vencimiento_id','!=', False)])
+            # picking_ids = self.env['stock.picking.type'].search([('tipo_operacion_caducidad_id','!=', False)])
             if tiendas_ids:
                 for tienda in tiendas_ids:
                     ubicacion_actual = tienda.picking_type_id.default_location_src_id
-                    if tienda.envio_salida_vencimiento_id and tienda.picking_type_id.default_location_src_id.id in inventario:
+                    if tienda.envio_salida_vencimiento_id.default_location_src_id.id in inventario:
                         destino_id = tienda.envio_salida_vencimiento_id.default_location_dest_id
                         tipo_envio_id = tienda.envio_salida_vencimiento_id
                         # logging.warn(inventario[tienda.picking_type_id.default_location_src_id.id]['productos'])
-                        if len(inventario[tienda.picking_type_id.default_location_src_id.id]['productos']) > 0:
+                        if len(inventario[tienda.envio_salida_vencimiento_id.default_location_src_id.id]['productos']) > 0:
                             stock_quant_lista = []
                             envio = {
                                 'picking_type_id': tienda.envio_salida_vencimiento_id.id,
@@ -180,7 +180,7 @@ class Picking(models.Model):
                                 'location_dest_id': destino_id.id,
                             }
                             envio_id = self.env['stock.picking'].create(envio)
-                            for quant in inventario[tienda.picking_type_id.default_location_src_id.id]['productos']:
+                            for quant in inventario[tienda.envio_salida_vencimiento_id.default_location_src_id.id]['productos']:
                                 # linea_envio = {
                                 #     'product_id': quant.product_id.id,
                                 #     'location_id': ubicacion_actual.id,
@@ -208,25 +208,26 @@ class Picking(models.Model):
 
                             envio_id.action_confirm()
                             envio_id.action_assign()
-#                             for quant in stock_quant_lista:
-#                                 ml = {
-#                                     'product_id': quant['product_id'],
-#                                     'location_id': ubicacion_actual.id,
-#                                     'product_uom_id': quant['product_uom'],
-#                                     'location_dest_id': destino_id.id,
-#                                     'lot_id': quant['lot_id'],
-#                                     'move_id': quant['move_id'],
-#                                     'qty_done': quant['product_uom_qty'],
-#                                     'picking_id':envio_id.id,
-#                                 }
-#                                 move_line_id = self.env['stock.move.line'].create(ml)
+                            # for quant in stock_quant_lista:
+                            #     ml = {
+                            #         'product_id': quant['product_id'],
+                            #         'location_id': ubicacion_actual.id,
+                            #         'product_uom_id': quant['product_uom'],
+                            #         'location_dest_id': destino_id.id,
+                            #         'lot_id': quant['lot_id'],
+                            #         'move_id': quant['move_id'],
+                            #         'qty_done': quant['product_uom_qty'],
+                            #         'picking_id':envio_id.id,
+                            #     }
+                            #     move_line_id = self.env['stock.move.line'].create(ml)
 
-#                             envio_id.button_validate()
+                            # envio_id.button_validate()
 
         return inventario
 
 class StockPickingType(models.Model):
     _inherit = "stock.picking.type"
 
-    devolucion_productos_vencidos = fields.Boolean('¿Desea utilizar este tipo de albaran para devolucion productos vencidos automatico?')
-    porciones = fields.Boolean('Porciones?')
+    tipo_operacion_caducidad_id = fields.Many2one('stock.picking.type', string='Tipo operacion caducidad')
+    # porciones = fields.Boolean('Porciones?')
+    tipo_operacion_porcion_id = fields.Many2one('stock.picking.type', string='Tipo operacion porcion')

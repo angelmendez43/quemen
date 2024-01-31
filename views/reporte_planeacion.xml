@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="reporte_planeacion">
+        <t t-call="web.html_container">
+            <t t-call="web.basic_layout">
+                <t t-set="data_report_margin_top" t-value="6"/>
+                <t t-set="data_report_header_spacing" t-value="3"/>
+                <t t-set="data_report_dpi" t-value="110"/>
+
+                <div class="header">
+                    <img src="/web/binary/company_logo"/>
+                </div>   
+                <div class="page">
+                    <t t-foreach="docs" t-as="o">
+                        <center><strong><h2>Planeación <span t-field="o.name"/></h2></strong></center>
+                        <div class="info_extra">
+                            Fecha producción: <span t-field="o.date_mrp_production"/><br/>
+                            Referencia: <span t-field="o.reference"/>
+                        </div>
+                        
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th></th>
+                                    <th>ETAPA1</th>
+                                    <th>ETAPA2</th>
+                                    <th>ETAPA3</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="product_sumary" t-value="get_info(o)[0]"/>
+                                <t t-set="product_sumary_1" t-value="get_info(o)[1]"/>
+                                <tr t-foreach='product_sumary' t-as='product_pt'>
+                                    <td><span t-esc="product_sumary[product_pt]['name']"/></td>
+                                    <td><span t-esc="product_sumary[product_pt]['quantity']"/><span t-esc="product_sumary[product_pt]['uom']"/></td>
+                                    <td></td>                                                                                                                                             <td></td>
+                                    <td></td>
+                                </tr>
+                                <t t-foreach='product_sumary_1' t-as='stage'>
+                                    <t t-set="components" t-value="product_sumary_1[stage]['component']"/>
+                                    <t t-set="mp" t-value="product_sumary_1[stage]['mp']"/>
+                                    <tr t-foreach='components' t-as='comp'>
+                                        <t t-if="stage == 1">
+                                            <td><span t-esc="components[comp]['product'].name"/></td>
+                                            <td></td>
+                                            <td><span t-esc="components[comp]['quantity']" t-options='{"widget": "float", "precision": 5}'/></td>
+                                            <td></td>
+                                            <td></td>
+                                        </t>
+                                        <t t-if="stage == 2">
+                                            <td><span t-esc="components[comp]['product'].name"/></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td><span t-esc="components[comp]['quantity']" t-options='{"widget": "float", "precision": 5}'/></td>
+                                            <td></td>                                            
+                                        </t>
+                                        <t t-if="stage == 3">
+                                            <td><span t-esc="components[comp]['product'].name"/></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td><span t-esc="components[comp]['quantity']" t-options='{"widget": "float", "precision": 5}'/></td>                                            
+                                        </t>       
+                                        
+                                    </tr>
+                                    <tr t-foreach='mp' t-as="m">
+                                        <t t-if="stage == 1">
+                                            <td><span t-esc="mp[m]['product'].name"/></td>
+                                            <td></td>
+                                            <td><span t-esc="mp[m]['quantity']" t-options='{"widget": "float", "precision": 5}'/></td>
+                                            <td></td>
+                                            <td></td>                                            
+                                        </t>
+                                        <t t-if="stage == 2">
+                                            <td><span t-esc="mp[m]['product'].name"/></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td><span t-esc="mp[m]['quantity']" t-options='{"widget": "float", "precision": 5}'/></td>
+                                            <td></td>                                             
+                                        </t>
+                                        <t t-if="stage == 3">
+                                            <td><span t-esc="mp[m]['product'].name"/></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td><span t-esc="mp[m]['quantity']" t-options='{"widget": "float", "precision": 5}'/></td>                                             
+                                        </t>                                            
+                                    </tr>    
+                                    <!-- <t t-if="stage == 1">
+                                        
+                                    </t>
+                                    <t t-if="stage == 2">
+                                        
+                                    </t>
+                                    <t t-if="stage == 3">
+                                        
+                                    </t>     -->
+                                </t>    
+                            </tbody>    
+                        </table>    
+                    </t>
+                </div>
+
+            </t>
+        </t>
+    </template>
+</odoo>

@@ -12,9 +12,9 @@
     'website': "",
 
     'category': 'Uncategorized',
-    'version': '0.1',
+    'version': '1.0',
 
-    'depends': ['stock','base','point_of_sale','hr_payroll'],
+    'depends': ['stock','base','point_of_sale','hr_payroll','mrp'],
 
     'data': [
         'data/paperformat_ticket.xml',
@@ -23,15 +23,18 @@
 
         'data/ir_sequence_data.xml',
         'views/report_deliveryslip_t.xml',
+        'views/reporte_ingreso_inventario_pt.xml',
         'views/report.xml',
         'views/vale_retiro.xml',
+        'views/reporte_planeacion.xml',
+        'views/mrp_bom_views.xml',
         # 'views/templates.xml',
         'views/reporte_codigo_barras.xml',
         'views/reporte_salidas.xml',
         # 'views/pos_box.xml',
         # 'views/reporte_entrega_valores.xml',
         # 'data/quemen_data.xml',
-        # 'views/quemen_views.xml',
+        'views/quemen_views.xml',
         # 'views/stock_quant_views.xml',
         'views/pos_session_view.xml',
         'views/pos_config_view.xml',
@@ -43,7 +46,7 @@
         # 'views/reporte_productos_labor_venta.xml',
         # 'views/reporte_existencias.xml',
         # 'wizard/reporte_existencias_wizard.xml',
-        # 'views/stock_picking_views.xml',
+        'views/stock_picking_views.xml',
         # 'views/reporte_formato_salidas.xml',
         # 'views/reporte_salidas.xml',
         # 'wizard/reporte_salidas_wizard.xml',
@@ -51,7 +54,8 @@
         # 'views/report_quemen.xml',
         # 'views/reportes_retiro_view.xml',
         # 'views/reporte_retiros_sesion.xml',
-        # 'views/product_template_extra_fields_views.xml'
+        'views/recibo_entrega.xml',
+        'views/product_template_extra_fields_views.xml'
 
     ],
     'qweb': [
@@ -64,6 +68,6 @@
         # 'web.assets_qweb':[
         #     'pos_ticket_mx/static/src/xml/**/*',
         # ],
-    },      
+    },
     'license': 'LGPL-3',
 }

@@ -13,29 +13,9 @@ from operator import itemgetter
 import pytz
 # import odoo.addons.hr_gt.a_letras
 
-class ReportEntregaValores(models.AbstractModel):
-    _name = 'report.quemen.reporte_entrega_valores'
+class ReportIngresoInventarioPt(models.AbstractModel):
+    _name = 'report.quemen.reporte_ingreso_inventario_pt'
 
-
-    def _get_entrega_valores(self, fecha_inicio,fecha_fin, tienda_id):
-        sesiones = self.env['pos.session'].search([('config_id','=',self.env.user.pos_id.id),('start_at','>=',fecha_inicio),('start_at','<=',fecha_fin)],order='start_at asc')
-        fondo_caja = {}
-        retiro_efectivo = {}
-        logging.warn(sesiones)
-        if sesiones:
-            for sesion in sesiones:
-                if sesion.retiros_ids:
-                    logging.warn("Sesion")
-                    logging.warn(sesion.config_id.name)
-                    fecha_sesion = dateutil.parser.parse(str(sesion.start_at)).date()
-                    if fecha_sesion not in retiro_efectivo:
-                        retiro_efectivo[fecha_sesion] = {'fecha': fecha_sesion, 'retiros': [],'total_retiros': 0}
-
-                    for retiro in sesion.retiros_ids:
-                        retiro_efectivo[fecha_sesion]['retiros'].append(retiro)
-                        retiro_efectivo[fecha_sesion]['total_retiros'] += retiro.total
-
-        return {'retiro_efectivo': retiro_efectivo.values()}
 
     def verificar_productos_vencidos(self):
         logging.warn('verificar para albaran')
@@ -90,11 +70,13 @@ class ReportEntregaValores(models.AbstractModel):
 
     def productos_existencia(self, tienda_id):
         # logging.warn(fecha_vencimiento)
-        tiendas_id = self.env['pos.config'].search([('id','=',tienda_id[0])])
-        self.verificar_productos_vencidos()
+        # self.verificar_productos_vencidos()
+        tienda_id = self.env['pos.config'].search([('id','=',tienda_id[0])])
+
+
         ubicacion_id = tienda_id.picking_type_id.default_location_src_id
         stock_id = self.env['stock.quant'].search([('location_id','=',ubicacion_id.id)])
-        logging.warn("stock_id")
+        logging.warn("Stock_id")
         logging.warn(stock_id)
         inventario = {}
         if stock_id:
@@ -110,59 +92,47 @@ class ReportEntregaValores(models.AbstractModel):
         logging.warn(inventario)
         return inventario
 
+
+    def salida_productos_vencidos(self,fecha_desde,fecha_hasta):
+        envios = self.env['stock.picking'].search([('location_id','=',self.env.user.pos_id.picking_type_id.default_location_src_id.id),('scheduled_date','>=',fecha_desde),('scheduled_date','<=',fecha_hasta)])
+        productos = []
+        if envios:
+            for envio in envios:
+                logging.warn("Envio")
+                logging.warn(envio)
+                if envio.picking_type_id.devolucion_productos_vencidos:
+                    for linea in envio.move_line_ids_without_package:
+
+                        productos.append({'linea': linea, 'fecha_vencimiento': linea.lot_id.life_date.strftime('%Y-%m-%d')})
+
+        return productos
+
     def fecha_hora_actual(self):
         logging.warn(datetime.datetime.now())
 
         timezone = pytz.timezone(self._context.get('tz') or self.env.user.tz or 'UTC')
         fecha_hora = datetime.datetime.now().astimezone(timezone).strftime('%d/%m/%Y %H:%M:%S')
         return fecha_hora
-    # def pagos_deducciones(self,o):
-    #     ingresos = 0
-    #     descuentos = 0
-    #     datos = {'ordinario': 0, 'extra_ordinario':0,'bonificacion':0}
-    #     for linea in o.linea_ids:
-    #         if linea.salary_rule_id.id in o.company_id.ordinario_ids.ids:
-    #             datos['ordinario'] += linea.total
-    #         elif linea.salary_rule_id.id in o.company_id.extra_ordinario_ids.ids:
-    #             datos['extra_ordinario'] += linea.total
-    #         elif linea.salary_rule_id.id in o.company_id.bonificacion_ids.ids:
-    #             datos['bonificacion'] += linea.total
-    #     return True
 
-    # @api.model
-    # def _get_report_values(self, docids, data=None):
-    #     return self.get_report_values(docids, data)
+    def obtener_tienda(self, tienda_id):
 
+        tienda = self.env['pos.config'].search([('id','=',tienda_id[0])])
 
-# {'context': {'tz': False, 'uid': 1, 'params':
-# {'action': 473}, 'active_model': 'hr_gt.recibo_pago.wizard', 'active_id': 5, 'active_ids': [5], 'search_disable_custom_filters': True}, 'ids': [], 'model': 'hr_gt.recibo_pago.wizard', 'form': {'id': 5, 'nomina_ids': [17], 'formato_recibo_pago_id': [1, 'RECIBO DE PAGO PLANILLA'], 'fecha_inicio': False, 'fecha_fin': False, 'create_uid': [1, 'Administrator'], 'create_date': '2020-06-22 01:42:19', 'write_uid': [1, 'Administrator'], 'write_date': '2020-06-22 01:42:19', 'display_name': 'hr_gt.recibo_pago.wizard,5', '__last_update': '2020-06-22 01:42:19'}}
+        return tienda
 
     @api.model
     def _get_report_values(self, docids, data=None):
-        model = self.env.context.get('active_model')
-        docs = self.env[model].browse(self.env.context.get('active_ids', []))
-        fecha_inicio = data['form']['fecha_inicio']
-        fecha_fin = data['form']['fecha_fin']
-        tienda_id = data['form']['tienda_id']
-        fecha_generacion = data['form']['fecha_generacion']
+        model = 'stock.picking'
+        docs = self.env[model].browse(docids)
+        # tienda_id = data['form']['tienda_id']
 
         return {
-            'doc_ids': self.ids,
+            'doc_ids': docids,
             'doc_model': model,
-            'data': data['form'],
+            'data': data,
             'docs': docs,
-            'fecha_inicio': fecha_inicio,
-            'fecha_fin': fecha_fin,
-            'tienda_id': tienda_id,
-            'fecha_generacion': fecha_generacion,
-            '_get_entrega_valores': self._get_entrega_valores,
-            # 'productos_existencia': self.productos_existencia,
-            # 'fecha_hora_actual': self.fecha_hora_actual,
-            # 'mes_letras': self.mes_letras,
-            # 'fecha_hoy': self.fecha_hoy,
-            # 'a_letras': odoo.addons.hr_gt.a_letras,
-            # 'datos_recibo': self.datos_recibo,
-            # 'lineas': self.lineas,
-            # 'horas_extras': self.horas_extras,
+            # 'obtener_tienda': self.obtener_tienda,
+            # 'salida_productos_vencidos': self.salida_productos_vencidos,
+
         }
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

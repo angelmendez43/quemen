@@ -10,5 +10,13 @@
             <field name="company_id" eval="False"/>
         </record>
 
+        <record id="seq_quemen_orden_produccion_lote" model="ir.sequence">
+            <field name="name">Orden produccion lote</field>
+            <field name="code">quemen.op_lote</field>
+            <field name="prefix">OPLOTE/</field>
+            <field name="padding">6</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        
     </data>
 </odoo>

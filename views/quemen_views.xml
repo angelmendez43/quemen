@@ -3,7 +3,7 @@
     <data>
 
 
-        <!-- <record id="view_quemen_reloj_checador_tree" model="ir.ui.view">
+        <record id="view_quemen_reloj_checador_tree" model="ir.ui.view">
             <field name="name">quemen.reloj_checador.tree</field>
             <field name="model">quemen.reloj_checador</field>
             <field name="type">tree</field>
@@ -23,22 +23,9 @@
                     <field name="horas_extras_laboradas" widget="float_time"/>
                 </tree>
             </field>
-        </record> -->
-
-        <record id="view_quemen_op_lote_tree" model="ir.ui.view">
-            <field name="name">quemen.op_lote.tree</field>
-            <field name="model">quemen.op_lote</field>
-            <field name="type">tree</field>
-            <field name="arch" type="xml">
-                <tree string="Ordenes de producción por lote">
-                    <field name="name"/>
-                    <field name="fecha"/>
-                    <field name="state"/>
-                </tree>
-            </field>
         </record>
 
-        <!-- <record id="view_quemen_reloj_checador_form" model="ir.ui.view">
+        <record id="view_quemen_reloj_checador_form" model="ir.ui.view">
             <field name="name">quemen.reloj_checador.form</field>
             <field name="model">quemen.reloj_checador</field>
             <field name="arch" type="xml">
@@ -65,48 +52,9 @@
                     </div>
                 </form>
             </field>
-        </record> -->
-
-
-        <record id="view_quemen_op_lote_form" model="ir.ui.view">
-            <field name="name">quemen.op_lote.form</field>
-            <field name="model">quemen.op_lote</field>
-            <field name="arch" type="xml">
-                <form string="Ordenes de producción por lote">
-                    <header>
-                        <button name="boton_confirmar" string="Confirmar" states="borrador" class="oe_highlight" type="object"/>
-                        <field name="state" widget="statusbar" statusbar_visible="borrador,confirmado"/>
-                    </header>
-                    <sheet>
-                      <div class="oe_title">
-                          <label for="name" string="Orden producción Lote"/>
-                          <h1>
-                              <field name="name"/>
-                          </h1>
-                      </div>
-                        <group>
-                            <field name="fecha"/>
-                        </group>
-                        <group>
-                            <field name="producto_ids">
-                                <tree editable="bottom">
-                                    <field name="producto_id"/>
-                                    <field name="cantidad"/>
-                                </tree>
-                            </field>
-                        </group>
-                    </sheet>
-                    <div class="o_attachment_preview"/>
-                    <div class="oe_chatter">
-                        <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
-                        <field name="activity_ids" widget="mail_activity"/>
-                        <field name="message_ids" widget="mail_thread"/>
-                    </div>
-                </form>
-            </field>
         </record>
 
-        <!-- <record id="quemen_reloj_checador_view_search" model="ir.ui.view">
+        <record id="quemen_reloj_checador_view_search" model="ir.ui.view">
             <field name="name">quemen.reloj_checador.search</field>
             <field name="model">quemen.reloj_checador</field>
             <field name="arch" type="xml">
@@ -117,21 +65,9 @@
                     <field name="hora_salida"/>
                 </search>
             </field>
-        </record> -->
-
-        <record id="quemen_op_lote_view_search" model="ir.ui.view">
-            <field name="name">quemen.op_lote.search</field>
-            <field name="model">quemen.op_lote</field>
-            <field name="arch" type="xml">
-                <search string="Buscar Lote">
-                    <field name="name"/>
-                    <field name="fecha"/>
-                    <field name="state"/>
-                </search>
-            </field>
         </record>
 
-        <!-- <record id="action_quemen_reloj_checador_administrativa" model="ir.actions.act_window">
+        <record id="action_quemen_reloj_checador_administrativa" model="ir.actions.act_window">
             <field name="name">Reloj checador</field>
             <field name="res_model">quemen.reloj_checador</field>
             <field name="view_mode">tree,form</field>
@@ -143,37 +79,16 @@
                Click para crear una nuea entrada
               </p>
             </field>
-        </record> -->
-
-        <record id="action_quemen_op_lote" model="ir.actions.act_window">
-            <field name="name">Orden de producción por lote</field>
-            <field name="res_model">quemen.op_lote</field>
-            <field name="view_mode">tree,form</field>
-            <field name="domain"></field>
-            <field name="context"></field>
-            <field name="search_view_id" ref="quemen_op_lote_view_search"/>
-            <field name="help" type="html">
-              <p class="oe_view_nocontent_create">
-               Click para crear una nuea entrada
-              </p>
-            </field>
         </record>
 
-        <!-- <menuitem
+        <menuitem
             id="menu_quemen_reloj_checador"
             name="Reloj checador"
             action="action_quemen_reloj_checador_administrativa"
             parent="hr.menu_hr_employee_payroll"
-            sequence="75"/> -->
+            sequence="75"/>
 
-        <menuitem
-            id="menu_quemen_op_lote"
-            name="Orden producción por lote"
-            action="action_quemen_op_lote"
-            parent="mrp.menu_mrp_manufacturing"
-            sequence="200"/>
-
-            <record id="view_quemen_retiros_tree" model="ir.ui.view">
+            <!-- <record id="view_quemen_retiros_tree" model="ir.ui.view">
                 <field name="name">quemen.retiros.tree</field>
                 <field name="model">quemen.retiros</field>
                 <field name="type">tree</field>
@@ -194,11 +109,7 @@
                 <field name="model">quemen.retiros</field>
                 <field name="arch" type="xml">
                     <form string="Retiros">
-                        <header>
-                            <button name="validar_retiro" string="Validar" states="borrador" type="object" class="oe_highlight" data-hotkey="g"/>
-                            <field name="state" widget="statusbar" statusbar_visible="borrador,validado" readonly="1"/>
 
-                        </header>
                         <sheet>
                             <div class="oe_title">
                                 <h1>
@@ -207,29 +118,23 @@
                             </div>
                             <group>
                                 <group>
-                                    <field name="motivo" required="True"/>
-                                    <field name="usuario_id" required="True"/>
-                                    <field name="cash_box_id" required="True"/>
+                                    <field name="session_id"/>
+                                    <field name="motivo"/>
+                                    <field name="usuario_id"/>
                                 </group>
                                 <group>
+                                    <field name="cash_box_id"/>
                                     <field name="fecha_hora"/>
-                                    <field name="efectivo_ids">
-                                        <tree string="Costo unitario" editable="bottom" create="1">
-                                            <field name="cantidad"/>
-                                            <field name="moneda_billete_id"/>
-                                            <field name="retiro_id"  invisible="True"/>
-                                        </tree>
-                                    </field>    
-                                    <field name="total" readonly="1"/>
+                                    <field name="total"/>
                                 </group>
                             </group>
 
                         </sheet>
                     </form>
                 </field>
-            </record>
+            </record> -->
 
-            <!-- <record id="view_quemen_promociones_form" model="ir.ui.view">
+            <record id="view_quemen_promociones_form" model="ir.ui.view">
                 <field name="name">quemen.promociones.form</field>
                 <field name="model">quemen.promociones</field>
                 <field name="arch" type="xml">
@@ -267,9 +172,58 @@
                         </sheet>
                     </form>
                 </field>
-            </record> -->
+            </record>
 
-            <record id="quemen_retiros_view_search" model="ir.ui.view">
+            <record id="view_quemen_op_lote_form" model="ir.ui.view">
+                <field name="name">quemen.op_lote.form</field>
+                <field name="model">quemen.op_lote</field>
+                <field name="arch" type="xml">
+                    <form string="Lote">
+                        <header>
+                            <button name="confirm_lot" string="Confirmar" class="oe_highlight" type="object" states="borrador" />
+                            <field name="state" widget="statusbar" statusbar_visible="boraddor,confirmado" />
+                        </header>    
+                        <sheet>
+                            <div class="oe_title">
+                                <h1>
+                                    <field name="name"/>
+                                </h1>
+                            </div>
+                            <group>
+                                <group>
+                                    <field name="date" attrs="{'readonly': [('state','=','confirmado')]}"/>
+                                    <field name="date_mrp_production" attrs="{'readonly': [('state','=','confirmado')]}"/>
+                                    <field name="reference" attrs="{'readonly': [('state','=','confirmado')]}"/>
+                                </group>
+
+                                  <field name="product_ids" attrs="{'readonly': [('state','=','confirmado')]}">
+                                      <tree string="Productos" editable="bottom">
+                                          <field name="product_id"/>
+                                          <field name="quantity"/>
+                                      </tree>
+                                  </field>
+
+                            </group>
+
+                        </sheet>
+                    </form>
+                </field>
+            </record>
+        
+            <record id="view_quemen_op_loter_tree" model="ir.ui.view">
+                <field name="name">quemen.op_lote.tree</field>
+                <field name="model">quemen.op_lote</field>
+                <field name="type">tree</field>
+                <field name="arch" type="xml">
+                    <tree string="OP Lote">
+                        <field name="name"/>
+                        <field name="date"/>
+                        <field name="date_mrp_production"/>
+                        <field name="reference"/>
+                    </tree>
+                </field>
+            </record>      
+            <!-- <record id="quemen_retiros_view_search" model="ir.ui.view">
                 <field name="name">quemen.retiros.search</field>
                 <field name="model">quemen.retiros</field>
                 <field name="arch" type="xml">
@@ -281,9 +235,9 @@
                         <field name="total"/>
                     </search>
                 </field>
-            </record>
+            </record> -->
 
-            <!-- <record id="quemen_promociones_view_search" model="ir.ui.view">
+            <record id="quemen_promociones_view_search" model="ir.ui.view">
                 <field name="name">quemen.promociones.search</field>
                 <field name="model">quemen.promociones</field>
                 <field name="arch" type="xml">
@@ -293,9 +247,21 @@
                         <field name="fecha_fin"/>
                     </search>
                 </field>
-            </record> -->
+            </record>
 
-            <record id="action_quemen_retiros" model="ir.actions.act_window">
+            <record id="quemen_op_lote_view_search" model="ir.ui.view">
+                <field name="name">quemen.op_lote.search</field>
+                <field name="model">quemen.op_lote</field>
+                <field name="arch" type="xml">
+                    <search string="Lotes">
+                        <field name="name"/>
+                        <field name="date"/>
+                        <field name="date_mrp_production"/>
+                    </search>
+                </field>
+            </record>
+
+            <!-- <record id="action_quemen_retiros" model="ir.actions.act_window">
                 <field name="name">Retiros POS</field>
                 <field name="res_model">quemen.retiros</field>
                 <field name="view_mode">tree,form</field>
@@ -307,9 +273,9 @@
                    Click para crear un retiro
                   </p>
                 </field>
-            </record>
+            </record> -->
 
-            <!-- <record id="action_quemen_promociones" model="ir.actions.act_window">
+            <record id="action_quemen_promociones" model="ir.actions.act_window">
                 <field name="name">Promociones</field>
                 <field name="res_model">quemen.promociones</field>
                 <field name="view_mode">tree,form</field>
@@ -321,21 +287,42 @@
                    Click para crear una promo
                   </p>
                 </field>
-            </record> -->
+            </record>
 
-            <menuitem
+            <record id="action_quemen_produccion_lote" model="ir.actions.act_window">
+                <field name="name">Orden de producción por lote</field>
+                <field name="res_model">quemen.op_lote</field>
+                <field name="view_mode">tree,form</field>
+                <field name="domain"></field>
+                <field name="context"></field>
+                <field name="search_view_id" ref="quemen_op_lote_view_search"/>
+                <field name="help" type="html">
+                  <p class="oe_view_nocontent_create">
+                   Click para crear un lote
+                  </p>
+                </field>
+            </record>
+        
+            <!-- <menuitem
                 id="menu_quemen_retiros"
                 name="Retiros POS"
                 action="action_quemen_retiros"
                 parent="point_of_sale.menu_point_of_sale"
-                sequence="75"/>
+                sequence="75"/> -->
 
-            <!-- <menuitem
+            <menuitem
                 id="menu_quemen_promociones"
                 name="Promociones"
                 action="action_quemen_promociones"
                 parent="point_of_sale.menu_point_of_sale"
-                sequence="100"/> -->
+                sequence="100"/>
+
+            <menuitem
+                id="menu_quemen_produccion_lote"
+                name="Orden de producción por lote"
+                action="action_quemen_produccion_lote"
+                parent="mrp.menu_mrp_manufacturing"
+                sequence="250"/>        
 
     </data>
 </odoo>

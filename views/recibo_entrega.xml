@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_delivery_document_extended" inherit_id="stock.report_delivery_document">
+        <xpath expr="//div[@class='page']" position="after">
+           <div class="footer-signatures" style="page-break-inside: avoid;">
+                <div style="margin-top: 60px; text-align: center;">
+                    <div style="margin-bottom: 40px;">
+                        <div style="width: 45%; display: inline-block; margin-right: 40px;">
+                            <div style="border-bottom: 1px solid #000; margin-bottom: 2px;"></div>
+                            <p>SOLICITO</p>
+                            <p>NOMBRE Y FIRMA</p>
+                        </div>
+                        <div style="width: 35%; display: inline-block;">
+                            <div style="border-bottom: 1px solid #000; margin-bottom: 2px;"></div>
+                            <p>ENTREGA POR ALMACEN</p>
+                            <p>NOMBRE Y FIRMA</p>
+                        </div>
+                    </div>
+                   
+                    <div>
+                        <div style="width: 45%; display: inline-block; margin-right: 40px;"> 
+                            <div style="border-bottom: 1px solid #000; margin-bottom: 2px;"></div>
+                            <p>VO.BO. ALMACEN</p>
+                            <p>NOMBRE Y FIRMA</p>
+                        </div>
+                        <div style="width: 35%; display: inline-block;">
+                            <div style="border-bottom: 1px solid #000; margin-bottom: 2px;"></div>
+                            <p>RECIBE PRODUCCION</p>
+                            <p>NOMBRE Y FIRMA</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </xpath>
+    </template>
+</odoo>

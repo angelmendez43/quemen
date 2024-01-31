@@ -10,3 +10,5 @@ from . import pos_session
 # from . import pos_order
 from . import stock_quant
 from . import product_template_extra_fields
+from . import mrp_production
+from . import mrp_bom

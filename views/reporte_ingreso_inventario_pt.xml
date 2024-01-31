@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="reporte_ingreso_inventario_pt">
+        <t t-call="web.html_container">
+            <div class="article">
+                <div class="page">
+                    <t t-foreach="docs" t-as="o">
+                        <center><strong>Ingreso de inventario distribución</strong></center>
+                        <div class="info">
+                            <table>
+                                <tr>
+                                    <td style="width:2cm">Folio:</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td style="width:2cm">Fecha:</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td style="width:2cm">Capturó:</td>
+                                    <td></td>
+                                </tr>                            
+                            </table>    
+                        </div>
+                        <div class="info_producto">
+                            <table>
+                                <tr>
+                                    <td style="text-align:left">Descripción</td>
+                                    <td style="text-align:left">Cantidad</td>
+                                </tr>
+                                <tr>
+                                </tr>    
+                            </table>                            
+                        </div>    
+                    </t>
+                </div>
+            </div>
+
+        </t>
+    </template>
+</odoo>
