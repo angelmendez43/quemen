@@ -15,3 +15,4 @@ class MrpBomLine(models.Model):
     _order = "stage asc"
 
     stage = fields.Integer('Etapa')
+    location_src_id = fields.Many2one('stock.location','Ubicación origen')

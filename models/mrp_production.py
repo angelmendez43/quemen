@@ -23,11 +23,9 @@ class MrpProduction(models.Model):
     """ Manufacturing Orders """
     _inherit = 'mrp.production'
 
-    @api.onchange('bom_id', 'product_id', 'product_qty', 'product_uom_id', 'move_raw_ids')
-    def _onchange_move_raw(self):
-        res = super(MrpProduction, self)._onchange_move_raw()
-        logging.warning('CAMBIANDO UBICACION')
-        for line in self.move_raw_ids:
-            if len(line.product_id.bom_ids) > 0:
-                if line.product_id.bom_ids[0].picking_type_id:
-                    line.location_id = line.product_id.bom_ids[0].picking_type_id.default_location_dest_id.id
+    def _get_move_raw_values(self, product_id, product_uom_qty, product_uom, operation_id=False, bom_line=False):
+        res = super(MrpProduction, self)._get_move_raw_values(product_id, product_uom_qty, product_uom, operation_id, bom_line)
+        if res:
+            if ('location_id' and 'product_id') in res and (bom_line and bom_line.location_src_id):
+                res['location_id'] = bom_line.location_src_id.id if (bom_line and bom_line.location_src_id) else False,
+        return res
