@@ -90,7 +90,7 @@ class QuemenRetiros(models.Model):
 
 class QuemenOpLote(models.Model):
     _name = "quemen.op_lote"
-    
+
     name = fields.Char('Nombre', required=True, copy=False, readonly=True, index=True, default=lambda self: _('New'))
     date = fields.Date('Fecha')
     date_mrp_production = fields.Date('Fecha producción')
@@ -99,7 +99,7 @@ class QuemenOpLote(models.Model):
     state = fields.Selection(
         [('borrador', 'Borrador'), ('confirmado', 'Confirmado')],
         'Estado', readonly=True, copy=False, default='borrador')
-    
+
     @api.model
     def create(self, vals):
         if vals.get('name', _('New')) == _('New'):
@@ -118,7 +118,7 @@ class QuemenOpLote(models.Model):
             logging.warning('LOTE')
             logging.warning(lot)
             if lot.product_ids:
-                
+
                 for line in lot.product_ids:
                     logging.warning(line.product_id.name)
                     date_planed_start = datetime.fromisoformat(lot.date_mrp_production.isoformat() + ' 06:00:00')
@@ -130,10 +130,13 @@ class QuemenOpLote(models.Model):
                         'bom_id': line.product_id.bom_ids.id,
                         'origin': line.lot_id.name,
                         'date_planned_start': date_planed_start,
+                        'picking_type_id': line.product_id.bom_ids.picking_type_id.id,
+                        'location_src_id': line.product_id.bom_ids.picking_type_id.default_location_src_id.id,
+                        'location_dest_id': line.product_id.bom_ids.picking_type_id.default_location_dest_id.id                        
                         # 'move_line_id': line.id,
                     }
                     mrp_order_id = self.env['mrp.production'].create(mrp_order)
-                    
+
                     mrp_order_id._onchange_move_raw()
                     mrp_order_id._onchange_move_finished()
             lot.write({'state': "confirmado"})
@@ -145,4 +148,3 @@ class QuemenOpLoteLinea(models.Model):
     lot_id = fields.Many2one("quemen.op_lote", "Lote")
     product_id = fields.Many2one('product.product','Producto')
     quantity = fields.Float('Cantidad')
-    
