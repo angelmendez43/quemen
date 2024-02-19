@@ -23,9 +23,38 @@ class MrpProduction(models.Model):
     """ Manufacturing Orders """
     _inherit = 'mrp.production'
 
+    @api.onchange('bom_id', 'product_id', 'product_qty', 'product_uom_id', 'move_raw_ids')
+    def _onchange_move_raw(self):
+        res = super(MrpProduction, self)._onchange_move_raw()
+        for line in self.move_raw_ids:
+            if len(line.product_id.bom_ids) > 0:
+                if line.product_id.bom_ids[0].picking_type_id:
+                    line.location_id = line.product_id.bom_ids[0].picking_type_id.default_location_dest_id.id
+
     def _get_move_raw_values(self, product_id, product_uom_qty, product_uom, operation_id=False, bom_line=False):
         res = super(MrpProduction, self)._get_move_raw_values(product_id, product_uom_qty, product_uom, operation_id, bom_line)
         if res:
             if ('location_id' and 'product_id') in res and (bom_line and bom_line.location_src_id):
                 res['location_id'] = bom_line.location_src_id.id if (bom_line and bom_line.location_src_id) else False,
         return res
+
+    def elminar_lineas_duplicadas(self):
+        listas = self.env['mrp.bom'].search([('active','=',True)])
+        listas_guardadas = []
+        listas_eliminadas = []
+        for l in listas:
+            listas_guardadas.append(l)
+        lineas_eliminar = []
+        if listas_guardadas:
+            for lista in listas_guardadas:
+                if len(lista.bom_line_ids) > 0:
+                    bom_line = lista.bom_line_ids
+                    for linea in bom_line:
+                        if linea.id not in listas_eliminadas:
+                            producto = linea.product_id.id
+                            linea_id = linea.id
+                            linea_eliminar = self.env['mrp.bom.line'].search([('id','!=', linea.id),('product_id','=', linea.product_id.id),('bom_id','=', linea.bom_id.id)])
+                            if len(linea_eliminar) > 0:
+                                for l in linea_eliminar:
+                                    listas_eliminadas.append(l.id)
+                                    l.unlink()
