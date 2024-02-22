@@ -23,7 +23,7 @@ class MrpProduction(models.Model):
     """ Manufacturing Orders """
     _inherit = 'mrp.production'
 
-    lot_id = fields.Many2one('quemen.op_lote','Lote')
+    # lot_id = fields.Many2one('quemen.op_lote','Lote')
 
     @api.onchange('bom_id', 'product_id', 'product_qty', 'product_uom_id', 'move_raw_ids')
     def _onchange_move_raw(self):

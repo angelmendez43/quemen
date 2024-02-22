@@ -123,13 +123,13 @@ class QuemenOpLote(models.Model):
                     logging.warning(line.product_id.name)
                     date_planed_start = datetime.fromisoformat(lot.date_mrp_production.isoformat() + ' 06:00:00')
                     mrp_order = {
-                        'name': line.lot_id.name,
+                        # 'name': line.lot_id.name,
                         'product_id': line.product_id.id,
                         'product_uom_id': line.product_id.uom_id.id,
                         'qty_producing': line.quantity,
                         'product_qty': line.quantity,
                         'bom_id': line.product_id.bom_ids.id,
-                        'lot_id': line.lot_id.id,
+                        'origin': line.lot_id.name,
                         'date_planned_start': date_planed_start,
                         'picking_type_id': line.product_id.bom_ids.picking_type_id.id,
                         'location_src_id': line.product_id.bom_ids.picking_type_id.default_location_src_id.id,
