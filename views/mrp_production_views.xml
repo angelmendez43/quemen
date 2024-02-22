@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="quemen_mrp_production_tree_view" model="ir.ui.view">
+            <field name="name">quemen.mrp.production.tree</field>
+            <field name="model">mrp.production</field>
+            <field name="inherit_id" ref="mrp.mrp_production_tree_view"/>
+            <field name="arch" type="xml">
+                <field name="origin" position="before">
+                    <field name="lot_id"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="quemen_mrp_production_form_view" model="ir.ui.view">
+            <field name="name">quemen.mrp.production.form</field>
+            <field name="model">mrp.production</field>
+            <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+            <field name="arch" type="xml">
+                <field name="user_id" position="after">
+                    <field name="lot_id"/>
+                </field>
+            </field>
+        </record>
+
+    </data>
+</odoo>

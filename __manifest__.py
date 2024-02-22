@@ -20,7 +20,7 @@
         'data/paperformat_ticket.xml',
         'data/planificacion_productos_vencidos.xml',
         # 'security/ir.model.access.csv',
-
+        'views/mrp_production_views.xml',
         'data/ir_sequence_data.xml',
         'views/report_deliveryslip_t.xml',
         'views/reporte_ingreso_inventario_pt.xml',

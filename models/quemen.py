@@ -129,11 +129,11 @@ class QuemenOpLote(models.Model):
                         'qty_producing': line.quantity,
                         'product_qty': line.quantity,
                         'bom_id': line.product_id.bom_ids.id,
-                        'origin': line.lot_id.name,
+                        'lot_id': line.lot_id.id,
                         'date_planned_start': date_planed_start,
                         'picking_type_id': line.product_id.bom_ids.picking_type_id.id,
                         'location_src_id': line.product_id.bom_ids.picking_type_id.default_location_src_id.id,
-                        'location_dest_id': line.product_id.bom_ids.picking_type_id.default_location_dest_id.id                        
+                        'location_dest_id': line.product_id.bom_ids.picking_type_id.default_location_dest_id.id
                         # 'move_line_id': line.id,
                     }
                     mrp_order_id = self.env['mrp.production'].create(mrp_order)
