@@ -53,9 +53,6 @@ class ReportExplosionInsumos(models.AbstractModel):
                                 info['mp'][bom_line.product_id.id] = {'product': bom_line.product_id, 'quantity': 0.00000}
                             info['mp'][bom_line.product_id.id]['quantity'] += (bom_line.product_qty * pt_line.quantity)
 
-
-
-
         logging.warning(products_pt)
         logging.warning(info)
         return [products_pt, info]
