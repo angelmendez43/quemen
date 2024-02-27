@@ -87,7 +87,7 @@
             name="quemen.reporte_salidas"
             paperformat="paperformat_ticket"
         />
-        
+
         <record id="action_report_delivery_quemen" model="ir.actions.report">
             <field name="name">Transferencia ticket</field>
             <field name="model">stock.picking</field>
@@ -98,7 +98,7 @@
             <field name="binding_model_id" ref="model_stock_picking"/>
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="quemen.paperformat_ticket"/>
-        </record>         
+        </record>
 
         <record id="action_report_ingreso_pt" model="ir.actions.report">
             <field name="name">Ingreso inventario producto terminado</field>
@@ -122,6 +122,17 @@
             <field name="binding_model_id" ref="model_quemen_op_lote"/>
             <field name="binding_type">report</field>
         </record>
-        
+
+        <record id="action_report_explosion_insumos" model="ir.actions.report">
+            <field name="name">Explosión de insumos</field>
+            <field name="model">quemen.op_lote</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">quemen.reporte_explosion_insumos</field>
+            <field name="report_file">quemen.reporte_explosion_insumos</field>
+            <field name="print_report_name">'Explosión insumos'</field>
+            <field name="binding_model_id" ref="model_quemen_op_lote"/>
+            <field name="binding_type">report</field>
+        </record>
+
     </data>
 </odoo>

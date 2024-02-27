@@ -10,3 +10,4 @@ from . import reporte_salidas
 from . import reporte_retiros_sesion
 from . import reporte_ingreso_inventario_pt
 from . import reporte_planeacion
+from . import reporte_explosion_insumos

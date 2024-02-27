@@ -27,6 +27,7 @@
         'views/report.xml',
         'views/vale_retiro.xml',
         'views/reporte_planeacion.xml',
+        'views/reporte_explosion_insumos.xml',
         'views/mrp_bom_views.xml',
         # 'views/templates.xml',
         'views/reporte_codigo_barras.xml',

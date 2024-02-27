@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="reporte_explosion_insumos">
+        <t t-call="web.html_container">
+            <t t-call="web.basic_layout">
+                <t t-set="data_report_margin_top" t-value="6"/>
+                <t t-set="data_report_header_spacing" t-value="3"/>
+                <t t-set="data_report_dpi" t-value="110"/>
+
+                <div class="header">
+                    <img src="/web/binary/company_logo"/>
+                </div>   
+                <div class="page">
+                    <t t-foreach="docs" t-as="o">
+                        <center><strong><h2>Explosión de insumos <span t-field="o.name"/></h2></strong></center>
+                        <div class="info_extra">
+                            Fecha creación: <span t-field="o.date"/><br/>
+                            Fecha producción: <span t-field="o.date_mrp_production"/><br/>
+                            Referencia: <span t-field="o.reference"/>
+                        </div>
+
+
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th>Cantidad</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="o.product_ids" t-as="line">
+                                    <td><span t-field="line.product_id.name"/></td>
+                                    <td><span t-field="line.quantity"/></td>
+                                </tr>    
+                            </tbody>     
+                        </table>
+
+                        <div class="titulo"><h2>Insumos</h2></div>
+                        <t t-set="product_sumary_1" t-value="get_info(o)[1]['mp']"/>
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th>Cantidad</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach='product_sumary_1' t-as='mp'>
+                                    <td><span t-esc="product_sumary_1[mp]['product'].name"/></td>
+                                    <td><span t-esc="product_sumary_1[mp]['quantity']" t-options='{"widget": "float", "precision": 5}'/></td>  
+                                </tr>    
+                            </tbody>     
+                        </table>
+                    </t>
+                </div>
+
+            </t>
+        </t>
+    </template>
+</odoo>
