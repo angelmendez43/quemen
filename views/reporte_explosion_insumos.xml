@@ -9,7 +9,7 @@
 
                 <div class="header">
                     <img src="/web/binary/company_logo"/>
-                </div>   
+                </div>
                 <div class="page">
                     <t t-foreach="docs" t-as="o">
                         <center><strong><h2>Explosión de insumos <span t-field="o.name"/></h2></strong></center>
@@ -31,8 +31,8 @@
                                 <tr t-foreach="o.product_ids" t-as="line">
                                     <td><span t-field="line.product_id.name"/></td>
                                     <td><span t-field="line.quantity"/></td>
-                                </tr>    
-                            </tbody>     
+                                </tr>
+                            </tbody>
                         </table>
 
                         <div class="titulo"><h2>Insumos</h2></div>
@@ -47,9 +47,9 @@
                             <tbody>
                                 <tr t-foreach='product_sumary_1' t-as='mp'>
                                     <td><span t-esc="product_sumary_1[mp]['product'].name"/></td>
-                                    <td><span t-esc="product_sumary_1[mp]['quantity']" t-options='{"widget": "float", "precision": 5}'/></td>  
-                                </tr>    
-                            </tbody>     
+                                    <td><span t-esc="product_sumary_1[mp]['quantity_exṕ']" t-options='{"widget": "float", "precision": 5}'/></td>  
+                                </tr>
+                            </tbody>
                         </table>
                     </t>
                 </div>
