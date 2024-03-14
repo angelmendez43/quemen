@@ -86,12 +86,13 @@ class ReportExplosionInsumos(models.AbstractModel):
 
                         list_components.append(new_component.name)
                     else:
+                        logging.warning('# REVIEW: product')
+                        logging.warning(bom_line.product_id.name)
                         if bom_line.product_id.id not in info['mp']:
                             info['mp'][bom_line.product_id.id] = {'product': bom_line.product_id, 'quantity': 0.00000, 'quantity_exṕ': 0.00000}
                         info['mp'][bom_line.product_id.id]['quantity'] += (bom_line.product_qty * pt_line_quantity)
                         info['mp'][bom_line.product_id.id]['quantity_exṕ'] += (bom_line.product_qty * pt_line_quantity * bom_line_product_qty)
 
-            else:
                 component = False
         logging.warning('components search')
         logging.warning(list_components)
