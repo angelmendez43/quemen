@@ -91,6 +91,7 @@ class ReportExplosionInsumos(models.AbstractModel):
                         info['mp'][bom_line.product_id.id]['quantity'] += (bom_line.product_qty * pt_line_quantity)
                         info['mp'][bom_line.product_id.id]['quantity_exṕ'] += (bom_line.product_qty * pt_line_quantity * bom_line_product_qty)
 
+            else:
                 component = False
         logging.warning('components search')
         logging.warning(list_components)
