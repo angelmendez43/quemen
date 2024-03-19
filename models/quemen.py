@@ -145,7 +145,22 @@ class QuemenOpLote(models.Model):
 
 class QuemenOpLoteLinea(models.Model):
     _name = "quemen.op_lote_line"
+    _rec_name = "product_id"
 
     lot_id = fields.Many2one("quemen.op_lote", "Lote")
     product_id = fields.Many2one('product.product','Producto')
     quantity = fields.Float('Cantidad')
+    elaboration_date = fields.Date('Fecha elaboracion')
+    qty_label = fields.Float('Cantidad etiquetas')
+    lot_id = fields.Many2one('stock.production.lot', 'Lote')
+    # wizard_id = fields.Many2one('quemen.reporte_codigo_barras.wizard', 'Wizard')
+
+    @api.onchange('quantity')
+    def _onchange_quantity(self):
+        if self.product_id:
+            self.qty_label = self.quantity
+
+    def write(self, vals):
+        logging.warning('VALS')
+        logging.warning(vals)
+        return super(QuemenOpLoteLinea, self).write(vals)

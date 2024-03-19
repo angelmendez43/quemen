@@ -8,3 +8,4 @@ from . import reloj_checador_wizard
 from . import reporte_entrega_valores
 from . import reporte_salidas
 from . import reporte_retiros_sesion
+from . import reporte_codigo_barras_lote

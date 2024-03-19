@@ -134,5 +134,17 @@
             <field name="binding_type">report</field>
         </record>
 
+
+        <record id="action_report_codigo_barras_lote" model="ir.actions.report">
+            <field name="name">Codigo de barras</field>
+            <field name="model">quemen.op_lote</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">quemen.reporte_codigo_barras_lote</field>
+            <field name="report_file">quemen.reporte_codigo_barras_lote</field>
+            <field name="print_report_name">'Codigo barras'</field>
+            <field name="binding_model_id" ref="model_quemen_op_lote"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="paperformat_codigo_barra"/>
+        </record>
     </data>
 </odoo>
