@@ -87,10 +87,6 @@ class ReportExplosionInsumos(models.AbstractModel):
                             info = self.search_mp(new_component, info ,pt_line_quantity, new_bom_line_product_qty)
                         logging.warning('new_component: ' + bom_line.product_id.name)
                         new_component_stage = bom_line.stage
-                        if new_component.id not in info[new_component_stage]['component']:
-                            info[new_component_stage]['component'][new_component.id] = {'product': new_component, 'quantity': 0.00000, 'quantity_exp': 0.00000}
-                        info[new_component_stage]['component'][new_component.id]['quantity'] += (bom_line.product_qty * pt_line_quantity)
-                        info[new_component_stage]['component'][new_component.id]['quantity_exp'] += (bom_line.product_qty * pt_line_quantity * bom_line_product_qty)
 
                         list_components.append(new_component.name)
                     else:
