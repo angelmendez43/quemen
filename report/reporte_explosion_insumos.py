@@ -33,6 +33,8 @@ class ReportExplosionInsumos(models.AbstractModel):
                 products_pt[pt_line.product_id.id]['quantity'] += pt_line.quantity
 
                 if pt_line.product_id.bom_ids:
+                    if pt_line.product_id.name == "PT - GELATINA YOGURT DE DURAZNO GDE":
+                        logging.warning('producto: PT - GELATINA YOGURT DE DURAZNO GDE------------------')
                     for bom_line in pt_line.product_id.bom_ids[0].bom_line_ids:
                         if bom_line.stage not in info:
                             info[bom_line.stage] = {'component': {}, 'mp': {}}
@@ -43,9 +45,9 @@ class ReportExplosionInsumos(models.AbstractModel):
                             if len(bom_line.product_id.bom_ids) == 0:
                                 raise ValidationError("Producto no contiene lista de materiales" + str(bom_line.product_id.name))
                             if bom_line.product_id.id not in info[bom_line.stage]['component']:
-                                info[bom_line.stage]['component'][bom_line.product_id.id] = {'product': bom_line.product_id, 'quantity': 0.00000, 'quantity_exṕ': 0.00000}
+                                info[bom_line.stage]['component'][bom_line.product_id.id] = {'product': bom_line.product_id, 'quantity': 0.00000, 'quantity_exp': 0.00000}
                             info[bom_line.stage]['component'][bom_line.product_id.id]['quantity'] += (bom_line.product_qty * pt_line.quantity)
-                            info[bom_line.stage]['component'][bom_line.product_id.id]['quantity_exṕ'] += (bom_line.product_qty * pt_line.quantity)
+                            info[bom_line.stage]['component'][bom_line.product_id.id]['quantity_exp'] += (bom_line.product_qty * pt_line.quantity)
                             logging.warning('componente antes')
                             logging.warning(bom_line.product_id.name)
                             stage = bom_line.stage
@@ -53,9 +55,9 @@ class ReportExplosionInsumos(models.AbstractModel):
 
                         else:
                             if bom_line.product_id.id not in info['mp']:
-                                info['mp'][bom_line.product_id.id] = {'product': bom_line.product_id, 'quantity': 0.00000, 'quantity_exṕ':  0.00000}
+                                info['mp'][bom_line.product_id.id] = {'product': bom_line.product_id, 'quantity': 0.00000, 'quantity_exp':  0.00000}
                             info['mp'][bom_line.product_id.id]['quantity'] += (bom_line.product_qty * pt_line.quantity)
-                            info['mp'][bom_line.product_id.id]['quantity_exṕ'] += (bom_line.product_qty * pt_line.quantity)
+                            info['mp'][bom_line.product_id.id]['quantity_exp'] += (bom_line.product_qty * pt_line.quantity)
 
 
 
@@ -70,34 +72,49 @@ class ReportExplosionInsumos(models.AbstractModel):
         new_info = info
         while component:
             logging.warning('WHILE COMPONENT')
-            logging.warning(component)
+            logging.warning(component.name)
             new_component = component
             if len(new_component.bom_ids) > 0:
                 for bom_line in new_component.bom_ids[0].bom_line_ids:
+                    if bom_line.product_id.name == "COMP - Gelatina de yogurt de durazno KG":
+                        logging.warning('COMP; COMP - Gelatina de yogurt de durazno KG**********************')
                     if bom_line.product_id.name[0:4] == "COMP":
                         if len(bom_line.product_id.bom_ids) == 0:
                             raise ValidationError("Producto no contiene lista de materiales" + str(bom_line.product_id.name))
                         new_component = bom_line.product_id
+                        new_bom_line_product_qty = bom_line.product_qty
+                        if len(new_component.bom_ids) > 0:
+                            info = self.search_mp(new_component, info ,pt_line_quantity, new_bom_line_product_qty)
+                        logging.warning('new_component: ' + bom_line.product_id.name)
                         new_component_stage = bom_line.stage
                         if new_component.id not in info[new_component_stage]['component']:
-                            info[new_component_stage]['component'][new_component.id] = {'product': new_component, 'quantity': 0.00000, 'quantity_exṕ': 0.00000}
+                            info[new_component_stage]['component'][new_component.id] = {'product': new_component, 'quantity': 0.00000, 'quantity_exp': 0.00000}
                         info[new_component_stage]['component'][new_component.id]['quantity'] += (bom_line.product_qty * pt_line_quantity)
-                        info[new_component_stage]['component'][new_component.id]['quantity_exṕ'] += (bom_line.product_qty * pt_line_quantity * bom_line_product_qty)
+                        info[new_component_stage]['component'][new_component.id]['quantity_exp'] += (bom_line.product_qty * pt_line_quantity * bom_line_product_qty)
 
                         list_components.append(new_component.name)
                     else:
                         logging.warning('# REVIEW: product')
                         logging.warning(bom_line.product_id.name)
                         if bom_line.product_id.id not in info['mp']:
-                            info['mp'][bom_line.product_id.id] = {'product': bom_line.product_id, 'quantity': 0.00000, 'quantity_exṕ': 0.00000}
+                            info['mp'][bom_line.product_id.id] = {'product': bom_line.product_id, 'quantity': 0.00000, 'quantity_exp': 0.00000}
                         info['mp'][bom_line.product_id.id]['quantity'] += (bom_line.product_qty * pt_line_quantity)
-                        info['mp'][bom_line.product_id.id]['quantity_exṕ'] += (bom_line.product_qty * pt_line_quantity * bom_line_product_qty)
+                        info['mp'][bom_line.product_id.id]['quantity_exp'] += (bom_line.product_qty * pt_line_quantity * bom_line_product_qty)
 
                 component = False
         logging.warning('components search')
         logging.warning(list_components)
 
         return new_info
+
+    def search_mp(self, new_component, info, pt_line_quantity, bom_line_product_qty):
+        for bom_line in new_component.bom_ids[0].bom_line_ids:
+            if bom_line.product_id.name[0:4] != "COMP":
+                if bom_line.product_id.id not in info['mp']:
+                    info['mp'][bom_line.product_id.id] = {'product': bom_line.product_id, 'quantity': 0.00000, 'quantity_exp': 0.00000}
+                info['mp'][bom_line.product_id.id]['quantity'] +=  (bom_line.product_qty * pt_line_quantity)
+                info['mp'][bom_line.product_id.id]['quantity_exp'] += (bom_line.product_qty * pt_line_quantity * bom_line_product_qty)
+        return info
 
     @api.model
     def _get_report_values(self, docids, data=None):
