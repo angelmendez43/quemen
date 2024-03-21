@@ -95,7 +95,7 @@ class ReportExplosionInsumos(models.AbstractModel):
                         if bom_line.product_id.id not in info['mp']:
                             info['mp'][bom_line.product_id.id] = {'product': bom_line.product_id, 'quantity': 0.00000, 'quantity_exp': 0.00000}
                         info['mp'][bom_line.product_id.id]['quantity'] += (bom_line.product_qty * pt_line_quantity)
-                        info['mp'][bom_line.product_id.id]['quantity_exp'] += (bom_line.product_qty * pt_line_quantity * bom_line_product_qty)
+                        info['mp'][bom_line.product_id.id]['quantity_exp'] += ((bom_line.product_qty / bom_line.bom_id.product_qty) * pt_line_quantity * bom_line_product_qty)
 
                 component = False
         logging.warning('components search')
