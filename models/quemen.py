@@ -130,6 +130,7 @@ class QuemenOpLote(models.Model):
                         'product_qty': line.quantity,
                         'bom_id': line.product_id.bom_ids.id,
                         'origin': line.lot_id.name,
+                        'lot_producing_id': line.lot_barcode_id.id,
                         'date_planned_start': date_planed_start,
                         'picking_type_id': line.product_id.bom_ids.picking_type_id.id,
                         'location_src_id': line.product_id.bom_ids.picking_type_id.default_location_src_id.id,
@@ -152,15 +153,10 @@ class QuemenOpLoteLinea(models.Model):
     quantity = fields.Float('Cantidad')
     elaboration_date = fields.Date('Fecha elaboracion')
     qty_label = fields.Float('Cantidad etiquetas')
-    lot_id = fields.Many2one('stock.production.lot', 'Lote')
+    lot_barcode_id = fields.Many2one('stock.production.lot', 'Lote')
     # wizard_id = fields.Many2one('quemen.reporte_codigo_barras.wizard', 'Wizard')
 
     @api.onchange('quantity')
     def _onchange_quantity(self):
         if self.product_id:
             self.qty_label = self.quantity
-
-    def write(self, vals):
-        logging.warning('VALS')
-        logging.warning(vals)
-        return super(QuemenOpLoteLinea, self).write(vals)

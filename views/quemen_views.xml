@@ -201,7 +201,7 @@
                                           <field name="product_id"/>
                                           <field name="quantity"/>
                                           <field name="elaboration_date"/>
-                                          <field name="lot_id" readonly="True"/>
+                                          <field name="lot_barcode_id" readonly="True"/>
                                       </tree>
                                   </field>
 

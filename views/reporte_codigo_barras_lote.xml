@@ -2,12 +2,40 @@
 <odoo>
     <template id="reporte_codigo_barras_lote">
         <t t-call="web.html_container">
-            <div class="article">
+            <t t-set="count" t-value="0"/>
+            <t t-set="lot_list" t-value="create_lot"/>
+            <!-- <span t-esc="lot_list[0]"/> -->
+            <t t-foreach="lot_list" t-as="o">
+                <!-- <span t-esc="lot_list"/> -->
+                    <t>
+                        <div class="page">
+                            <div class="oe_structure"/>
+                            <div class="row">
+                                <div class="col-12">
+                                    <!-- <t t-set="fecha" t-value="fecha_barras(o)"/> -->
+                                    <table class="table table-condensed" style="border-bottom: 0px solid white !important;width: 3in;">
+                                        <!-- Cambio -->
+                                        <td style="text-align: center; vertical-align: middle;border: 0px solid white !important;" class="col-12">
+                                          <!-- % ('Code128', o.product_id.barcode+o.name, 600, 150) -->
+                                            <div t-if="o['lot']" t-esc="o['lot'].name" t-options="{'widget': 'barcode', 'width': 600, 'height': 100, 'img_style': 'width:400px;height:100px;'}"/>
+                                            <span t-esc="o['lot'].name"/><br/>
+                                            <span t-esc="o['product'].name" style="font-size:19px"/><br/>
+                                            <div class="left" style="float: left;font-size:19px">
+                                                ELAB.<br/>
+                                                <span t-esc="o['elab']"/>
+                                            </div>
+                                            <div class="right" style="float: right;font-size:19px">
+                                                CAD.<br/>
+                                                <span t-esc="o['cad']"/>
+                                            </div>
+                                        </td>
 
-                <div class="page">
-                    <center><strong>Hola</strong></center>
-                </div>
-            </div>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+            </t>
 
         </t>
     </template>

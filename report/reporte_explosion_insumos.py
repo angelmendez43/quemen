@@ -82,7 +82,7 @@ class ReportExplosionInsumos(models.AbstractModel):
                         if len(bom_line.product_id.bom_ids) == 0:
                             raise ValidationError("Producto no contiene lista de materiales" + str(bom_line.product_id.name))
                         new_component = bom_line.product_id
-                        new_bom_line_product_qty = bom_line.product_qty
+                        new_bom_line_product_qty = (bom_line.product_qty)
                         if len(new_component.bom_ids) > 0:
                             info = self.search_mp(new_component, info ,pt_line_quantity, new_bom_line_product_qty)
                         logging.warning('new_component: ' + bom_line.product_id.name)
@@ -109,7 +109,7 @@ class ReportExplosionInsumos(models.AbstractModel):
                 if bom_line.product_id.id not in info['mp']:
                     info['mp'][bom_line.product_id.id] = {'product': bom_line.product_id, 'quantity': 0.00000, 'quantity_exp': 0.00000}
                 info['mp'][bom_line.product_id.id]['quantity'] +=  (bom_line.product_qty * pt_line_quantity)
-                info['mp'][bom_line.product_id.id]['quantity_exp'] += (bom_line.product_qty * pt_line_quantity * bom_line_product_qty)
+                info['mp'][bom_line.product_id.id]['quantity_exp'] += ((bom_line.product_qty/bom_line.bom_id.product_qty) * pt_line_quantity * bom_line_product_qty)
         return info
 
     @api.model
