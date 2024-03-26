@@ -68,6 +68,8 @@
     'assets':{
         'point_of_sale.assets': [
             'quemen/static/src/js/models.js',
+            'quemen/static/src/js/Screens/ProductScreen/ProductScreen.js',
+            'quemen/static/src/js/Screens/PaymentScreen/PaymentScreen.js',
         ],
         # 'web.assets_qweb':[
         #     'pos_ticket_mx/static/src/xml/**/*',

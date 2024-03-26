@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from odoo import api, fields, models, SUPERUSER_ID, _
 from datetime import date
-from datetime import datetime
-from odoo.exceptions import UserError
+from datetime import datetime, timedelta
+from odoo.exceptions import UserError, ValidationError
 import logging
 import pytz
 
@@ -90,15 +90,16 @@ class QuemenRetiros(models.Model):
 
 class QuemenOpLote(models.Model):
     _name = "quemen.op_lote"
+    _inherit = ['mail.thread', 'mail.activity.mixin', 'utm.mixin']
 
-    name = fields.Char('Nombre', required=True, copy=False, readonly=True, index=True, default=lambda self: _('New'))
-    date = fields.Date('Fecha')
-    date_mrp_production = fields.Date('Fecha producción')
-    product_ids = fields.One2many('quemen.op_lote_line', 'lot_id', string="Productos")
-    reference = fields.Char('Referencia')
+    name = fields.Char('Nombre', required=True, copy=False, readonly=True, index=True, default=lambda self: _('New'), tracking=True)
+    date = fields.Date('Fecha', tracking=True)
+    date_mrp_production = fields.Date('Fecha producción', tracking=True)
+    product_ids = fields.One2many('quemen.op_lote_line', 'lot_id', string="Productos", tracking=True)
+    reference = fields.Char('Referencia', tracking=True)
     state = fields.Selection(
         [('borrador', 'Borrador'), ('confirmado', 'Confirmado')],
-        'Estado', readonly=True, copy=False, default='borrador')
+        'Estado', readonly=True, copy=False, default='borrador', tracking=True)
 
     @api.model
     def create(self, vals):
@@ -113,13 +114,37 @@ class QuemenOpLote(models.Model):
         result = super(QuemenOpLote, self).create(vals)
         return result
 
+    def create_lot(self):
+        for lot in self:
+            if lot.product_ids and lot.state == "borrador":
+                for line in lot.product_ids:
+                    if len(line.lot_barcode_id) == 0:
+                        elaboration_date = datetime.fromisoformat(line.elaboration_date.isoformat() + ' 06:00:00')
+                        expiration_date = elaboration_date + timedelta(days=line.product_id.expiration_time)
+                        removal_date = elaboration_date + timedelta(days=line.product_id.removal_time)
+                        use_date = elaboration_date + timedelta(days=line.product_id.use_time)
+                        alert_date = elaboration_date + timedelta(days=line.product_id.alert_time)
+                        lot_id = self.env['stock.production.lot'].create({'product_id': line.product_id.id,
+                                                                          'elaboration_date': elaboration_date,
+                                                                          'expiration_date': expiration_date,
+                                                                          'removal_date': removal_date,
+                                                                          'use_date': use_date,
+                                                                          'alert_date': alert_date,
+                                                                          'company_id': 1})
+                        logging.warning('lote')
+                        logging.warning(lot_id)
+                        if lot_id:
+                            line.write({'lot_barcode_id': lot_id})
+
+
     def confirm_lot(self):
         for lot in self:
             logging.warning('LOTE')
             logging.warning(lot)
             if lot.product_ids:
-
                 for line in lot.product_ids:
+                    if len(line.lot_barcode_id) == 0:
+                        raise ValidationError(_('No puede validar productos sin Lote.'))
                     logging.warning(line.product_id.name)
                     date_planed_start = datetime.fromisoformat(lot.date_mrp_production.isoformat() + ' 06:00:00')
                     mrp_order = {
@@ -149,11 +174,14 @@ class QuemenOpLoteLinea(models.Model):
     _rec_name = "product_id"
 
     lot_id = fields.Many2one("quemen.op_lote", "Lote")
-    product_id = fields.Many2one('product.product','Producto')
-    quantity = fields.Float('Cantidad')
-    elaboration_date = fields.Date('Fecha elaboracion')
+    product_id = fields.Many2one('product.product','Producto',tracking=True)
+    quantity = fields.Float('Cantidad',tracking=True)
+    elaboration_date = fields.Date('Fecha elaboracion',tracking=True)
     qty_label = fields.Float('Cantidad etiquetas')
-    lot_barcode_id = fields.Many2one('stock.production.lot', 'Lote')
+    lot_barcode_id = fields.Many2one('stock.production.lot', 'Lote',tracking=True)
+    lot_state = fields.Selection(
+        [('borrador', 'Borrador'), ('confirmado', 'Confirmado')],
+        'Estado', readonly=True, copy=False, related='lot_id.state')
     # wizard_id = fields.Many2one('quemen.reporte_codigo_barras.wizard', 'Wizard')
 
     @api.onchange('quantity')

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from odoo import api, models
+from odoo import api, models, _
+from odoo.exceptions import UserError, ValidationError
 import datetime
 import logging
 
@@ -98,6 +99,9 @@ class CaodigoBarrasLote(models.AbstractModel):
         barcode_lot_list = []
         for line in op_lote_line_ids:
             logging.warning(line)
+            logging.warning(line.lot_barcode_id)
+            if len(line.lot_barcode_id) == 0:
+                raise ValidationError(_('No puede generar códigos de barra con productos sin Lote.'))
             if line.elaboration_date:
                 logging.warning(line.elaboration_date)
                 if line.lot_barcode_id:
@@ -119,27 +123,27 @@ class CaodigoBarrasLote(models.AbstractModel):
                     removal_date = elaboration_date + datetime.timedelta(days=line.product_id.removal_time)
                     use_date = elaboration_date + datetime.timedelta(days=line.product_id.use_time)
                     alert_date = elaboration_date + datetime.timedelta(days=line.product_id.alert_time)
-                    lot_id = self.env['stock.production.lot'].create({'product_id': line.product_id.id,
-                                                                      'elaboration_date': elaboration_date,
-                                                                      'expiration_date': expiration_date,
-                                                                      'removal_date': removal_date,
-                                                                      'use_date': use_date,
-                                                                      'alert_date': alert_date,
-                                                                      'company_id': 1})
-                    logging.warning('lote')
-                    logging.warning(lot_id)
-                    if lot_id:
-                        line.write({'lot_barcode_id': lot_id})
+                    # lot_id = self.env['stock.production.lot'].create({'product_id': line.product_id.id,
+                    #                                                   'elaboration_date': elaboration_date,
+                    #                                                   'expiration_date': expiration_date,
+                    #                                                   'removal_date': removal_date,
+                    #                                                   'use_date': use_date,
+                    #                                                   'alert_date': alert_date,
+                    #                                                   'company_id': 1})
+                    # logging.warning('lote')
+                    # logging.warning(lot_id)
+                    # if lot_id:
+                    #     line.write({'lot_barcode_id': lot_id})
 
                 dates = self.fecha_barras(line.lot_barcode_id)
-                date_numbers = self.fecha_barras_numero(line.lot_barcode_id)
-                logging.warning(date_numbers)
-                barcode_number = line.product_id.barcode + str(date_numbers['elab']) +  str(date_numbers['cad'])
+                # date_numbers = self.fecha_barras_numero(line.lot_barcode_id)
+                # logging.warning(date_numbers)
+                # barcode_number = line.product_id.barcode + str(date_numbers['elab']) +  str(date_numbers['cad'])
                 barcode_lot.append({
                     'product': line.product_id,
                     'elab':  dates['elab'],
                     'cad': dates['cad'],
-                    'barcode_number': barcode_number,
+                    # 'barcode_number': barcode_number,
                     'lot': line.lot_barcode_id,
                     'quantity': line.qty_label,
                 })
@@ -152,7 +156,7 @@ class CaodigoBarrasLote(models.AbstractModel):
                     'product': bc['product'],
                     'elab':  bc['elab'],
                     'cad': bc['cad'],
-                    'barcode_number': bc['barcode_number'],
+                    # 'barcode_number': bc['barcode_number'],
                     'lot': bc['lot'],
                     'quantity': bc['quantity'],
                 }

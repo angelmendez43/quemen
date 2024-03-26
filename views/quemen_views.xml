@@ -88,25 +88,25 @@
             parent="hr.menu_hr_employee_payroll"
             sequence="75"/>
 
-            <!-- <record id="view_quemen_retiros_tree" model="ir.ui.view">
+            <record id="view_quemen_retiros_tree" model="ir.ui.view">
                 <field name="name">quemen.retiros.tree</field>
-                <field name="model">quemen.retiros</field>
+                <field name="model">quemen.retiros_efectivo</field>
                 <field name="type">tree</field>
                 <field name="arch" type="xml">
                     <tree string="Retiros POS">
                         <field name="name"/>
-                        <field name="session_id"/>
-                        <field name="fecha_hora"/>
+                        <!-- <field name="session_id"/> -->
+                        <!-- <field name="fecha_hora"/>
                         <field name="usuario_id"/>
                         <field name="motivo"/>
-                        <field name="total"/>
+                        <field name="total"/> -->
                     </tree>
                 </field>
             </record>
 
             <record id="view_quemen_retiros_form" model="ir.ui.view">
                 <field name="name">quemen.retiros.form</field>
-                <field name="model">quemen.retiros</field>
+                <field name="model">quemen.retiros_efectivo</field>
                 <field name="arch" type="xml">
                     <form string="Retiros">
 
@@ -118,21 +118,21 @@
                             </div>
                             <group>
                                 <group>
-                                    <field name="session_id"/>
-                                    <field name="motivo"/>
-                                    <field name="usuario_id"/>
+                                    <!-- <field name="session_id"/> -->
+                                    <!-- <field name="motivo"/>
+                                    <field name="usuario_id"/> -->
                                 </group>
-                                <group>
+                                <!-- <group>
                                     <field name="cash_box_id"/>
                                     <field name="fecha_hora"/>
                                     <field name="total"/>
-                                </group>
+                                </group> -->
                             </group>
 
                         </sheet>
                     </form>
                 </field>
-            </record> -->
+            </record>
 
             <record id="view_quemen_promociones_form" model="ir.ui.view">
                 <field name="name">quemen.promociones.form</field>
@@ -181,6 +181,7 @@
                     <form string="Lote">
                         <header>
                             <button name="confirm_lot" string="Confirmar" class="oe_highlight" type="object" states="borrador" />
+                            <button name="create_lot" string="Crear Lotes" class="oe_highlight" type="object" states="borrador" />
                             <field name="state" widget="statusbar" statusbar_visible="boraddor,confirmado" />
                         </header>
                         <sheet>
@@ -196,10 +197,11 @@
                                     <field name="reference" attrs="{'readonly': [('state','=','confirmado')]}"/>
                                 </group>
 
-                                  <field name="product_ids" attrs="{'readonly': [('state','=','confirmado')]}">
+                                  <field name="product_ids">
                                       <tree string="Productos" editable="bottom">
-                                          <field name="product_id"/>
-                                          <field name="quantity"/>
+                                          <field name="lot_state" invisible="1"/>
+                                          <field name="product_id" attrs="{'readonly': [('lot_state','=','confirmado')]}"/>
+                                          <field name="quantity" attrs="{'readonly': [('lot_state','=','confirmado')]}"/>
                                           <field name="elaboration_date"/>
                                           <field name="lot_barcode_id" readonly="True"/>
                                       </tree>
@@ -208,7 +210,13 @@
                             </group>
 
                         </sheet>
+                        <div class="oe_chatter">
+                            <field name="message_follower_ids"/>
+                            <field name="activity_ids"/>
+                            <field name="message_ids"/>
+                        </div>
                     </form>
+
                 </field>
             </record>
 
@@ -225,19 +233,19 @@
                     </tree>
                 </field>
             </record>
-            <!-- <record id="quemen_retiros_view_search" model="ir.ui.view">
+            <record id="quemen_retiros_view_search" model="ir.ui.view">
                 <field name="name">quemen.retiros.search</field>
-                <field name="model">quemen.retiros</field>
+                <field name="model">quemen.retiros_efectivo</field>
                 <field name="arch" type="xml">
                     <search string="Retiros">
                         <field name="name"/>
-                        <field name="fecha_hora"/>
-                        <field name="session_id"/>
-                        <field name="motivo"/>
-                        <field name="total"/>
+                        <!-- <field name="fecha_hora"/> -->
+                        <!-- <field name="session_id"/> -->
+                        <!-- <field name="motivo"/>
+                        <field name="total"/> -->
                     </search>
                 </field>
-            </record> -->
+            </record>
 
             <record id="quemen_promociones_view_search" model="ir.ui.view">
                 <field name="name">quemen.promociones.search</field>
@@ -263,9 +271,9 @@
                 </field>
             </record>
 
-            <!-- <record id="action_quemen_retiros" model="ir.actions.act_window">
+            <record id="action_quemen_retiros" model="ir.actions.act_window">
                 <field name="name">Retiros POS</field>
-                <field name="res_model">quemen.retiros</field>
+                <field name="res_model">quemen.retiros_efectivo</field>
                 <field name="view_mode">tree,form</field>
                 <field name="domain"></field>
                 <field name="context"></field>
@@ -275,7 +283,7 @@
                    Click para crear un retiro
                   </p>
                 </field>
-            </record> -->
+            </record>
 
             <record id="action_quemen_promociones" model="ir.actions.act_window">
                 <field name="name">Promociones</field>
@@ -305,12 +313,12 @@
                 </field>
             </record>
 
-            <!-- <menuitem
+            <menuitem
                 id="menu_quemen_retiros"
                 name="Retiros POS"
                 action="action_quemen_retiros"
                 parent="point_of_sale.menu_point_of_sale"
-                sequence="75"/> -->
+                sequence="75"/>
 
             <menuitem
                 id="menu_quemen_promociones"
