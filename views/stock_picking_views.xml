@@ -36,4 +36,16 @@
             </field>
         </record>
 
+        <record id="quemen_view_stock_picking_form" model="ir.ui.view">
+            <field name="name">stock.picking.form</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form" />
+            <field name="groups_id" eval="[(6, 0, [ref('quemen.quemen_tiendas') ])]"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='location_dest_id']" position="attributes">
+                    <attribute name="domain">[('name','in',['Entrada'])]</attribute>
+                </xpath>
+            </field>
+        </record>
+
 </odoo>
