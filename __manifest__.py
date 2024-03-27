@@ -37,7 +37,7 @@
         'wizard/reporte_codigo_barras_lote_wizard.xml',
         # 'views/pos_box.xml',
         # 'views/reporte_entrega_valores.xml',
-        # 'data/quemen_data.xml',
+        'data/quemen_data.xml',
         'views/quemen_views.xml',
         # 'views/stock_quant_views.xml',
         'views/pos_session_view.xml',
