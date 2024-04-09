@@ -123,6 +123,17 @@
             <field name="binding_type">report</field>
         </record>
 
+        <record id="action_report_explosion_insumos_costo" model="ir.actions.report">
+            <field name="name">Explosión de insumos con costo</field>
+            <field name="model">quemen.op_lote</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">quemen.reporte_explosion_insumos_costo</field>
+            <field name="report_file">quemen.reporte_explosion_insumos_costo</field>
+            <field name="print_report_name">'Explosión insumos costo'</field>
+            <field name="binding_model_id" ref="model_quemen_op_lote"/>
+            <field name="binding_type">report</field>
+        </record>
+
         <record id="action_report_explosion_insumos" model="ir.actions.report">
             <field name="name">Explosión de insumos</field>
             <field name="model">quemen.op_lote</field>
