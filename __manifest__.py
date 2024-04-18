@@ -14,7 +14,7 @@
     'category': 'Uncategorized',
     'version': '1.01',
 
-    'depends': ['stock','base','point_of_sale','hr_payroll','mrp','sale_stock','l10n_mx_edi_stock', 'pos_coupon','l10n_mx_edi_stock'],
+    'depends': ['stock','base','point_of_sale','hr_payroll','mrp','sale_stock','l10n_mx_edi_stock', 'pos_coupon','l10n_mx_edi_stock','l10n_mx_edi_extended_40'],
 
     'data': [
         'data/paperformat_ticket.xml',
@@ -62,7 +62,7 @@
         # 'views/report_quemen.xml',
         # 'views/reportes_retiro_view.xml',
         # 'views/reporte_retiros_sesion.xml',
-        'views/recibo_entrega.xml',
+        # 'views/recibo_entrega.xml',
         'views/product_template_extra_fields_views.xml'
 
     ],
