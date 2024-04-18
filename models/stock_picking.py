@@ -27,9 +27,18 @@ class Picking(models.Model):
         # else:
         #     raise UserError(_('No tiene permisos para validar'))
 
+    @api.model
+    def create(self, vals):
+        res = super(Picking, self).create(vals)
+        if res:
+            if res.picking_type_id and res.picking_type_id.picking_partner_id and res.picking_type_id.tipo_transporte:
+                res.write({'partner_id': res.picking_type_id.picking_partner_id.id})
+                res.write({'l10n_mx_edi_transport_type': res.picking_type_id.tipo_transporte})
+        return res
+
     def button_validate(self):
         res = super(Picking, self).button_validate()
-        
+
         logging.warning('button_validate')
         logging.warning(self.picking_type_id.tipo_operacion_porcion_id)
         if self.picking_type_id.tipo_operacion_porcion_id:
@@ -127,7 +136,7 @@ class Picking(models.Model):
                 'lot_id': lote2_id.id
                 })
         return transferencia_id
-                
+
     def enviando_producto(self):
         lista_id = {}
         lista_objeto = {}
@@ -326,3 +335,5 @@ class StockPickingType(models.Model):
     tipo_operacion_caducidad_id = fields.Many2one('stock.picking.type', string='Tipo operacion caducidad')
     # porciones = fields.Boolean('Porciones?')
     tipo_operacion_porcion_id = fields.Many2one('stock.picking.type', string='Tipo operacion porcion')
+    picking_partner_id = fields.Many2one('res.partner','Contacto')
+    tipo_transporte = fields.Selection([('00', 'Sin uso de Carreteras Federales'), ('01', 'Autotransporte Federal')], string='Tipo de transporte')

@@ -19,7 +19,7 @@ odoo.define('quemen.PedidoEspecialButton', function(require) {
                 console.log('Pedido especial')
                 const { confirmed, payload } = await Gui.showPopup('PedidoEspecialPopup', {
                                       title: this.env._t('Pedido especial'),
-                
+
                                   });
                 if (confirmed){
                     console.log('Confirmado')
@@ -33,7 +33,7 @@ odoo.define('quemen.PedidoEspecialButton', function(require) {
                     var observaciones = document.getElementById("observaciones_id");
                     var autorizo = document.getElementById("autorizo_id");
                     var sucursal_entrega = document.getElementById("entrega_id");
-                    var fecha_hora_actual1 = new Date(); 
+                    var fecha_hora_actual1 = new Date();
                     console.log('fecha')
                     console.log(fecha.value)
                     var fecha_actual1 = fecha_hora_actual1.getDate();
@@ -58,8 +58,8 @@ odoo.define('quemen.PedidoEspecialButton', function(require) {
                 }
 
                 var dicc_productos_especiales = {};;
-                
-        
+
+
                     if (!(selectedOrderline.product.id in dicc_productos_especiales)) {
                       dicc_productos_especiales[selectedOrderline.product.id]={
                         'nombre_producto':selectedOrderline.product.display_name,
@@ -71,24 +71,24 @@ odoo.define('quemen.PedidoEspecialButton', function(require) {
                         'estado': false,
                       }
                     }
-        
+
                     if (selectedOrderline.product.id in dicc_productos_especiales) {
                       dicc_productos_especiales[selectedOrderline.product.id]['cantidad'] += selectedOrderline.quantity;
                       dicc_productos_especiales[selectedOrderline.product.id]['precio_total'] = (dicc_productos_especiales[selectedOrderline.product.id]['cantidad'] * dicc_productos_especiales[selectedOrderline.product.id]['precio_unitario']);
                       dicc_productos_especiales[selectedOrderline.product.id]['total_con_iva'] = (dicc_productos_especiales[selectedOrderline.product.id]['cantidad'] * dicc_productos_especiales[selectedOrderline.product.id]['precio_unitario_con_iva']);
                     }
 
-            
+
                 order.dicc_productos_especiales = dicc_productos_especiales
                 order.set_dicc_prod_especiales(dicc_productos_especiales);
-                
+
                 // this.trigger('close-popup');
                 // this.showScreen('SplitBillScreen');
             }
         }
     }
     PedidoEspecialButton.template = 'PedidoEspecialButton';
-    
+
     ProductScreen.addControlButton({
         component: PedidoEspecialButton,
         condition: function() {
