@@ -89,9 +89,6 @@
             'quemen/static/src/xml/pos_ticket_pedido_especial.xml',
             'quemen/static/src/xml/Screens/ReceiptScreen/SpecialOrderReceipt.xml',
         ],
-        # 'web.assets_qweb':[
-        #     'pos_ticket_mx/static/src/xml/**/*',
-        # ],
     },
     'license': 'LGPL-3',
 }
