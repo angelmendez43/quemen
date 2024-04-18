@@ -7,7 +7,7 @@ from . import hr
 from . import pos_config
 # from . import account_bank_statement
 from . import pos_session
-# from . import pos_order
+from . import pos_order
 from . import stock_quant
 from . import product_template_extra_fields
 from . import mrp_production

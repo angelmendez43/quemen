@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="quemen_view_form_pos_order" model="ir.ui.view">
+        <field name="name">quemen.view.form.pos.order</field>
+        <field name="model">pos.order</field>
+        <field name="inherit_id" ref="point_of_sale.view_pos_pos_form"/>
+        <field name="arch" type="xml">
+          <page name="payments" position="after">
+            <page name="pedido_especial" string="Pedido especial">  
+                <!-- <field name="pedido_especial"/> -->
+                <group>
+                    <field name="fecha_especial"/>
+                    <field name="hora_especial"/>
+                    <field name="observaciones_especial"/>
+                    <field name="sucursal_entrega"/>
+                    <field name="autorizo_especial"/>
+                </group>    
+            </page>    
+          </page>
+        </field>
+    </record>
+</odoo>

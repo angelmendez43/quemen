@@ -13,7 +13,7 @@ class PosConfig(models.Model):
     # promociones_ids = fields.Many2many('quemen.promociones','quemen_promociones_rel',string="Promociones")
     producto_porciones = fields.Many2one('stock.picking.type', string="tipo de operacion entrada porciones")
     ubicacion_id = fields.Many2one('stock.location', 'Ubicaciíon',store=True, related='picking_type_id.default_location_src_id' )
-
+    terminos_condiciones = fields.Text(string="Terminos y condiciones para pedido espcial: ")
 
     # cupones no se migra
     # envio salida vencimiento pendiente

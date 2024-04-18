@@ -11,7 +11,16 @@ odoo.define('quemen.ProductScreen', function(require) {
         class extends ProductScreen {
             constructor(obj, options) {
                 super(...arguments);
-            }            
+            }
+            async _barcodeProductAction(code){
+                const product = await this._getProductByBarcode(code);
+                if (!product) {
+                    return false;
+                }
+
+                var action = super._barcodeProductAction(...arguments);
+                return action
+            }
             async _getProductByBarcode(code) {
                 console.log('QuemenProductScreen')
                 var product_barcode = super._getProductByBarcode(...arguments);
@@ -65,25 +74,25 @@ odoo.define('quemen.ProductScreen', function(require) {
                     console.log(this)
                     if (ProductStock.length == 1){
 
-                        if (ProductStock[0].quantity > 0){
+                        if (ProductStock[0].available_quantity > 0){
                             await this.env.pos._addProducts(FoundProduct, false);
                             // assume that the result is unique.
                             product_barcode = this.env.pos.db.get_product_by_id(FoundProduct[0]);
                             return product_barcode;
                         }else{
-                            Gui.showPopup('ErrorPopup', {
-                                title: _t('Existencias'),
-                                body: _t('No hay existencias de producto')
+                             await Gui.showPopup('ErrorPopup', {
+                                'title': _t("POS error"),
+                                'body': _t("No hay existencias de producto."),
                             });
-                            return
+                            return false;                           
                         }
                         
                     }else{
-                            Gui.showPopup('ErrorPopup', {
-                                title: _t('Inválido'),
-                                body: _t('Lote inválido')
+                            await Gui.showPopup('ErrorPopup', {
+                                'title': _t("POS error"),
+                                'body': _t("Lote inválido."),
                             });
-                            return
+                            return false; 
                         
                     }
                     

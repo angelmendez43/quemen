@@ -11,5 +11,7 @@ from . import reporte_retiros_sesion
 from . import reporte_ingreso_inventario_pt
 from . import reporte_planeacion
 from . import reporte_explosion_insumos
-from . import reporte_codigo_barras_lote
 from . import reporte_explosion_insumos_costo
+from . import reporte_codigo_barras_lote
+from . import reporte_corte_caja_carta
+from . import reporte_corte_caja_ticket

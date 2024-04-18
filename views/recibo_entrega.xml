@@ -1,6 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <template id="quemen_l10n_mx_edi_cartaporte_report_delivery_document" inherit_id="l10n_mx_edi_stock.l10n_mx_edi_cartaporte_report_delivery_document">
+        <xpath expr="//xpath[2]" position="replace">
+            <t t-if="o.l10n_mx_edi_status == 'sent'">
+                <th name="th_sm_uom_unspsc_code"><strong>Hola</strong></th>
+                <th name="th_sm_weight"><strong>Weight</strong></th>
+        </t>
+        </xpath>
+        <xpath expr="//div[@id='complement']" position="replace">
+                <center>
+                <div class="row border-bottom mt-3 pt-2 pb-3" id='complement'>
+                    <div t-if="cfdi_vals.get('sello')" class="barcode col-3">
+                        <img alt="Barcode" t-att-src="'/report/barcode/?type=QR&amp;value=%s&amp;width=180&amp;height=180' % quote_plus(
+                            'https://verificacfdi.facturaelectronica.sat.gob.mx/default.aspx?' + keep_query(
+                                id=cfdi_vals.get('uuid'), re=cfdi_vals.get('supplier_rfc'), rr=cfdi_vals.get('customer_rfc'), tt=0.00)
+                                + '&amp;fe=%s' % quote_plus(cfdi_vals['sello'][-8:], 'utf-8', 'strict', '=/').replace('%2B', '+'))"/>
+                    </div>
+                </div>
+                
+                <div class="row border-bottom mt-3 pt-2 pb-3" id='complement'>
+                    <div class="complement-details col-9">
+                        <div class="digital-stamp">
+                            <span>Digital stamp of the emitter</span>
+                        </div>
+                        <div class="digital-stamp-content">
+                            <span t-esc="cfdi_vals.get('sello')"/>
+                        </div>
+                        <div class="digital-stamp">
+                            <span>Digital stamp SAT</span>
+                        </div>
+                        <div class="digital-stamp-content">
+                            <span t-esc="cfdi_vals.get('sello_sat')"/>
+                        </div>
+                        <div class="digital-stamp">
+                            <span>Original chain complement of digital certification SAT</span>
+                        </div>
+                        <div class="digital-stamp-content">
+                            <span class="nowrap" t-esc="cfdi_vals.get('cadena')"/>
+                        </div>
+                        <div class="digital-stamp">
+                            <span>Extra Info</span>
+                        </div>
+                        <div class="digital-stamp-content">
+                            <span>Emitter certificate:</span> <span t-esc="cfdi_vals.get('certificate_number')"/>
+                            <span> | SAT Certificate:</span> <span t-esc="cfdi_vals.get('certificate_sat_number')"/>
+                            <span> | Expedition place:</span> <span t-esc="cfdi_vals.get('expedition')"/>
+                            <span> | Fiscal Regime:</span><span t-esc="cfdi_vals.get('fiscal_regime')"/>
+                            <span> | Emission Date:</span> <span t-esc="cfdi_vals.get('emission_date_str')"/>
+                            <span> | Certification Date:</span> <span t-esc="cfdi_vals.get('stamp_date')"/>
+                            <span> | Fiscal Folio:</span> <span t-esc="cfdi_vals.get('uuid')"/>
+                        </div>
+                        <div class="digital-stamp-content text-center">
+                            <strong>This document is a printed representation of a CFDI</strong>
+                        </div>
+                    </div>
+                </div>
+                </center>    
+          
+        </xpath>    
+    </template>    
     <template id="report_delivery_document_extended" inherit_id="stock.report_delivery_document">
+        <xpath expr="//t[@t-call='web.internal_layout']" position="attributes">
+            <attribute name="t-call">web.basic_layout</attribute>
+        </xpath>    
         <xpath expr="//div[@class='page']" position="after">
            <div class="footer-signatures" style="page-break-inside: avoid;">
                 <div style="margin-top: 60px; text-align: center;">

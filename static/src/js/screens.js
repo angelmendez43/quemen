@@ -304,6 +304,12 @@ screens.ActionpadWidget.include({
     // },
 });
 
+screens.ReceiptScreenWidget.include({
+  render_receipt: function() {
+    this.$('.pos-receipt-container-ticket').html(QWeb.render('TicketPedidoEspecial', this.get_receipt_render_env()));
+    this._super();
+  },
+});
 
 screens.PaymentScreenWidget.include({
     validate_order: function(force_validation) {
@@ -537,6 +543,8 @@ var TipoVentaButton = screens.ActionButtonWidget.extend({
     },
 
 });
+
+    
 
 screens.define_action_button({
     'name': 'tipo_venta',

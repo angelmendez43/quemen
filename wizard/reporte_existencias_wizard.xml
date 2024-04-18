@@ -23,19 +23,13 @@
         </record>
 
 
-
         <act_window id="quemen_action_reporte_existencias"
             name="Reporte de existencias"
+            binding_model="pos.session"
             res_model="quemen.reporte_existencias.wizard"
-            binding_model="pos.order"
             view_mode="form" target="new"/>
 
-            <!-- <act_window id="window_planilla" name="Planilla" res_model="hr_gt.planilla.wizard" src_model="account.journal" view_mode="form" target="new"/> -->
-
-
-            <!-- <report id="action_planilla" model="hr_gt.planilla.wizard" string="Planilla" report_type="qweb-pdf" name="l10n_gt_extra.reporte_compras" file="l10n_gt_extra.reporte_compras"/> -->
-            <menuitem action="quemen_action_reporte_existencias" id="menu_existencias" parent="point_of_sale.menu_point_rep"/>
-            <!-- <report id="action_reporte_productos_labor_venta" model="point_of_sale.menu_point_rep" string="Reporte de productos para labor de venta" report_type="qweb-pdf" name="quemen.reporte_productos_labor_venta" file="quemen.reporte_productos_labor_venta" paperformat="paperformat_ticket"/> -->
+            <menuitem action="quemen_action_reporte_existencias" id="menu_existencias" parent="quemen.menu_quemen_reporte_tiendas"/>
 
 
     </data>

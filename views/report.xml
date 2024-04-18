@@ -12,23 +12,23 @@
             paperformat="paperformat_codigo_barra"
         />
 
-        <report id="action_reporte_productos_labor_venta"
+        <!-- <report id="action_reporte_productos_labor_venta"
             model="quemen.reporte_productos_labor_venta.wizard"
             string="Reporte de productos para labor de ventas"
             report_type="qweb-pdf"
             name="quemen.reporte_productos_labor_venta"
             file="quemen.reporte_productos_labor_venta"
             paperformat="paperformat_ticket"
-            />
+            /> -->
 
-        <report id="action_reporte_existencias"
+        <!-- <report id="action_reporte_existencias"
             model="quemen.reporte_existencias.wizard"
             string="Reporte de existencias"
             report_type="qweb-pdf"
             name="quemen.reporte_existencias"
             file="quemen.reporte_existencias"
             paperformat="paperformat_ticket"
-            />
+            /> -->
 
             <report id="action_reporte_formato_salidas"
                 model="quemen.reporte_formato_salidas.wizard"
@@ -48,14 +48,14 @@
             name="quemen.vale_retiro"
             paperformat="paperformat_ticket_vale"
         />
-        <report id="action_reporte_entrega_valores"
+        <!-- <report id="action_reporte_entrega_valores"
             model="quemen.reporte_entrega_valores.wizard"
             string="Reporte de entrega de valores"
             report_type="qweb-pdf"
             name="quemen.reporte_entrega_valores"
             file="quemen.reporte_entrega_valores"
             paperformat="paperformat_ticket"
-            />
+            /> -->
 
             <!-- <report
                 string="Lot/Serial Number (PDF)"
@@ -88,6 +88,108 @@
             paperformat="paperformat_ticket"
         />
 
+        <!-- <report id="action_reporte_entrega_valores"
+            model="quemen.reporte_entrega_valores.wizard"
+            string="Reporte de entrega de valores"
+            report_type="qweb-pdf"
+            name="quemen.reporte_entrega_valores"
+            file="quemen.reporte_entrega_valores"
+            paperformat="paperformat_ticket"
+            /> -->
+
+        <!-- <report
+            id="quemen_vale_retiro"
+            string="Vale de retiro"
+            model="quemen.retiros"
+            report_type="qweb-pdf"
+            file="quemen.vale_retiro"
+            name="quemen.vale_retiro"
+            paperformat="paperformat_ticket_vale"
+        /> -->
+        <!-- <report
+          id="reporte_corte_caja_carta"
+          string="Corte de caja Carta"
+          model="pos.session"
+          report_type="qweb-pdf"
+          file="quemen_reportes.reporte_corte_caja_carta"
+          name="quemen_reportes.reporte_corte_caja_carta"
+          /> -->
+
+        <record id="quemen_reporte_corte_caja_ticket" model="ir.actions.report">
+            <field name="name">Corte de caja ticket</field>
+            <field name="model">pos.session</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">quemen.reporte_corte_caja_ticket</field>
+            <field name="report_file">quemen.reporte_corte_caja_ticket</field>
+            <field name="print_report_name">'Corte de caja ticket'</field>
+            <field name="binding_model_id" ref="model_pos_session"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="quemen.paperformat_ticket"/>
+        </record> 
+        
+        <record id="quemen_reporte_corte_caja_carta" model="ir.actions.report">
+            <field name="name">Corte de caja carta</field>
+            <field name="model">pos.session</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">quemen.reporte_corte_caja_carta</field>
+            <field name="report_file">quemen.reporte_corte_caja_carta</field>
+            <field name="print_report_name">'Corte de caja carta'</field>
+            <field name="binding_model_id" ref="model_pos_session"/>
+            <field name="binding_type">report</field>
+        </record> 
+
+        
+        <record id="quemen_vale_retiro" model="ir.actions.report">
+            <field name="name">Vale de retiro</field>
+            <field name="model">quemen.retiros_efectivo</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">quemen.vale_retiro</field>
+            <field name="report_file">quemen.vale_retiro</field>
+            <field name="print_report_name">'Vale de retiro'</field>
+            <field name="binding_model_id" ref="quemen.model_quemen_retiros_efectivo"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="quemen.paperformat_ticket"/>
+        </record>  
+
+        
+        <record id="action_reporte_entrega_valores" model="ir.actions.report">
+            <field name="name">Reporte entrega valores</field>
+            <field name="model">pos.session</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">quemen.reporte_entrega_valores</field>
+            <field name="report_file">quemen.reporte_entrega_valores</field>
+            <field name="print_report_name">'Reporte entrega valores'</field>
+            <field name="binding_model_id" ref="model_pos_session"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="quemen.paperformat_ticket"/>
+        </record>        
+
+  
+        <record id="action_reporte_productos_labor_venta" model="ir.actions.report">
+            <field name="name">Reporte producto para labor venta</field>
+            <field name="model">pos.order</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">quemen.reporte_productos_labor_venta</field>
+            <field name="report_file">quemen.reporte_productos_labor_venta</field>
+            <field name="print_report_name">'Reporte productos labor ventas'</field>
+            <field name="binding_model_id" ref="model_pos_session"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="quemen.paperformat_ticket"/>
+        </record>
+
+        <record id="action_reporte_existencias" model="ir.actions.report">
+            <field name="name">Reporte de existencias</field>
+            <field name="model">pos.session</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">quemen.reporte_existencias</field>
+            <field name="report_file">quemen.reporte_existencias</field>
+            <field name="print_report_name">'Reporte existencias'</field>
+            <field name="binding_model_id" ref="model_pos_session"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="quemen.paperformat_ticket"/>
+        </record>
+
+        
         <record id="action_report_delivery_quemen" model="ir.actions.report">
             <field name="name">Transferencia ticket</field>
             <field name="model">stock.picking</field>
@@ -133,7 +235,7 @@
             <field name="binding_model_id" ref="model_quemen_op_lote"/>
             <field name="binding_type">report</field>
         </record>
-
+        
         <record id="action_report_explosion_insumos" model="ir.actions.report">
             <field name="name">Explosión de insumos</field>
             <field name="model">quemen.op_lote</field>

@@ -1,27 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-  <!-- <record id="quemen_validar_envio_tienda" model="res.groups">
-     <field name="name">Validar envio tiendas</field>
- </record>
+        <!-- <record id="quemen_validar_envio_tienda" model="res.groups">
+           <field name="name">Validar envio tiendas</field>
+       </record>
 
-<record id="quemen_usuario_pos_config" model="ir.rule">
-      <field name="name">Regla permisos de usuario pos.config</field>
-      <field name="model_id" ref="point_of_sale.model_pos_config"/>
-      <field name="domain_force">[('id', '=', user.pos_id.id)]</field>
-      <field name="groups" eval="[(4, ref('point_of_sale.group_pos_user'))]"/>
-</record>
+      <record id="quemen_usuario_pos_config" model="ir.rule">
+            <field name="name">Regla permisos de usuario pos.config</field>
+            <field name="model_id" ref="point_of_sale.model_pos_config"/>
+            <field name="domain_force">[('id', '=', user.pos_id.id)]</field>
+            <field name="groups" eval="[(4, ref('point_of_sale.group_pos_user'))]"/>
+      </record>
 
-<record id="quemen_administrador_pos_config" model="ir.rule">
-      <field name="name">Regla permisos de administrador pos.config</field>
-      <field name="model_id" ref="point_of_sale.model_pos_config"/>
-      <field name="domain_force">[(1,'=',1)]</field>
-      <field name="groups" eval="[(4, ref('point_of_sale.group_pos_manager'))]"/>
-</record> -->
+      <record id="quemen_administrador_pos_config" model="ir.rule">
+            <field name="name">Regla permisos de administrador pos.config</field>
+            <field name="model_id" ref="point_of_sale.model_pos_config"/>
+            <field name="domain_force">[(1,'=',1)]</field>
+            <field name="groups" eval="[(4, ref('point_of_sale.group_pos_manager'))]"/>
+      </record> -->
 
-  <record id="quemen_tiendas" model="res.groups">
-     <field name="name">Tiendas</field>
- </record>
+        <record id="quemen_tiendas" model="res.groups">
+           <field name="name">Tiendas</field>
+       </record>
 
-
+        <record id="quemen_pos_session_factura_global" model="ir.actions.server">
+            <field name="name">Generar factura global</field>
+            <field name="model_id" ref="point_of_sale.model_pos_session"/>
+            <field name="binding_model_id" ref="point_of_sale.model_pos_session"/>
+            <field name="binding_view_types">list</field>
+            <field name="state">code</field>
+            <field name="code">
+            records.generar_factura_global(records)
+            </field>
+        </record>
+    
 </odoo>

@@ -9,7 +9,6 @@
                 <form string="Productos labor de venta">
                     <group>
                         <field name="tienda_id"/>
-                        <field name="fecha_vencimiento"/>
                     </group>
                     <footer>
                         <!-- <button name="print_report" string="Print"  type="object" class="btn-primary"/> -->
@@ -24,16 +23,11 @@
 
         <act_window id="quemen_action_reporte_productos_labor_venta"
             name="Reporte de productos para labor de venta"
-            res_model="quemen.reporte_productos_labor_venta.wizard"
             binding_model="pos.order"
+            res_model="quemen.reporte_productos_labor_venta.wizard"
             view_mode="form" target="new"/>
 
-            <!-- <act_window id="window_planilla" name="Planilla" res_model="hr_gt.planilla.wizard" src_model="account.journal" view_mode="form" target="new"/> -->
-
-
-            <!-- <report id="action_planilla" model="hr_gt.planilla.wizard" string="Planilla" report_type="qweb-pdf" name="l10n_gt_extra.reporte_compras" file="l10n_gt_extra.reporte_compras"/> -->
-            <menuitem action="quemen_action_reporte_productos_labor_venta" id="menu_productos_labor_venta" parent="point_of_sale.menu_point_rep"/>
-            <!-- <report id="action_reporte_productos_labor_venta" model="point_of_sale.menu_point_rep" string="Reporte de productos para labor de venta" report_type="qweb-pdf" name="quemen.reporte_productos_labor_venta" file="quemen.reporte_productos_labor_venta" paperformat="paperformat_ticket"/> -->
+            <menuitem action="quemen_action_reporte_productos_labor_venta" id="menu_productos_labor_venta" parent="quemen.menu_quemen_reporte_tiendas"/>
 
 
     </data>

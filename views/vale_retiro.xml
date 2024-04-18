@@ -12,11 +12,7 @@
                         <table style="margin: 0 auto;width:100%;">
                             <tr>
                                 <td>Sucursal:</td>
-                                <td><span t-field="o.session_id.config_id.name"/></td>
-                            </tr>
-                            <tr>
-                                <td>Caja:</td>
-                                <td></td>
+                                <td><span t-field="o.sesion_id.config_id.name"/></td>
                             </tr>
                             <tr>
                                 <td>Folio:</td>
@@ -25,7 +21,7 @@
                         </table>
                         <br/>
                         Fecha: <span t-field="o.fecha_hora" t-options='{"format": "MM dd y h:mm a"}'/><br/>
-                        Nombre de cajero(a): <span t-field="o.usuario_id.name"/><br/>
+                        Nombre de cajero(a): <span t-field="o.cajero"/><br/>
                         <br/>
                         <table style="margin: 0 auto;width:100%;">
                             <thead>
@@ -36,27 +32,30 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <t t-foreach="o.cash_box_id.cashbox_lines_ids" t-as="linea">
+                                <t t-foreach="o.denominacion_ids" t-as="linea">
                                     <t t-set="denominacion" t-value="''"/>
 
-                                    <t t-if="linea.denominacion == 'billete'">
+                                    <!-- <t t-if="linea.denominacion == 'billete'">
                                         <t t-set="denominacion" t-value="'Billete(s)'"/>
                                     </t>
                                     <t t-else="">
                                         <t t-set="denominacion" t-value="'Moneda(s)'"/>
-                                    </t>
-                                    <tr>
-                                        <td><span t-esc="linea.number"/></td>
-                                        <td><span t-esc="denominacion"/> de <span t-esc="linea.coin_value"/></td>
-                                        <td class="text-right"><span t-esc="linea.subtotal"/></td>
-                                    </tr>
-                                    <tr>
+                                    </t> -->
+                                    <t t-if="linea.cantidad > 0">
+                                        <tr>
+                                            <td><span t-esc="linea.cantidad"/></td>
+                                            <td><span t-esc="linea.denominacion_id.value"/></td>
+                                            <td class="text-right"><span t-esc="linea.denominacion_id.value * linea.cantidad"/></td>
+                                            <!-- <td class="text-right"><span t-esc="linea.subtotal"/></td> -->
+                                        </tr>
+                                    </t>    
+                                </t>
+                                <tr>
                                         <td></td>
                                         <td><strong>Total:</strong></td>
                                         <td  class="text-right"><span t-esc="o.total"/></td>
-                                    </tr>
 
-                                </t>
+                                </tr>    
                             </tbody>
                         </table>
                         <br/>
