@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    
+    <t t-name="QuemenReceiptScreen" t-inherit="point_of_sale.ReceiptScreen" t-inherit-mode="extension" owl="1">
+        <xpath expr="//div[hasclass('pos-receipt-container')]" position="inside">
+            <t t-if="currentOrder.get_dicc_prod_especiales()">
+                <SpecialOrderReceipt order="currentOrder" t-ref="order-receipt-special" />
+            </t>    
+        </xpath>
+    </t>
+</templates>

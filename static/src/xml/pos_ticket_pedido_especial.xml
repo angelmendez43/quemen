@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+  <t t-extend="ReceiptScreenWidget">
+    <t t-jquery=".centered-content" t-operation="append">
+      <div class="pos-receipt-container-ticket">
+      </div>
+    </t>
+  </t>
+
+  <t t-name="TicketPedidoEspecial" t-if="order.get_fecha(), order.get_hora(), order.get_autorizo()">
+    <div class="pos-receipt">
+      <t t-set="dicc_productos_especiales" t-value="order.get_dicc_prod_especiales()"/>
+      <table style="width:100%">
+        <tr>
+          <td style="color:black" align="center">Ticket pedido especial</td>
+        </tr>
+        <tr style="height:25px;">
+          <td style="color:black" align="center"><span t-esc="order.pos.config.company_id[1]"/></td>
+        </tr>
+        <tr style="height:25px;">
+          <td style="color:black" align="center"><span t-esc="order.pos.config.name"/></td>
+        </tr>
+        <tr style="height:25px;">
+          <td style="color:black" align="center"><span t-esc="order.pos.diarios"/></td>
+        </tr>
+        <!-- <tr style="height:20px;">
+          <td style="font-size:14px;color:black" align="center">
+            <span t-esc="order.pos.company.street_name"/>
+            <t t-if="order.pos.company.street2">
+              <span t-esc="order.pos.company.street2"/>
+            </t>
+            <t t-if="order.pos.company.l10n_mx_edi_colony">
+              <span t-esc="order.pos.company.l10n_mx_edi_colony"/>
+            </t>
+            <t t-if="order.pos.company.l10n_mx_edi_colony_code">
+              <span t-esc="order.pos.company.l10n_mx_edi_colony_code"/>
+            </t>
+            <t t-if="order.pos.company.l10n_mx_edi_locality">
+              <span t-esc="order.pos.company.l10n_mx_edi_locality"/>
+            </t>
+          </td>
+        </tr>
+        <tr style="height:20px;">
+          <td style="font-size:14px;color:black" align="center">
+            <t t-if="order.pos.company.city">
+              <span t-esc="order.pos.company.city"/>
+            </t>
+            <span t-esc="order.pos.company.state_id"/>
+            <span t-esc="order.pos.company.zip"/>
+          </td>
+        </tr>
+
+        <tr style="height:20px;">
+          <td style="font-size:14px;color:black" align="center">
+            <span t-esc="order.pos.company.country_id[1]"/>
+          </td>
+        </tr> -->
+
+        <tr style="height:35px;">
+          <td style="font-size:13px;color:black" align="center">
+            <t t-if="order.pos.company.vat != false">
+              <span t-esc="order.pos.company.vat"/>
+            </t>
+          </td>
+        </tr>
+
+      </table>
+
+      <table style="width:100%">
+        <tr style="height:15px;">
+          <td style="font-size:13px; color:black">Folio: </td>
+          <td style="font-size:11px;"><span t-esc="order.name"/></td>
+        </tr>
+        <tr style="height:15px;">
+          <td style="font-size:13px;color:black">Sucursal: </td>
+          <td style="font-size:11px;"><span t-esc="order.pos.config.name"/></td>
+        </tr>
+
+        <tr style="height:15px;">
+          <td style="font-size:13px;color:black">Vendedor: </td>
+          <td style="font-size:11px;"><span t-esc="order.pos.user.name"/></td>
+        </tr>
+
+        <tr style="height:15px;">
+          <td style="font-size:13px;color:black">Cajero: </td>
+          <td style="font-size:11px;"><span t-esc="order.pos.user.name"/></td>
+        </tr>
+
+        <tr style="height:15px;">
+          <td style="font-size:13px;color:black;">Fecha/Hora pedido: </td>
+          <td style="font-size:11px;"><span t-esc="order.get_fecha_hora_actual()"/></td>
+        </tr>
+
+        <tr style="height:15px;">
+          <td style="font-size:13px;color:black">Fecha/Hora de entrega: </td>
+          <td style="font-size:11px;"><span t-esc="order.get_fecha_formato()"/> <span t-esc=" order.get_hora()"/></td>
+        </tr>
+
+        <tr style="height:15px;">
+          <td style="font-size:13px;color:black">Nombre del cliente: </td>
+          <td style="font-size:11px;"><span t-esc="order.attributes.client.name"/></td>
+        </tr>
+
+        <tr style="height:35px;">
+          <td style="font-size:13px;color:black">Sucursal de entrega: </td>
+          <td></td>
+        </tr>
+
+        <tr style="height:35px;">
+          <td style="font-size:13px"><span t-esc="order.get_entrega()"/></td>
+          <td></td>
+        </tr>
+
+        <tr style="height:35px;">
+          <td style="color:black" colspan="2">Productos especiales: </td>
+        </tr>
+      </table>
+
+      <t t-foreach="dicc_productos_especiales" t-as="l">
+
+        <table style="width:100%;">
+          <tr>
+            <td  style="font-size:13px;color:black; background-color:silver;">Cantidad</td>
+            <td  style="font-size:13px;color:black; background-color:silver;" colspan="3">Descripción</td>
+          </tr>
+
+          <t>
+            <td style="font-size:11px;"><span t-esc="dicc_productos_especiales[l]['cantidad']"/></td>
+            <td style="font-size:11px;" colspan="3"><span t-esc="dicc_productos_especiales[l]['nombre_producto']"/></td>
+          </t>
+
+          <tr style="height:20px">
+            <td style="font-size:11px;">Precio U: </td>
+            <td style="font-size:11px;">
+              <t>
+                <span t-esc="dicc_productos_especiales[l]['precio_unitario']"/>
+              </t>
+            </td>
+            <td style="font-size:11px;">Importe: </td>
+            <td style="font-size:11px;"><span t-esc="dicc_productos_especiales[l]['precio_total']"/></td>
+          </tr>
+
+          <tr style="height:35px">
+            <td  style="font-size:13px;"></td>
+          </tr>
+
+        </table>
+
+      </t>
+
+
+
+      <table style="width:100%">
+
+        <tr style="height:8px">
+          <td style="color:black" colspan="2"></td>
+        </tr>
+
+        <tr>
+          <th style="color:black; height:0.30cms" colspan="4" align="center"><hr size="1px" color="black"></hr></th>
+        </tr>
+
+        <tr style="width:35px">
+          <td style="font-size:13px;color:black">Observaciones</td>
+        </tr>
+
+        <tr style="width:35px">
+          <td style="font-size:11px"><pre><span t-esc="order.get_observaciones()"/></pre></td>
+        </tr>
+
+        <tr>
+          <th style="color:black; height:0.30cms" colspan="4" align="center"><hr size="1px" color="black"></hr></th>
+        </tr>
+
+      </table>
+
+      <table style="width:100%">
+
+        <tr style="height:20px">
+          <td></td>
+        </tr>
+
+        <tr style="height:20px">
+          <td style="font-size:11px;">Descuento</td>
+          <td></td>
+        </tr>
+
+        <tr style="height:20px">
+          <td style="font-size:11px;">Subtotal</td>
+          <td style="font-size:11px;" align="right"><span t-esc="order.get_dicc_total()['sub_total']"/></td>
+        </tr>
+
+        <tr style="height:20px">
+          <td style="font-size:11px;">Impuestos</td>
+          <td style="font-size:11px;" align="right"><span t-esc="order.get_dicc_total()['total_iva']"/></td>
+        </tr>
+
+        <tr style="height:20px">
+          <td style="font-size:11px;">Total</td>
+          <td style="font-size:11px;" align="right"><span t-esc="order.get_dicc_total()['total']"/></td>
+        </tr>
+
+        <tr style="height:35px">
+          <td style="font-size:11px;color:black" align="right"><span t-esc="order.get_totalString()"/></td>
+          <td></td>
+        </tr>
+
+        <!-- <tr style="height:20px">
+          <t t-if="receipt.datos_certificacion.total_string">
+            <td colspan="2" align="center" style="font-size:11px;"><span t-esc="receipt.datos_certificacion.total_string"/></td>
+          </t>
+        </tr> -->
+
+      </table>
+
+      <table style="width:100%">
+
+        <tr style="height:40px">
+          <td style="font-size:11px;"></td>
+
+        </tr>
+
+        <tr>
+          <td style="font-size:13px;color:black">**Nota**</td>
+        </tr>
+
+        <tr>
+          <td style="font-size:11px;color:black;text-align:justify;">Para recoger su pedido debe presentar este ticket. Si usted extravía este ticket deberá presentar una identificación a nombre de quién levanto el pedido, o una identificacion de quién lo recoge</td>
+        </tr>
+
+      </table>
+
+    </div>
+
+    <div class="pos-receipt">
+
+      <table style="width:100%">
+
+        <tr>
+          <td style="color:black" align="center">Conformidad de pedido especial</td>
+        </tr>
+
+        <tr style="height:35px;">
+          <td style="color:black" align="center"><span t-esc="order.pos.diarios"/></td>
+        </tr>
+
+      </table>
+
+      <table style="width:100%">
+        <tr>
+          <td style="color:black; font-size:13px">Folio pedido especial: </td>
+          <td style="font-size:11px;"><span t-esc="order.name"/></td>
+        </tr>
+
+        <tr style="height:15px;">
+          <td style="font-size:13px;color:black">Sucursal: </td>
+          <td style="font-size:11px;"><span t-esc="order.pos.config.name"/></td>
+        </tr>
+
+        <tr style="height:15px;">
+          <td style="font-size:13px;color:black">Vendedor: </td>
+          <td style="font-size:11px;"><span t-esc="order.pos.user.name"/></td>
+        </tr>
+
+        <tr style="height:15px;">
+          <td style="font-size:13px;color:black">Cajera: </td>
+          <td style="font-size:11px;"><span t-esc="order.pos.user.name"/></td>
+        </tr>
+
+        <tr style="height:15px;">
+          <td style="font-size:13px;color:black;">Fecha/Hora pedido: </td>
+          <td style="font-size:11px;"><span t-esc="order.get_fecha_hora_actual()"/></td>
+        </tr>
+
+        <tr style="height:15px;">
+          <td style="font-size:13px;color:black">Fecha/Hora de entrega: </td>
+          <td style="font-size:11px;"><span t-esc="order.get_fecha_formato()"/> <span t-esc=" order.get_hora()"/></td>
+        </tr>
+
+        <tr style="height:15px;">
+          <td style="font-size:13px;color:black">Nombre del cliente: </td>
+          <td style="font-size:11px;"><span t-esc="order.attributes.client.name"/></td>
+        </tr>
+
+        <tr style="height:35px;">
+          <td style="font-size:13px;color:black">Sucursal de entrega: </td>
+        </tr>
+
+        <tr style="height:35px;">
+          <td style="font-size:13px"><span t-esc="order.get_entrega()"/> </td>
+        </tr>
+
+      </table>
+    </div>
+
+    <div class="pos-receipt" >
+      <pre style="width:100%;font-size:10px; ">
+        <p
+          style="
+          white-space:pre-wrap;
+          font-size:10px;
+          text-align:justify;
+          max-width:95%"
+          t-esc="order.get_terminos_condiciones()"/>
+      </pre>
+
+      <table style="width:100%">
+        <tr style="height:40px;">
+          <td></td>
+        </tr>
+
+        <tr style="height:35px;">
+          <th style="color:black; height:0.30cms" align="center"><hr size="1px" color="black"></hr></th>
+        </tr>
+        <tr>
+          <th style="color:black; font-size:13px;" align="center">Firma de conformidad</th>
+        </tr>
+      </table>
+
+    </div>
+
+  </t>
+
+</templates>

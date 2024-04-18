@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="QuemenPaymentScreenNumpad" t-inherit="point_of_sale.PaymentScreenNumpad" t-inherit-mode="extension" owl="1">
+        <xpath expr="//div[hasclass('numpad')]" position="replace">
+            <div class="numpad">
+                <PSNumpadInputButton value="'1'" />
+                <PSNumpadInputButton value="'2'" />
+                <PSNumpadInputButton value="'3'" />
+                
+                <PSNumpadInputButton value="'4'" />
+                <PSNumpadInputButton value="'5'" />
+                <PSNumpadInputButton value="'6'" />
+                
+                <br />
+                <PSNumpadInputButton value="'7'" />
+                <PSNumpadInputButton value="'8'" />
+                <PSNumpadInputButton value="'9'" />
+                
+                <br />
+
+                <PSNumpadInputButton value="'0'" />
+                <PSNumpadInputButton value="decimalPoint" />
+                <PSNumpadInputButton value="'Backspace'">
+                    <img src="/point_of_sale/static/src/img/backspace.png" width="24" height="21"
+                         alt="Backspace" />
+                </PSNumpadInputButton>
+            </div>
+        </xpath>    
+    </t>    
+    <t t-name="QuemenClosePosPopup" t-inherit="point_of_sale.ClosePosPopup" t-inherit-mode="extension" owl="1">
+        <xpath expr="//div[hasclass('modal-dialog')]" position="replace">
+        <div role="dialog" class="modal-dialog">
+            <div class="popup close-pos-popup">
+                <header class="title">
+                    CLOSING CONTROL
+                </header>
+                <main class="body">
+                    <!-- <div class="session-overview">
+                        <div class="overview-info">
+                            <div class="info-title column-left">
+                                <span>Total <t t-esc="ordersDetails.quantity"/> orders</span>
+                                <span>Payments</span>
+                                <span>Customer Account</span>
+                            </div>
+                            <div class="info-value column-left">
+                                <span t-esc="env.pos.format_currency(ordersDetails.amount)"/>
+                                <span t-esc="env.pos.format_currency(paymentsAmount)"/>
+                                <span t-esc="env.pos.format_currency(payLaterAmount)"/>
+                            </div>
+                        </div>
+                        <div t-if="openingNotes" class="opening-note">
+                            <t t-esc="openingNotes"/>
+                        </div>
+                    </div> -->
+                    <div class="payment-methods-overview">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Efectivo en caja</th>
+                                    <!-- <th>Expected</th> -->
+                                    <th style="width: 25%">Counted</th>
+                                    <!-- <th style="width: 20%">Difference</th> -->
+                                </tr>
+                            </thead>
+                            <t t-if="cashControl">
+                                <tbody>
+                                    <tr>
+                                        <td t-esc="defaultCashDetails.name"/>
+                                        <!-- <td t-esc="env.pos.format_currency(defaultCashDetails.amount)"/> -->
+                                        <td class="flex" t-on-input="handleInputChange(defaultCashDetails.id)">
+                                            <input class="pos-input" type="number" t-model.number="state.payments[defaultCashDetails.id].counted"/>
+                                            <div class="button icon" t-on-click="openDetailsPopup()">
+                                                <i class="fa fa-calculator" role="img" title="Open the money details popup"/>
+                                            </div>
+                                        </td>
+                                        <!-- <td t-esc="env.pos.format_currency(state.payments[defaultCashDetails.id].difference)" t-att-class="{'warning': state.payments[defaultCashDetails.id].difference}"/> -->
+                                    </tr>
+                                </tbody>
+
+                            </t>
+
+                        </table>
+                    </div>
+
+                    <div class="accept-closing" t-att-class="{invisible: !hasDifference()}">
+                        <t t-set="_hasUserAuthority" t-value="hasUserAuthority()" />
+                        <input t-att-disabled="!_hasUserAuthority" type="checkbox" id="accept" t-model="state.acceptClosing"/>
+                        <label t-att-class="{disabled: !_hasUserAuthority}" for="accept">Accept payments difference and post a profit/loss journal entry</label>
+                        <div class="warning" t-att-class="{invisible: _hasUserAuthority}">The maximum difference allowed is <t t-esc="env.pos.format_currency(amountAuthorizedDiff)"/>. Please contact your manager to accept the closing difference.</div>
+                    </div>
+                </main>
+                <footer class="footer">
+                    <div class="button" t-att-class="{'disabled': !canCancel()}" t-on-click="cancelPopup()">Continue Selling</div>
+                    <div class="button" t-on-click="closePos()">Keep Session Open</div>
+                    <div class="button" t-att-class="{'disabled': false}" t-on-click="closeSession()">Close Session</div>
+                </footer>
+            </div>
+            <MoneyDetailsPopup t-ref="moneyDetails" t-on-money-details-validated="updateCountedCash"/>
+        </div>
+        </xpath>    
+    </t>    
+    
+    <t t-name="QuemenNumpadWidget" t-inherit="point_of_sale.NumpadWidget" t-inherit-mode="extension" owl="1">
+        <xpath expr="//div[hasclass('numpad')]" position="replace">
+        <div class="numpad">
+            <button class="input-button number-char" t-on-click="sendInput('1')">1</button>
+            <button class="input-button number-char" t-on-click="sendInput('2')">2</button>
+            <button class="input-button number-char" t-on-click="sendInput('3')">3</button>
+            <button class="mode-button" t-att-class="{'selected-mode': props.activeMode === 'quantity'}"
+                    t-on-click="changeMode('quantity')">Qty</button>
+            <br />
+            <button class="input-button number-char" t-on-click="sendInput('4')">4</button>
+            <button class="input-button number-char" t-on-click="sendInput('5')">5</button>
+            <button class="input-button number-char" t-on-click="sendInput('6')">6</button>
+            <button class="mode-button" t-att-class="{
+                        'selected-mode': props.activeMode === 'discount',
+                        'disabled-mode': !hasManualDiscount
+                    }"
+                    t-att-disabled="!hasManualDiscount"
+                    t-on-click="changeMode('discount')">Disc</button>
+            <br />
+            <button class="input-button number-char" t-on-click="sendInput('7')">7</button>
+            <button class="input-button number-char" t-on-click="sendInput('8')">8</button>
+            <button class="input-button number-char" t-on-click="sendInput('9')">9</button>
+
+            <br />
+            <button class="input-button number-char" t-on-click="sendInput('0')">0</button>
+            <button class="input-button number-char" t-on-click="sendInput(decimalSeparator)">
+                <t t-esc="decimalSeparator" />
+            </button>
+            <button class="input-button numpad-backspace" t-on-click="sendInput('Backspace')">
+                <img style="pointer-events: none;" src="/point_of_sale/static/src/img/backspace.png"
+                     width="24" height="21" alt="Backspace" />
+            </button>
+        </div>
+        </xpath>
+    </t>  
+
+
+
+    
+    <t t-name="QuemenRefundButton" t-inherit="point_of_sale.RefundButton" t-inherit-mode="extension" owl="1">
+        <xpath expr="//div[hasclass('control-button')]" position="replace">
+            <div class="control-button">
+                <i class="fa fa-undo" role="img" aria-label="Refund" title="Refund" />
+                Cancelación
+            </div>
+        </xpath>
+    </t>    
+     <t t-name="QuemenCashMoveButton" t-inherit="point_of_sale.CashMoveButton" t-inherit-mode="extension" owl="1">
+         <xpath expr="//div[hasclass('cash-move-button')]" position="replace">
+             <div class="cash-move-button" t-on-click="onClick" style="display: none;">
+                    <i class="fa fa-money" aria-hidden="true"></i>
+                    <span style="padding-left: 10px;">Cash In/Out</span>
+              </div>
+         </xpath>    
+     </t>
+        <!-- <t t-name="PromoCodeButton" owl="1">
+        <span class="control-button">
+            <i class="fa fa-barcode"></i>
+            <span> </span>
+            <span>Enter Code</span>
+        </span>
+        </t> -->
+     <t t-name="QuemenPromoCodeButton" t-inherit="pos_coupon.PromoCodeButton" t-inherit-mode="extension" owl="1">
+         <xpath expr="//span[hasclass('control-button')]" position="replace">
+                <span class="control-button">
+                    <i class="fa fa-barcode"></i>
+                    <span> </span>
+                    <span>Promociones</span>
+                </span>
+         </xpath>    
+     </t>    
+      <!-- <t t-name="PromoCodeButton" owl="1">
+        <span class="control-button">
+            <i class="fa fa-barcode"></i>
+            <span> </span>
+            <span>Enter Code</span>
+        </span>
+    </t>   -->
+     <!-- <t t-name="point_of_sale.CashMoveButton" owl="1">
+        <div class="cash-move-button" t-on-click="onClick">
+        </div>
+    </t>    -->
+    <t t-name="ProductInfoPopup" t-inherit="point_of_sale.ProductInfoPopup" t-inherit-mode="extension" owl="1">
+        <xpath expr="//div[hasclass('modal-dialog')]//div[hasclass('popup')]//div[hasclass('section-financials')]" position="replace">
+            <div class="section-financials">
+                <div class="section-title">
+                    <span>Financials</span>
+                    <div class="section-title-line"></div>
+                </div>
+                <div class="section-financials-body">
+                    <table>
+                        <tr>
+                            <td>Price excl. VAT:</td>
+                            <td><t t-esc="env.pos.format_currency(productInfo.all_prices.price_without_tax)"/></td>
+                        </tr>
+                    </table>
+                    <table>
+                        <t t-foreach="productInfo.pricelists" t-as="pricelist" t-key="pricelist.name">
+                            <tr>
+                                <td t-esc="pricelist.name"/>
+                                <td t-esc="env.pos.format_currency(pricelist.price)"/>
+                            </tr>
+                        </t>
+                    </table>
+                </div>
+            </div>
+        </xpath>
+        <!-- <xpath expr="//div[hasclass('modal-dialog')]//div[hasclass('popup')]//div[hasclass('section-inventory')]" position="replace">
+            <div class="section-inventory">
+                <div class="section-inventory" t-if="productInfo.warehouses.length > 0">
+                    <div class="section-title">
+                        <span>Inventory <t t-if="env.pos.pos_session.update_stock_at_closing">(as of opening)</t></span>
+                        <div class="section-title-line"></div>
+                    </div>
+                    <div class="section-inventory-body">
+                        <table class="mobile-table">
+                            <t t-foreach="productInfo.warehouses" t-as="warehouse" t-key="warehouse.name">
+                                <t t-if="warehouse.name == env.pos.config.warehouse_id[1]">
+                                    <tr>
+                                        <td><span t-esc="warehouse.name" class="table-name"/>:</td>
+                                        <td><t t-esc="warehouse.available_quantity"/><t t-esc="warehouse.id"/> <t t-esc="warehouse.uom"/> available,</td>
+                                        <td><t t-esc="warehouse.forecasted_quantity"/> forecasted</td>
+                                    </tr>
+                                </t>
+                            </t>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </xpath> -->
+
+        <xpath expr="//div[hasclass('modal-dialog')]//div[hasclass('popup')]//div[hasclass('section-supplier')]" position="replace">
+            <div>
+            </div>
+        </xpath>
+        
+        <xpath expr="//div[hasclass('modal-dialog')]//div[hasclass('popup')]//div[hasclass('section-order')]" position="replace">
+            <div class="section-order">
+                <div class="section-title">
+                    <span>Order</span>
+                    <div class="section-title-line"></div>
+                </div>
+                <div class="section-order-body">
+                    <table>
+                        <tr>
+                            <td>Total Price excl. VAT:</td>
+                            <td t-esc="orderPriceWithoutTaxCurrency" class="table-value"/>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </xpath>
+        
+    </t>
+</templates>
