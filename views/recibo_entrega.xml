@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="quemen_l10n_mx_edi_cartaporte_report_delivery_document" inherit_id="l10n_mx_edi_stock.l10n_mx_edi_cartaporte_report_delivery_document">
-        <xpath expr="//xpath[2]" position="replace">
+        <!-- <xpath expr="//xpath[2]" position="replace">
             <t t-if="o.l10n_mx_edi_status == 'sent'">
                 <th name="th_sm_uom_unspsc_code"><strong>Hola</strong></th>
                 <th name="th_sm_weight"><strong>Weight</strong></th>
         </t>
-        </xpath>
+        </xpath> -->
+        <xpath expr="//th[@name='th_sm_uom_unspsc_code']" position="replace">
+            <!-- <t t-if="o.​picking_type_id.tipo_transporte == '01'">
+                <th name="th_sm_uom_unspsc_code"><strong>UOM</strong></th>
+            </t> -->
+        </xpath>    
         <xpath expr="//div[@id='complement']" position="replace">
                 <center>
                 <div class="row border-bottom mt-3 pt-2 pb-3" id='complement'>
@@ -60,9 +65,13 @@
         </xpath>    
     </template>    
     <template id="report_delivery_document_extended" inherit_id="stock.report_delivery_document">
+  
         <xpath expr="//t[@t-call='web.internal_layout']" position="attributes">
             <attribute name="t-call">web.basic_layout</attribute>
         </xpath>    
+        <xpath expr="//h2[1]" position="after">
+            <div>Dirección entrega: <span t-esc="o.partner_id.name"/></div> 
+        </xpath> 
         <xpath expr="//div[@class='page']" position="after">
            <div class="footer-signatures" style="page-break-inside: avoid;">
                 <div style="margin-top: 60px; text-align: center;">

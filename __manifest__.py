@@ -62,7 +62,7 @@
         # 'views/report_quemen.xml',
         # 'views/reportes_retiro_view.xml',
         # 'views/reporte_retiros_sesion.xml',
-        # 'views/recibo_entrega.xml',
+        'views/recibo_entrega.xml',
         'views/product_template_extra_fields_views.xml'
 
     ],
