@@ -65,7 +65,7 @@ odoo.define('quemen.PaymentScreen', function(require) {
                     console.log('total efectivo')
                     console.log(total_efectivo)
                     if (total_efectivo >= efectivoMaximo){
-                        var url = "https://quemen.odoo.com/web#cids=1&menu_id=219&action=700&model=quemen.retiros_efectivo&view_type=list"
+                        var url = "https://quemen.odoo.com/web#menu_id=219&cids=1&action=698&model=quemen.retiros_efectivo&view_type=list"
                         window.open(url, "_blank");
                         return await Gui.showPopup('ErrorPopup', {
                                 'title': _t("POS error"),
