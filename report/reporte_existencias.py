@@ -75,11 +75,10 @@ class ReportExistencias(models.AbstractModel):
             for linea in stock_id:
                 logging.warn("linea")
                 logging.warn(linea.product_id.name)
-                if linea.lot_id and linea.lot_id.expiration_date:
-                    if str(linea.product_id.categ_id.parent_id.id)+'/'+str(linea.product_id.categ_id.id) not in inventario:
-                        inventario[str(linea.product_id.categ_id.parent_id.id)+'/'+str(linea.product_id.categ_id.id)] = {'productos': [],'categoria_padre': linea.product_id.categ_id.parent_id.name, 'categoria_hija': linea.product_id.categ_id.name }
+                if str(linea.product_id.categ_id.parent_id.id)+'/'+str(linea.product_id.categ_id.id) not in inventario:
+                    inventario[str(linea.product_id.categ_id.parent_id.id)+'/'+str(linea.product_id.categ_id.id)] = {'productos': [],'categoria_padre': linea.product_id.categ_id.parent_id.name, 'categoria_hija': linea.product_id.categ_id.name }
 
-                    inventario[str(linea.product_id.categ_id.parent_id.id)+'/'+str(linea.product_id.categ_id.id)]['productos'].append(linea)
+                inventario[str(linea.product_id.categ_id.parent_id.id)+'/'+str(linea.product_id.categ_id.id)]['productos'].append(linea)
 
 
         logging.warn('product existencias')
@@ -104,7 +103,7 @@ class ReportExistencias(models.AbstractModel):
     def _get_report_values(self, docids, data=None):
         model = self.env.context.get('active_model')
         docs = self.env[model].browse(self.env.context.get('active_ids', []))
-        tienda_id = data['form']['tienda_id']        
+        tienda_id = data['form']['tienda_id']
         docs = self.env['pos.session'].browse(docids)
         logging.warning('docs')
         logging.warning(docs)

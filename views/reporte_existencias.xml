@@ -4,14 +4,14 @@
         <t t-call="web.html_container">
             <!-- <t t-foreach="docs" t-as="o">             -->
                 <div class="article">
-    
+
                     <div class="page">
                         <img src="/web/binary/company_logo" style="width:50%"/>
                         <t t-set="productos" t-value="productos_existencia(tienda_id)"/>
                         <t t-set="obtener_tienda" t-value="obtener_tienda(tienda_id)"/>
                         <center><strong>Reporte de existencias</strong></center>
                         <table style="margin: 0 auto;width:100%">
-    
+
                             <tr>
                                 <td>Sucursal:</td>
                                 <td style="text-align:right"><span t-esc="obtener_tienda.name"/></td>
@@ -24,7 +24,7 @@
                                     <span t-esc="user.pos_id.picking_type_id.warehouse_id.partner_id.l10n_mx_edi_locality"/> -->
                                     <span t-esc="obtener_tienda.picking_type_id.warehouse_id.partner_id.city_id.name"/>
                                     <span t-esc="obtener_tienda.picking_type_id.warehouse_id.partner_id.state_id.name"/>
-    
+
                                 </td>
                             </tr>
                             <tr>
@@ -32,7 +32,7 @@
                                 <td style="text-align:right"><span t-esc="fecha_hora_actual()"/></td>
                             </tr>
                         </table>
-    
+
                         <table style="margin: 0 auto;width:100%;">
                             <tr>
                                 <td><strong>Clave</strong></td>
@@ -54,7 +54,9 @@
                                             <span t-esc="linea.product_id.default_code"/>
                                         </td>
                                         <td style="text-aligh;center;font-size: 13px;">
-                                            <span t-esc="linea.lot_id.name"/>
+                                            <t t-if="linea.lot_id">
+                                                <span t-esc="linea.lot_id.name"/>
+                                            </t>
                                         </td>
                                         <td style="text-align:right;font-size: 13px;">
                                             <span t-esc="linea.quantity"/>
