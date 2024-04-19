@@ -8,8 +8,8 @@ odoo.define('quemen.PaymentScreen', function(require) {
     const { isConnectionError } = require('point_of_sale.utils');
 
     var _t = core._t;
-    
-    
+
+
     const QuemenPaymentScreen = PaymentSreen =>
         class extends PaymentScreen {
 
@@ -24,7 +24,7 @@ odoo.define('quemen.PaymentScreen', function(require) {
                 var sesion = [];
                 var total_efectivo = [];
                 var ventaEfectivoActual = 0;
-                
+
                 this.currentOrder.get_paymentlines().forEach(function (line) {
                     console.log('pagos')
                     console.log(line)
@@ -32,7 +32,7 @@ odoo.define('quemen.PaymentScreen', function(require) {
                         ventaEfectivoActual += line.amount
                     }
                 });
-                
+
                 try {
                     sesion = await this.rpc({
                         model: 'pos.session',
@@ -65,18 +65,17 @@ odoo.define('quemen.PaymentScreen', function(require) {
                     console.log('total efectivo')
                     console.log(total_efectivo)
                     if (total_efectivo >= efectivoMaximo){
-                        var url = "https://quemen-test-12317446.dev.odoo.com/web#cids=1&menu_id=219&action=700&model=quemen.retiros_efectivo&view_type=list"
-                        window.open(url, "_blank");
+                        var url = "https://quemen.odoo.com/web#cids=1&menu_id=219&action=700&model=quemen.retiros_efectivo&view_type=list"                        window.open(url, "_blank");
                         return await Gui.showPopup('ErrorPopup', {
                                 'title': _t("POS error"),
                                 'body': _t("Efectivo máximo en caja"),
                             });
-                        
+
                     }else{
 
                         return super.validateOrder(isForceValidate);
                     }
-                    
+
 
                 }
                 // if(this.env.pos.config.cash_rounding) {
@@ -100,5 +99,5 @@ odoo.define('quemen.PaymentScreen', function(require) {
 
     Registries.Component.extend(PaymentScreen, QuemenPaymentScreen);
 
-            
+
 });
