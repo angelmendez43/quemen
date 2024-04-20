@@ -90,7 +90,7 @@ class PosSession(models.Model):
             logging.warning(factura_id)
             if factura_id:
                 for l in factura_id.invoice_line_ids:
-                    l.write{'tax_ids': l.product_id.taxes_id}                
+                    l.write({'tax_ids': l.product_id.taxes_id})
                 factura_id.action_post()
                 # self.factura_global_id = factura_id.id
                 for pago in pagos:
@@ -157,7 +157,7 @@ class PosSession(models.Model):
             logging.warning(factura_id)
             if factura_id:
                 for l in factura_id.invoice_line_ids:
-                    l.write{'tax_ids': l.product_id.taxes_id}
+                    l.write({'tax_ids': l.product_id.taxes_id})
                 factura_id.action_post()
                 # self.factura_global_id = factura_id.id
                 for pago in pagos:
