@@ -7,7 +7,7 @@ from odoo.exceptions import UserError, ValidationError
 class PosSession(models.Model):
     _inherit = 'pos.session'
 
-    
+
     factura_global_id = fields.Many2one("account.move", string="Factura global")
     saldo_apartura = fields.Float('Saldo apertura', compute='_calcular_apertura_retiro_efectivo', store=True)
     total_efectivo_caja = fields.Float('Total efectivo caja', store=True)
@@ -42,11 +42,11 @@ class PosSession(models.Model):
                 for pago in pago_ids:
                     if pago.payment_method_id.name == "Efectivo":
                         efectivo += pago.amount
-                        
+
             # logging.warning('result')
             # logging.warning(result)
             sesion.pagos_efectivo = efectivo
-        
+
 
     def generar_factura_global_sesion(self):
         pedidos_facturar =[]
@@ -68,12 +68,13 @@ class PosSession(models.Model):
                         ids_pedidos.append(pedido.id)
                         for linea in pedido.payment_ids:
                             if linea.payment_method_id.id not in pagos:
-        
+                                
                                 pagos[linea.payment_method_id.id] = {'diario': linea.payment_method_id.journal_id, 'cantidad': 0}
                             pagos[linea.payment_method_id.id]['cantidad'] += linea.amount
         if pedidos_facturar:
             for pedido in pedidos_facturar:
                 for linea in pedido.lines:
+                    linea.tax_ids = linea.product_id.taxes_id
                     lineas_facturar.append(linea)
             factura = {
                 'partner_id': sesion.config_id.cliente_id.id or 1,
@@ -94,24 +95,24 @@ class PosSession(models.Model):
                 for pago in pagos:
                     logging.warning("PAgos")
                     logging.warning(pagos[pago])
-    
+
                     # 'communication':factura_id.name, linea 68
-    
+
                     pago_dic = {'payment_type': 'inbound','date': fields.Date.today(),
                     'partner_type': 'customer','partner_id':factura_id.partner_id.id,'payment_method_id':1,
                     'journal_id':pagos[pago]['diario'].id,'amount': pagos[pago]['cantidad'],'reconciled_invoice_ids':  [(6, 0, [factura_id.id])],}
                     pago_id = self.env['account.payment'].create(pago_dic)
                     pago_id.action_post()
-    
+
                     for linea_gasto in pago_id.move_id.line_ids.filtered(lambda r: r.account_id.user_type_id.type == 'receivable' and not r.reconciled):
                             for linea_factura in factura_id.line_ids.filtered(lambda r: r.account_id.user_type_id.type == 'receivable' and not r.reconciled):
                                 if (linea_gasto.debit == linea_factura.credit or linea_gasto.credit - linea_factura.debit ):
                                     (linea_gasto | linea_factura).reconcile()
                                     break
-                
+
         for sesion in self:
             sesion.write({'factura_global_id': factura_id.id})
-        return True    
+        return True
 
     def generar_factura_global(self, sesiones):
         pedidos_facturar =[]
@@ -133,12 +134,13 @@ class PosSession(models.Model):
                         ids_pedidos.append(pedido.id)
                         for linea in pedido.payment_ids:
                             if linea.payment_method_id.id not in pagos:
-        
+
                                 pagos[linea.payment_method_id.id] = {'diario': linea.payment_method_id.journal_id, 'cantidad': 0}
                             pagos[linea.payment_method_id.id]['cantidad'] += linea.amount
         if pedidos_facturar:
             for pedido in pedidos_facturar:
                 for linea in pedido.lines:
+                    linea.tax_ids = linea.product_id.taxes_id
                     lineas_facturar.append(linea)
             factura = {
                 'partner_id': sesion.config_id.cliente_id.id or 1,
@@ -159,25 +161,25 @@ class PosSession(models.Model):
                 for pago in pagos:
                     logging.warning("PAgos")
                     logging.warning(pagos[pago])
-    
+
                     # 'communication':factura_id.name, linea 68
-    
+
                     pago_dic = {'payment_type': 'inbound','date': fields.Date.today(),
                     'partner_type': 'customer','partner_id':factura_id.partner_id.id,'payment_method_id':1,
                     'journal_id':pagos[pago]['diario'].id,'amount': pagos[pago]['cantidad'],'reconciled_invoice_ids':  [(6, 0, [factura_id.id])],}
                     pago_id = self.env['account.payment'].create(pago_dic)
                     pago_id.action_post()
-    
+
                     for linea_gasto in pago_id.move_id.line_ids.filtered(lambda r: r.account_id.user_type_id.type == 'receivable' and not r.reconciled):
                             for linea_factura in factura_id.line_ids.filtered(lambda r: r.account_id.user_type_id.type == 'receivable' and not r.reconciled):
                                 if (linea_gasto.debit == linea_factura.credit or linea_gasto.credit - linea_factura.debit ):
                                     (linea_gasto | linea_factura).reconcile()
                                     break
-                
+
         for sesion in self:
             sesion.write({'factura_global_id': factura_id.id})
         return True
-        
+
     # def action_pos_session_validate(self, balancing_account=False, amount_to_balance=0, bank_payment_method_diffs=None):
     #     logging.warn('test')
     #     pedidos_facturar =[]
@@ -194,10 +196,10 @@ class PosSession(models.Model):
     #                 ids_pedidos.append(pedido.id)
     #                 for linea in pedido.payment_ids:
     #                     if linea.payment_method_id.id not in pagos:
-    
+
     #                         pagos[linea.payment_method_id.id] = {'diario': linea.payment_method_id.journal_id, 'cantidad': 0}
     #                     pagos[linea.payment_method_id.id]['cantidad'] += linea.amount
-    
+
     #     logging.warn(pedidos_facturar)
     #     lineas_facturar = []
     #     logging.warn(pagos)
@@ -228,22 +230,22 @@ class PosSession(models.Model):
     #             for pago in pagos:
     #                 logging.warning("PAgos")
     #                 logging.warning(pagos[pago])
-    
+
     #                 # 'communication':factura_id.name, linea 68
-    
+
     #                 pago_dic = {'payment_type': 'inbound','date': fields.Date.today(),
     #                 'partner_type': 'customer','partner_id':factura_id.partner_id.id,'payment_method_id':1,
     #                 'journal_id':pagos[pago]['diario'].id,'amount': pagos[pago]['cantidad'],'reconciled_invoice_ids':  [(6, 0, [factura_id.id])],}
     #                 pago_id = self.env['account.payment'].create(pago_dic)
     #                 pago_id.action_post()
-    
+
     #                 for linea_gasto in pago_id.move_id.line_ids.filtered(lambda r: r.account_id.user_type_id.type == 'receivable' and not r.reconciled):
     #                         for linea_factura in factura_id.line_ids.filtered(lambda r: r.account_id.user_type_id.type == 'receivable' and not r.reconciled):
     #                             if (linea_gasto.debit == linea_factura.credit or linea_gasto.credit - linea_factura.debit ):
     #                                 (linea_gasto | linea_factura).reconcile()
     #                                 break
-    
 
-    
+
+
     #     res = super(PosSession, self).action_pos_session_validate(balancing_account, amount_to_balance, bank_payment_method_diffs)
     #     return res
