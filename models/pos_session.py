@@ -68,13 +68,12 @@ class PosSession(models.Model):
                         ids_pedidos.append(pedido.id)
                         for linea in pedido.payment_ids:
                             if linea.payment_method_id.id not in pagos:
-                                
+
                                 pagos[linea.payment_method_id.id] = {'diario': linea.payment_method_id.journal_id, 'cantidad': 0}
                             pagos[linea.payment_method_id.id]['cantidad'] += linea.amount
         if pedidos_facturar:
             for pedido in pedidos_facturar:
                 for linea in pedido.lines:
-                    linea.tax_ids = linea.product_id.taxes_id
                     lineas_facturar.append(linea)
             factura = {
                 'partner_id': sesion.config_id.cliente_id.id or 1,
@@ -90,6 +89,8 @@ class PosSession(models.Model):
             logging.warning("Si llega?")
             logging.warning(factura_id)
             if factura_id:
+                for l in factura_id.invoice_line_ids:
+                    l.write{'tax_ids': l.product_id.taxes_id}                
                 factura_id.action_post()
                 # self.factura_global_id = factura_id.id
                 for pago in pagos:
@@ -140,7 +141,6 @@ class PosSession(models.Model):
         if pedidos_facturar:
             for pedido in pedidos_facturar:
                 for linea in pedido.lines:
-                    linea.tax_ids = linea.product_id.taxes_id
                     lineas_facturar.append(linea)
             factura = {
                 'partner_id': sesion.config_id.cliente_id.id or 1,
@@ -156,6 +156,8 @@ class PosSession(models.Model):
             logging.warning("Si llega?")
             logging.warning(factura_id)
             if factura_id:
+                for l in factura_id.invoice_line_ids:
+                    l.write{'tax_ids': l.product_id.taxes_id}
                 factura_id.action_post()
                 # self.factura_global_id = factura_id.id
                 for pago in pagos:
