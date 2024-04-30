@@ -22,7 +22,7 @@ class PosOrder(models.Model):
 
         if 'fecha' in ui_order:
             mal_formato = ui_order['fecha']
-    
+
             res['hora_especial'] = ui_order['hora']
             res['fecha_especial'] = ui_order['fecha']
             res['observaciones_especial']= ui_order['observaciones']

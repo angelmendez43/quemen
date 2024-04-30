@@ -66,11 +66,48 @@
     </template>
     <template id="report_delivery_document_extended" inherit_id="stock.report_delivery_document">
 
-        <xpath expr="//t[@t-call='web.external_layout']" position="attributes">
+        <xpath expr="//t[@t-call='web.internal_layout']" position="attributes">
             <attribute name="t-call">web.basic_layout</attribute>
         </xpath>
         <xpath expr="//h2[1]" position="after">
-            <div>Dirección entrega: <span t-esc="o.partner_id.name"/></div>
+            <div>
+                <strong>Receptor</strong>
+            </div>
+            <div>
+                Cliente: <span t-esc="o.partner_id.name"/>
+            </div>
+            <div>
+                Dirección entrega: <span t-esc="o.partner_id.name"/>
+            </div>
+            <div>
+                RFC: <span t-esc="o.partner_id.vat"/>
+            </div>
+            <div>
+                USO CFDI: SO1 - Sin efectos fiscales
+            </div>
+            <div>
+                Exportación: O1 - No aplica
+            </div>
+            <div>
+                Domicilio fiscal: 68270
+            </div>
+            <div>
+                Regimén fiscal: 601 - General de Ley Personas Morales
+            </div>
+            <div>
+                Domicilio: CARRETERA INTERNACIONAL CRISTOBAL COLÓN 12.5 Tlalixtac de Cabrera Tlalixtac de Cabrera Oaxaca México
+            </div>
+            <div>
+                Tipo de comprobant: T - Traslado
+            </div>
+            <div>
+                Folio: <span t-field="o.name"/>
+            </div>
+            <div>
+                <strong>Dirección de envío</strong><br/>
+                <span t-field="o.partner_id.name"/><br/>
+                <span t-field="o.partner_id.street"/>
+            </div>
         </xpath>
         <xpath expr="//div[@class='page']" position="after">
            <div class="footer-signatures" style="page-break-inside: avoid;">

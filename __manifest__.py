@@ -14,7 +14,7 @@
     'category': 'Uncategorized',
     'version': '1.01',
 
-    'depends': ['stock','base','point_of_sale','hr_payroll','mrp','sale_stock','l10n_mx_edi_stock', 'pos_coupon','l10n_mx_edi_stock','l10n_mx_edi_extended_40'],
+    'depends': ['stock','base','point_of_sale','hr_payroll','mrp','sale_stock','l10n_mx_edi_stock', 'pos_coupon','l10n_mx_edi_stock'],
 
     'data': [
         'data/paperformat_ticket.xml',
@@ -78,7 +78,8 @@
             'quemen/static/src/js/Popups/PedidoEspecialPopup.js',
             'quemen/static/src/js/Screens/ReceiptScreen/SpecialOrderReceipt.js',
             'quemen/static/src/js/Popups/ErrorPopup.js',
-            'quemen/static/src/js/Misc/AbstractReceiptScreen.js',
+            'quemen/static/src/js/Screens/ClientListScreen/ClientDetailsEdit.js',
+            # 'quemen/static/src/js/Misc/AbstractReceiptScreen.js',
             'quemen/static/src/xml/Popups/PedidoEspecialPopup.xml',
             'quemen/static/src/xml/pos_ticket_pedido_especial.xml',
             'quemen/static/src/css/pos.css',
@@ -88,7 +89,11 @@
             'quemen/static/src/xml/Popups/PedidoEspecialPopup.xml',
             'quemen/static/src/xml/pos_ticket_pedido_especial.xml',
             'quemen/static/src/xml/Screens/ReceiptScreen/SpecialOrderReceipt.xml',
+            'quemen/static/src/xml/Screens/ClientListScreen/ClientDetailsEdit.xml',
         ],
+        # 'web.assets_qweb':[
+        #     'pos_ticket_mx/static/src/xml/**/*',
+        # ],
     },
     'license': 'LGPL-3',
 }

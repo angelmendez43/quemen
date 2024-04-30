@@ -16,19 +16,19 @@ import pytz
 class ReportProductosLaborVenta(models.AbstractModel):
     _name = 'report.quemen.reporte_productos_labor_venta'
 
-    def productos_vencimiento(self, tienda_id):
+    def productos_vencimiento(self, tienda_id, fecha):
         logging.warning('tienda')
         logging.warning(tienda_id)
         tienda_id = self.env['pos.config'].search([('id','=',tienda_id[0])])
         ubicacion_id = tienda_id.picking_type_id.default_location_src_id
-        stock_id = self.env['stock.quant'].search([('location_id','=',ubicacion_id.id),('lot_id','!=', False)])
+        stock_id = self.env['stock.quant'].search([('location_id','=',ubicacion_id.id),('lot_id','!=', False)], order='product_id asc')
         inventario = []
         if stock_id:
-            fecha = self.fecha()
+            # fecha = self.fecha()
             for producto in stock_id:
-                logging.warning(producto.product_id.name)
-                logging.warning(producto.lot_id.name)
-                logging.warning(producto.lot_id.expiration_date.strftime('%Y-%m-%d'))
+                # logging.warning(producto.product_id.name)
+                # logging.warning(producto.lot_id.name)
+                # logging.warning(producto.lot_id.expiration_date.strftime('%Y-%m-%d'))
                 if producto.lot_id and producto.lot_id.expiration_date and producto.lot_id.expiration_date.strftime('%Y-%m-%d') == str(fecha):
                     logging.warn(producto.inventory_quantity)
                     inventario.append(producto)
@@ -48,17 +48,18 @@ class ReportProductosLaborVenta(models.AbstractModel):
     def fecha_hora_actual(self):
         timezone = pytz.timezone(self._context.get('tz') or self.env.user.tz or 'UTC')
         fecha_hora = datetime.datetime.now().astimezone(timezone).strftime('%d/%m/%Y %H:%M:%S')
-        return fecha_hora    
+        return fecha_hora
 
     def obtener_tienda(self, tienda_id):
         tienda = self.env['pos.config'].search([('id','=',tienda_id[0])])
         return tienda;
-    
+
     @api.model
     def _get_report_values(self, docids, data=None):
         model = self.env.context.get('active_model')
         docs = self.env[model].browse(self.env.context.get('active_ids', []))
         tienda_id = data['form']['tienda_id']
+        fecha = data['form']['fecha']
         logging.warning(tienda_id)
         return {
             'data': data['form'],

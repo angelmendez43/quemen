@@ -6,16 +6,16 @@
                 <PSNumpadInputButton value="'1'" />
                 <PSNumpadInputButton value="'2'" />
                 <PSNumpadInputButton value="'3'" />
-                
+
                 <PSNumpadInputButton value="'4'" />
                 <PSNumpadInputButton value="'5'" />
                 <PSNumpadInputButton value="'6'" />
-                
+
                 <br />
                 <PSNumpadInputButton value="'7'" />
                 <PSNumpadInputButton value="'8'" />
                 <PSNumpadInputButton value="'9'" />
-                
+
                 <br />
 
                 <PSNumpadInputButton value="'0'" />
@@ -25,8 +25,8 @@
                          alt="Backspace" />
                 </PSNumpadInputButton>
             </div>
-        </xpath>    
-    </t>    
+        </xpath>
+    </t>
     <t t-name="QuemenClosePosPopup" t-inherit="point_of_sale.ClosePosPopup" t-inherit-mode="extension" owl="1">
         <xpath expr="//div[hasclass('modal-dialog')]" position="replace">
         <div role="dialog" class="modal-dialog">
@@ -97,9 +97,9 @@
             </div>
             <MoneyDetailsPopup t-ref="moneyDetails" t-on-money-details-validated="updateCountedCash"/>
         </div>
-        </xpath>    
-    </t>    
-    
+        </xpath>
+    </t>
+
     <t t-name="QuemenNumpadWidget" t-inherit="point_of_sale.NumpadWidget" t-inherit-mode="extension" owl="1">
         <xpath expr="//div[hasclass('numpad')]" position="replace">
         <div class="numpad">
@@ -134,11 +134,11 @@
             </button>
         </div>
         </xpath>
-    </t>  
+    </t>
 
 
 
-    
+
     <t t-name="QuemenRefundButton" t-inherit="point_of_sale.RefundButton" t-inherit-mode="extension" owl="1">
         <xpath expr="//div[hasclass('control-button')]" position="replace">
             <div class="control-button">
@@ -146,14 +146,14 @@
                 Cancelación
             </div>
         </xpath>
-    </t>    
+    </t>
      <t t-name="QuemenCashMoveButton" t-inherit="point_of_sale.CashMoveButton" t-inherit-mode="extension" owl="1">
          <xpath expr="//div[hasclass('cash-move-button')]" position="replace">
              <div class="cash-move-button" t-on-click="onClick" style="display: none;">
                     <i class="fa fa-money" aria-hidden="true"></i>
                     <span style="padding-left: 10px;">Cash In/Out</span>
               </div>
-         </xpath>    
+         </xpath>
      </t>
         <!-- <t t-name="PromoCodeButton" owl="1">
         <span class="control-button">
@@ -169,8 +169,8 @@
                     <span> </span>
                     <span>Promociones</span>
                 </span>
-         </xpath>    
-     </t>    
+         </xpath>
+     </t>
       <!-- <t t-name="PromoCodeButton" owl="1">
         <span class="control-button">
             <i class="fa fa-barcode"></i>
@@ -235,7 +235,7 @@
             <div>
             </div>
         </xpath>
-        
+
         <xpath expr="//div[hasclass('modal-dialog')]//div[hasclass('popup')]//div[hasclass('section-order')]" position="replace">
             <div class="section-order">
                 <div class="section-title">
@@ -252,6 +252,6 @@
                 </div>
             </div>
         </xpath>
-        
+
     </t>
 </templates>

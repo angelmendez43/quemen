@@ -3,15 +3,39 @@ odoo.define('quemen.ProductScreen', function(require) {
 
     const Registries = require('point_of_sale.Registries');
     const ProductScreen = require('point_of_sale.ProductScreen');
+    // const PosCouponProductScreen = require('pos_coupon.PosCouponProductScreen')
     var { Gui } = require('point_of_sale.Gui');
     var core = require('web.core');
     var _t = core._t;
+
+    // const QeuemenPosCouponProductScreen = PosCouponProductScreen =>
+    //     class extends PosCouponProductScreen {
+    //         constructor(obj, options) {
+    //             super(...arguments);
+    //         }
+
+    //         async _updateSelectedOrderline(event) {
+    //             const selectedLine = this.currentOrder.get_selected_orderline();
+    //             if (selectedLine && selectedLine.is_program_reward && event.detail.key === 'Backspace') {
+    //                 console.log('intenta inactivar pero no lo hace')
+    //                 return super._updateSelectedOrderline(...arguments);
+    //             }else{
+    //                 return super._updateSelectedOrderline(...arguments);
+    //             }
+
+    //         }
+
+    //     };
+
+    // Registries.Component.extend(PosCouponProductScreen, QeuemenPosCouponProductScreen);
 
     const QuemenProductScreen = ProductScreen =>
         class extends ProductScreen {
             constructor(obj, options) {
                 super(...arguments);
             }
+
+
             async _barcodeProductAction(code){
                 const product = await this._getProductByBarcode(code);
                 if (!product) {
@@ -48,12 +72,12 @@ odoo.define('quemen.ProductScreen', function(require) {
                     } else {
                         throw error;
                     }
-                }    
+                }
                 console.log('NewfoundProductIds')
                 console.log(NewfoundProductIds)
                 console.log(FoundProduct)
 
-                
+
                 if (FoundProduct.length) {
                     var ProductLot = [NewfoundProductIds[0].product_id[0]];
                     var IdLot = NewfoundProductIds[0].id;
@@ -68,7 +92,7 @@ odoo.define('quemen.ProductScreen', function(require) {
                         ]],
                         context: this.env.session.user_context,
                     });
-                    
+
                     console.log('ProductLot')
                     console.log(ProductStock)
                     console.log(this)
@@ -84,26 +108,26 @@ odoo.define('quemen.ProductScreen', function(require) {
                                 'title': _t("POS error"),
                                 'body': _t("No hay existencias de producto."),
                             });
-                            return false;                           
+                            return false;
                         }
-                        
+
                     }else{
                             await Gui.showPopup('ErrorPopup', {
                                 'title': _t("POS error"),
                                 'body': _t("Lote inválido."),
                             });
-                            return false; 
-                        
-                    }
-                    
+                            return false;
 
-                }                
-                
-            } 
-         
+                    }
+
+
+                }
+
+            }
+
         };
 
     Registries.Component.extend(ProductScreen, QuemenProductScreen);
 
-            
+
 });

@@ -61,7 +61,7 @@ class PosSession(models.Model):
                 raise ValidationError(_('La sesión ' + sesion.name + ' actualmente ya contiene una factura global.'))
             if len(sesion.order_ids) > 0:
                 for pedido in sesion.order_ids:
-                    if pedido.state in ['done', 'paid'] and pedido.amount_total > 0 and pedido.refund_orders_count == 0:
+                    if pedido.state in ['done', 'paid'] and pedido.amount_total > 0:
                         pedidos_facturar.append(pedido)
                         logging.warn("pedidos_facturar")
                         logging.warn(pedidos_facturar)
@@ -74,6 +74,7 @@ class PosSession(models.Model):
         if pedidos_facturar:
             for pedido in pedidos_facturar:
                 for linea in pedido.lines:
+
                     lineas_facturar.append(linea)
             factura = {
                 'partner_id': sesion.config_id.cliente_id.id or 1,
@@ -88,26 +89,26 @@ class PosSession(models.Model):
             factura_id = self.env['account.move'].create(factura)
             logging.warning("Si llega?")
             logging.warning(factura_id)
-            # if factura_id:
-            #     for l in factura_id.invoice_line_ids:
-            #         l._onchange_product_id()
-            #     factura_id.action_post()
-            #     for pago in pagos:
-            #         logging.warning("PAgos")
-            #         logging.warning(pagos[pago])
-            #
-            #
-            #         pago_dic = {'payment_type': 'inbound','date': fields.Date.today(),
-            #         'partner_type': 'customer','partner_id':factura_id.partner_id.id,'payment_method_id':1,
-            #         'journal_id':pagos[pago]['diario'].id,'amount': pagos[pago]['cantidad'],'reconciled_invoice_ids':  [(6, 0, [factura_id.id])],}
-            #         pago_id = self.env['account.payment'].create(pago_dic)
-            #         pago_id.action_post()
-            #
-            #         for linea_gasto in pago_id.move_id.line_ids.filtered(lambda r: r.account_id.user_type_id.type == 'receivable' and not r.reconciled):
-            #                 for linea_factura in factura_id.line_ids.filtered(lambda r: r.account_id.user_type_id.type == 'receivable' and not r.reconciled):
-            #                     if (linea_gasto.debit == linea_factura.credit or linea_gasto.credit - linea_factura.debit ):
-            #                         (linea_gasto | linea_factura).reconcile()
-            #                         break
+            if factura_id:
+                factura_id.action_post()
+                # self.factura_global_id = factura_id.id
+                for pago in pagos:
+                    logging.warning("PAgos")
+                    logging.warning(pagos[pago])
+
+                    # 'communication':factura_id.name, linea 68
+
+                    pago_dic = {'payment_type': 'inbound','date': fields.Date.today(),
+                    'partner_type': 'customer','partner_id':factura_id.partner_id.id,'payment_method_id':1,
+                    'journal_id':pagos[pago]['diario'].id,'amount': pagos[pago]['cantidad'],'reconciled_invoice_ids':  [(6, 0, [factura_id.id])],}
+                    pago_id = self.env['account.payment'].create(pago_dic)
+                    pago_id.action_post()
+
+                    for linea_gasto in pago_id.move_id.line_ids.filtered(lambda r: r.account_id.user_type_id.type == 'receivable' and not r.reconciled):
+                            for linea_factura in factura_id.line_ids.filtered(lambda r: r.account_id.user_type_id.type == 'receivable' and not r.reconciled):
+                                if (linea_gasto.debit == linea_factura.credit or linea_gasto.credit - linea_factura.debit ):
+                                    (linea_gasto | linea_factura).reconcile()
+                                    break
 
         for sesion in self:
             sesion.write({'factura_global_id': factura_id.id})
@@ -126,7 +127,7 @@ class PosSession(models.Model):
                 raise ValidationError(_('La sesión ' + sesion.name + ' actualmente ya contiene una factura global.'))
             if len(sesion.order_ids) > 0:
                 for pedido in sesion.order_ids:
-                    if pedido.state in ['done', 'paid'] and pedido.amount_total > 0 and pedido.refund_orders_count == 0:
+                    if pedido.state in ['done', 'paid'] and pedido.amount_total > 0:
                         pedidos_facturar.append(pedido)
                         logging.warn("pedidos_facturar")
                         logging.warn(pedidos_facturar)
@@ -139,6 +140,7 @@ class PosSession(models.Model):
         if pedidos_facturar:
             for pedido in pedidos_facturar:
                 for linea in pedido.lines:
+                    linea.tax_ids = linea.product_id.taxes_id
                     lineas_facturar.append(linea)
             factura = {
                 'partner_id': sesion.config_id.cliente_id.id or 1,
@@ -153,28 +155,26 @@ class PosSession(models.Model):
             factura_id = self.env['account.move'].create(factura)
             logging.warning("Si llega?")
             logging.warning(factura_id)
-            # if factura_id:
-            #     for l in factura_id.invoice_line_ids:
-            #         l._onchange_product_id()
-            #     factura_id.action_post()
-            #     # self.factura_global_id = factura_id.id
-            #     for pago in pagos:
-            #         logging.warning("PAgos")
-            #         logging.warning(pagos[pago])
-            #
-            #         # 'communication':factura_id.name, linea 68
-            #
-            #         pago_dic = {'payment_type': 'inbound','date': fields.Date.today(),
-            #         'partner_type': 'customer','partner_id':factura_id.partner_id.id,'payment_method_id':1,
-            #         'journal_id':pagos[pago]['diario'].id,'amount': pagos[pago]['cantidad'],'reconciled_invoice_ids':  [(6, 0, [factura_id.id])],}
-            #         pago_id = self.env['account.payment'].create(pago_dic)
-            #         pago_id.action_post()
-            #
-            #         for linea_gasto in pago_id.move_id.line_ids.filtered(lambda r: r.account_id.user_type_id.type == 'receivable' and not r.reconciled):
-            #                 for linea_factura in factura_id.line_ids.filtered(lambda r: r.account_id.user_type_id.type == 'receivable' and not r.reconciled):
-            #                     if (linea_gasto.debit == linea_factura.credit or linea_gasto.credit - linea_factura.debit ):
-            #                         (linea_gasto | linea_factura).reconcile()
-            #                         break
+            if factura_id:
+                factura_id.action_post()
+                # self.factura_global_id = factura_id.id
+                for pago in pagos:
+                    logging.warning("PAgos")
+                    logging.warning(pagos[pago])
+
+                    # 'communication':factura_id.name, linea 68
+
+                    pago_dic = {'payment_type': 'inbound','date': fields.Date.today(),
+                    'partner_type': 'customer','partner_id':factura_id.partner_id.id,'payment_method_id':1,
+                    'journal_id':pagos[pago]['diario'].id,'amount': pagos[pago]['cantidad'],'reconciled_invoice_ids':  [(6, 0, [factura_id.id])],}
+                    pago_id = self.env['account.payment'].create(pago_dic)
+                    pago_id.action_post()
+
+                    for linea_gasto in pago_id.move_id.line_ids.filtered(lambda r: r.account_id.user_type_id.type == 'receivable' and not r.reconciled):
+                            for linea_factura in factura_id.line_ids.filtered(lambda r: r.account_id.user_type_id.type == 'receivable' and not r.reconciled):
+                                if (linea_gasto.debit == linea_factura.credit or linea_gasto.credit - linea_factura.debit ):
+                                    (linea_gasto | linea_factura).reconcile()
+                                    break
 
         for sesion in self:
             sesion.write({'factura_global_id': factura_id.id})

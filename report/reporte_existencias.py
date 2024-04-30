@@ -69,16 +69,20 @@ class ReportExistencias(models.AbstractModel):
 
         ubicacion_id = tiendas_id.picking_type_id.default_location_src_id
 
-        stock_id = self.env['stock.quant'].search([('location_id','=',ubicacion_id.id)])
+        stock_id = self.env['stock.quant'].search([('location_id','=',ubicacion_id.id)], order='product_id asc')
         inventario = {}
         if stock_id:
             for linea in stock_id:
                 logging.warn("linea")
                 logging.warn(linea.product_id.name)
-                if str(linea.product_id.categ_id.parent_id.id)+'/'+str(linea.product_id.categ_id.id) not in inventario:
-                    inventario[str(linea.product_id.categ_id.parent_id.id)+'/'+str(linea.product_id.categ_id.id)] = {'productos': [],'categoria_padre': linea.product_id.categ_id.parent_id.name, 'categoria_hija': linea.product_id.categ_id.name }
+                if linea.lot_id and linea.lot_id.expiration_date:
+                    if str(linea.product_id.categ_id.parent_id.id)+'/'+str(linea.product_id.categ_id.id) not in inventario:
+                        inventario[str(linea.product_id.categ_id.parent_id.id)+'/'+str(linea.product_id.categ_id.id)] = {'productos': [],'categoria_padre': linea.product_id.categ_id.parent_id.name, 'categoria_hija': linea.product_id.categ_id.name }
 
-                inventario[str(linea.product_id.categ_id.parent_id.id)+'/'+str(linea.product_id.categ_id.id)]['productos'].append(linea)
+                    inventario[str(linea.product_id.categ_id.parent_id.id)+'/'+str(linea.product_id.categ_id.id)]['productos'].append(linea)
+                else:
+                    if str(linea.product_id.categ_id.parent_id.id)+'/'+str(linea.product_id.categ_id.id) not in inventario:
+                        inventario[str(linea.product_id.categ_id.parent_id.id)+'/'+str(linea.product_id.categ_id.id)] = {'productos': [],'categoria_padre': linea.product_id.categ_id.parent_id.name, 'categoria_hija': linea.product_id.categ_id.name }
 
 
         logging.warn('product existencias')
@@ -118,4 +122,3 @@ class ReportExistencias(models.AbstractModel):
             'fecha_hora_actual': self.fecha_hora_actual,
             'obtener_tienda': self.obtener_tienda
         }
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
