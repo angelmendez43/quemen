@@ -66,7 +66,7 @@
     </template>
     <template id="report_delivery_document_extended" inherit_id="stock.report_delivery_document">
 
-        <xpath expr="//t[@t-call='web.internal_layout']" position="attributes">
+        <xpath expr="//t[@t-call='web.external_layout']" position="attributes">
             <attribute name="t-call">web.basic_layout</attribute>
         </xpath>
         <xpath expr="//h2[1]" position="after">
