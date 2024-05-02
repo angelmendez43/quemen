@@ -51,11 +51,14 @@
                                     </tr>
                                     <tr>
                                         <td style="font-size: 13px;">
-                                            <span t-esc="linea.product_id.default_code"/>
+                                            <t t-if="linea.lot_id">
+                                                <span t-esc="linea.lot_id.name"/>
+                                            </t>
+
                                         </td>
                                         <td style="text-aligh;center;font-size: 13px;">
                                             <t t-if="linea.lot_id">
-                                                <span t-esc="linea.lot_id.name"/>
+                                                <span t-esc="linea.lot_id.expiration_date.strftime('%d/%m/%Y')" />
                                             </t>
                                         </td>
                                         <td style="text-align:right;font-size: 13px;">
