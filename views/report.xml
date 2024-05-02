@@ -125,8 +125,8 @@
             <field name="binding_model_id" ref="model_pos_session"/>
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="quemen.paperformat_ticket"/>
-        </record> 
-        
+        </record>
+
         <record id="quemen_reporte_corte_caja_carta" model="ir.actions.report">
             <field name="name">Corte de caja carta</field>
             <field name="model">pos.session</field>
@@ -136,9 +136,9 @@
             <field name="print_report_name">'Corte de caja carta'</field>
             <field name="binding_model_id" ref="model_pos_session"/>
             <field name="binding_type">report</field>
-        </record> 
+        </record>
 
-        
+
         <record id="quemen_vale_retiro" model="ir.actions.report">
             <field name="name">Vale de retiro</field>
             <field name="model">quemen.retiros_efectivo</field>
@@ -149,9 +149,9 @@
             <field name="binding_model_id" ref="quemen.model_quemen_retiros_efectivo"/>
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="quemen.paperformat_ticket"/>
-        </record>  
+        </record>
 
-        
+
         <record id="action_reporte_entrega_valores" model="ir.actions.report">
             <field name="name">Reporte entrega valores</field>
             <field name="model">pos.session</field>
@@ -159,12 +159,12 @@
             <field name="report_name">quemen.reporte_entrega_valores</field>
             <field name="report_file">quemen.reporte_entrega_valores</field>
             <field name="print_report_name">'Reporte entrega valores'</field>
-            <field name="binding_model_id" ref="model_pos_session"/>
+            <field name="binding_model_id" eval="False"/>
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="quemen.paperformat_ticket"/>
-        </record>        
+        </record>
 
-  
+
         <record id="action_reporte_productos_labor_venta" model="ir.actions.report">
             <field name="name">Reporte producto para labor venta</field>
             <field name="model">pos.order</field>
@@ -172,7 +172,7 @@
             <field name="report_name">quemen.reporte_productos_labor_venta</field>
             <field name="report_file">quemen.reporte_productos_labor_venta</field>
             <field name="print_report_name">'Reporte productos labor ventas'</field>
-            <field name="binding_model_id" ref="model_pos_session"/>
+            <field name="binding_model_id" eval="False"/>
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="quemen.paperformat_ticket"/>
         </record>
@@ -184,12 +184,12 @@
             <field name="report_name">quemen.reporte_existencias</field>
             <field name="report_file">quemen.reporte_existencias</field>
             <field name="print_report_name">'Reporte existencias'</field>
-            <field name="binding_model_id" ref="model_pos_session"/>
+            <field name="binding_model_id" eval="False"/>
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="quemen.paperformat_ticket"/>
         </record>
 
-        
+
         <record id="action_report_delivery_quemen" model="ir.actions.report">
             <field name="name">Transferencia ticket</field>
             <field name="model">stock.picking</field>
@@ -235,7 +235,7 @@
             <field name="binding_model_id" ref="model_quemen_op_lote"/>
             <field name="binding_type">report</field>
         </record>
-        
+
         <record id="action_report_explosion_insumos" model="ir.actions.report">
             <field name="name">Explosión de insumos</field>
             <field name="model">quemen.op_lote</field>
