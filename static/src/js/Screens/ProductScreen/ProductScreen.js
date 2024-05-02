@@ -40,7 +40,7 @@ odoo.define('quemen.ProductScreen', function(require) {
                 if (this.env.pos.get_order().orderlines.any(line => line.get_quantity() <= 0)) {
                     const { confirmed } = await this.showPopup('ConfirmPopup', {
                         title: this.env._t('Cnatidad 0'),
-                        body: this.env._t('No puede dejar lines con cantidad CERO'),
+                        body: this.env._t('No puede dejar lineas con cantidad CERO'),
                         confirmText: this.env._t('Aceptar'),
                     });
                     if (confirmed) {
