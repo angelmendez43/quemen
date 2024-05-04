@@ -12,6 +12,7 @@
         <t t-set="retorno_productos_sesiones" t-value="sesiones(docs)"/>
         <t t-set="listado_totales" t-value="retorno_productos_sesiones['listado_totales']"/>
         <t t-set="listado_productos" t-value="retorno_productos_sesiones['listado_productos']"/>
+        <t t-set="ventas_sesion" t-value="retorno_productos_sesiones['ventas_sesion']"/>
         <t t-set="listado_notas_credito" t-value="retorno_productos_sesiones['listado_notas_credito']"/>
         <t t-set="listado_facturas_globales" t-value="retorno_productos_sesiones['listado_facturas_globales']"/>
         <t t-set="listado_facturas_expedidas" t-value="retorno_productos_sesiones['listado_facturas_expedidas']"/>
@@ -139,17 +140,17 @@
               <th style="background-color:silver;color:black;font-size:40%; text-align:right">E</th>
             </tr>
 
-            <tr height="25" t-foreach="listado_productos" t-as="p">
-              <td style="font-size:40%"><span t-esc="p['serie']"/></td>
-              <td style="font-size:40%"><span t-esc="p['folio']"/></td>
-              <td style="font-size:40%" align="right"><span t-esc="p['ventas_sin_iva']" t-options = '{"widget": "float", "precision": 2}'/></td>
-              <td style="font-size:40%" align="right"><span t-esc="p['descuento_sin_iva']" t-options = '{"widget": "float", "precision": 2}'/></td>
-              <td style="font-size:40%" align="right"><span t-esc="p['ventas_iva']" t-options = '{"widget": "float", "precision": 2}'/></td>
-              <td style="font-size:40%" align="right"><span t-esc="p['descuento_iva']" t-options = '{"widget": "float", "precision": 2}'/></td>
-              <td style="font-size:40%" align="right"><span t-esc="p['descuento']" t-options = '{"widget": "float", "precision": 2}'/></td>
-              <td style="font-size:40%" align="right"><span t-esc="p['iva']" t-options = '{"widget": "float", "precision": 2}'/></td>
-              <td style="font-size:40%" align="right"><span t-esc="p['total']" t-options = '{"widget": "float", "precision": 2}'/></td>
-              <td style="font-size:40%" align="center"><span t-esc="p['fp']"/></td>
+            <tr height="25" t-foreach="ventas_sesion" t-as="p">
+              <td style="font-size:100%"><span t-esc="ventas_sesion[p]['serie']"/></td>
+              <td style="font-size:100%"><span t-esc="ventas_sesion[p]['folio']"/></td>
+              <td style="font-size:100%" align="right"><span t-esc="ventas_sesion[p]['ventas_sin_iva']" t-options = '{"widget": "float", "precision": 2}'/></td>
+              <td style="font-size:100%" align="right"><span t-esc="ventas_sesion[p]['descuento_sin_iva']" t-options = '{"widget": "float", "precision": 2}'/></td>
+              <td style="font-size:100%" align="right"><span t-esc="ventas_sesion[p]['ventas_iva']" t-options = '{"widget": "float", "precision": 2}'/></td>
+              <td style="font-size:100%" align="right"><span t-esc="ventas_sesion[p]['descuento_iva']" t-options = '{"widget": "float", "precision": 2}'/></td>
+              <td style="font-size:100%" align="right"><span t-esc="ventas_sesion[p]['descuento']" t-options = '{"widget": "float", "precision": 2}'/></td>
+              <td style="font-size:100%" align="right"><span t-esc="ventas_sesion[p]['iva']" t-options = '{"widget": "float", "precision": 2}'/></td>
+              <td style="font-size:100%" align="right"><span t-esc="ventas_sesion[p]['total']" t-options = '{"widget": "float", "precision": 2}'/></td>
+              <td style="font-size:100%" align="center"><span t-esc="ventas_sesion[p]['fp']"/></td>
               <td ></td>
             </tr>
 
@@ -429,7 +430,7 @@
                   <td></td>
                   <td colspan="1" style="font-size:45%" align="right"><span t-esc="lr['cantidad']"/></td>
                   <td colspan="2" style="font-size:45%" align="center"><span t-esc="lr['fecha_hora']"/></td>
-                  <td colspan="1" style="font-size:45%" align="right"><span t-esc="lr['cajero']"/></td>  
+                  <td colspan="1" style="font-size:45%" align="right"><span t-esc="lr['cajero']"/></td>
                 </tr>
 
 
@@ -461,7 +462,7 @@
                 <t t-call="quemen.reporte_corte_caja_carta_document" t-lang="o.user_id.lang"/>
             </t>
         </t>
-    </template>    
+    </template>
 </odoo>
 
 
