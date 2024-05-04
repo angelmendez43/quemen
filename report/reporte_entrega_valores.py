@@ -23,8 +23,7 @@ class ReportEntregaValores(models.AbstractModel):
         if fecha_inicio and fecha_fin:
             retiro_ids = self.env['quemen.retiros_efectivo'].search([('tienda_id','=',tienda_id[0]),('fecha_hora','>=',fecha_inicio),('fecha_hora','<=',fecha_fin)],order='fecha_hora asc')
         else:
-            ultima_sesion_id = self.env['pos.session'].search([('config_id','=',tienda_id[0]),('state','=','closed')], order='stop_at desc')
-            retiro_ids = self.env['quemen.retiros_efectivo'].search([('sesion_id','=',ultima_sesion_id[0].id)])
+            retiro_ids = self.env['quemen.retiros_efectivo'].search([('tienda_id','=',tienda_id[0]),('entregado','=', False),('state','=', 'confirmado')], order='fecha_hora asc')
         fondo_caja = {}
         retiro_efectivo = {}
         logging.warn(retiro_ids)
@@ -33,6 +32,7 @@ class ReportEntregaValores(models.AbstractModel):
                 fecha_sesion = dateutil.parser.parse(str(retiro.sesion_id.start_at)).date()
                 logging.warn("Sesion")
                 logging.warn(retiro.sesion_id.name)
+                retiro.write({'entregado': True})
                 if fecha_sesion not in retiro_efectivo:
                     retiro_efectivo[fecha_sesion] = {'fecha': fecha_sesion, 'retiros': [],'total_retiros': 0}
 
