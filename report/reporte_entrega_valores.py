@@ -24,7 +24,8 @@ class ReportEntregaValores(models.AbstractModel):
             retiro_ids = self.env['quemen.retiros_efectivo'].search([('tienda_id','=',tienda_id[0]),('fecha_hora','>=',fecha_inicio),('fecha_hora','<=',fecha_fin)],order='fecha_hora asc')
         else:
             ultima_sesion_id = self.env['pos.session'].search([('config_id','=',tienda_id[0]),('state','=','closed')], order='stop_at desc')
-            retiro_ids = self.env['quemen.retiros_efectivo'].search([('sesion_id','=',ultima_sesion_id[0].id)])        fondo_caja = {}
+            retiro_ids = self.env['quemen.retiros_efectivo'].search([('sesion_id','=',ultima_sesion_id[0].id)])
+        fondo_caja = {}
         retiro_efectivo = {}
         logging.warn(retiro_ids)
         if len(retiro_ids) > 0:
