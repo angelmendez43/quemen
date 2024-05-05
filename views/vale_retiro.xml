@@ -20,7 +20,7 @@
                             </tr>
                         </table>
                         <br/>
-                        Fecha: <span t-field="o.fecha_hora" t-options='{"format": "MM dd y h:mm a"}'/><br/>
+                        Fecha: <span t-field="o.fecha_hora" t-options='{"format": "dd MM y h:mm a"}'/><br/>
                         Nombre de cajero(a): <span t-field="o.cajero"/><br/>
                         <br/>
                         <table style="margin: 0 auto;width:100%;">
@@ -48,14 +48,14 @@
                                             <td class="text-right"><span t-esc="linea.denominacion_id.value * linea.cantidad"/></td>
                                             <!-- <td class="text-right"><span t-esc="linea.subtotal"/></td> -->
                                         </tr>
-                                    </t>    
+                                    </t>
                                 </t>
                                 <tr>
                                         <td></td>
                                         <td><strong>Total:</strong></td>
                                         <td  class="text-right"><span t-esc="o.total"/></td>
 
-                                </tr>    
+                                </tr>
                             </tbody>
                         </table>
                         <br/>

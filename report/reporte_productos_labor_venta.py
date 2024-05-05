@@ -36,13 +36,9 @@ class ReportProductosLaborVenta(models.AbstractModel):
         return inventario
 
     def fecha(self):
-        fecha_hoy = fields.Date.today()
-        fecha = fecha_hoy + datetime.timedelta(days=1)
-        logging.warning('fecha')
+        timezone = pytz.timezone(self._context.get('tz') or self.env.user.tz or 'UTC')
+        fecha_hoy = datetime.datetime.now().astimezone(timezone).strftime('%Y-%m-%d')
         logging.warning(fecha_hoy)
-        logging.warning(fecha)
-        # timezone = pytz.timezone(self._context.get('tz') or self.env.user.tz or 'UTC')
-        # fecha_hora = datetime.datetime.now().astimezone(timezone).strftime('%d/%m/%Y %H:%M:%S')
         return fecha
 
     def fecha_hora_actual(self):
