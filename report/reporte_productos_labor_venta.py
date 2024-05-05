@@ -39,7 +39,7 @@ class ReportProductosLaborVenta(models.AbstractModel):
         timezone = pytz.timezone(self._context.get('tz') or self.env.user.tz or 'UTC')
         fecha_hoy = datetime.datetime.now().astimezone(timezone).strftime('%Y-%m-%d')
         logging.warning(fecha_hoy)
-        return fecha
+        return fecha_hoy
 
     def fecha_hora_actual(self):
         timezone = pytz.timezone(self._context.get('tz') or self.env.user.tz or 'UTC')
