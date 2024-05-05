@@ -125,60 +125,63 @@ class ReporteCorteCajaCarta(models.AbstractModel):
 
 
             for linea in cfdi_valores_factura_global['invoice_line_vals_list']:
-                logging.warning('linea')
-                logging.warning(linea)
-                dic_ventas = {'serie':'', 'folio': '','ventas_sin_iva': 0, 'descuento_sin_iva': 0, 'ventas_iva': 0, 'descuento_iva': 0, 'descuento': 0, 'iva': 0, 'total': 0, 'fp': 0, 'e':0}
-                # listado_productos.append(dic_ventas)
-                venta_nombre = linea['line'].pedido_referencia
-                if venta.name not in ventas_sesion:
-                    ventas_sesion[venta_nombre] = dic_ventas
+                if linea['line'].sesion_id.id == docs.id:
+                    logging.warning('linea')
+                    logging.warning(linea)
+                    dic_ventas = {'serie':'', 'folio': '','ventas_sin_iva': 0, 'descuento_sin_iva': 0, 'ventas_iva': 0, 'descuento_iva': 0, 'descuento': 0, 'iva': 0, 'total': 0, 'fp': 0, 'e':0}
+                    # listado_productos.append(dic_ventas)
+                    venta_nombre = linea['line'].pedido_referencia
+                    if venta.name not in ventas_sesion:
+                        ventas_sesion[venta_nombre] = dic_ventas
 
-                logging.warning('venta Linea ')
-                logging.warning(linea['line'].pedido_referencia)
-                logging.warning(linea['price_unit_after_discount'])
-                logging.warning(venta_nombre)
+                    logging.warning('venta Linea ')
+                    logging.warning(linea['line'].pedido_referencia)
+                    logging.warning(linea['price_unit_after_discount'])
+                    logging.warning(venta_nombre)
 
-                serie = venta_nombre.split("/", 1)[0]
-                folio = venta_nombre.split("/", 1)[1]
+                    serie = venta_nombre.split("/", 1)[0]
+                    folio = venta_nombre.split("/", 1)[1]
 
-                ventas_sesion[venta_nombre]['serie'] = serie
-                ventas_sesion[venta_nombre]['folio'] = folio
-                fp = 0
-                e = 0
-                if linea['price_subtotal_unit'] == linea['price_total_unit']:#es 0 impuesto
-                    logging.warning('sin impuesto')
-                    venta_sin_iva = linea['price_total_unit']
-                    descuento_sin_iva = linea['price_discount']
-                    ventas_iva = 0
-                    descuento_iva = 0
-                    descuento = 0
-                    iva = 0
-                    total = linea['price_total_unit']
+                    ventas_sesion[venta_nombre]['serie'] = serie
+                    ventas_sesion[venta_nombre]['folio'] = folio
+                    fp = 0
+                    e = 0
+                    if linea['price_subtotal_unit'] == linea['price_total_unit']:#es 0 impuesto
+                        logging.warning('sin impuesto')
+                        venta_sin_iva = linea['price_total_unit']
+                        descuento_sin_iva = linea['price_discount']
+                        ventas_iva = 0
+                        descuento_iva = 0
+                        descuento = 0
+                        iva = 0
+                        total = linea['price_total_unit']
 
-                    ventas_sesion[venta_nombre]['ventas_sin_iva'] += venta_sin_iva
-                    ventas_sesion[venta_nombre]['descuento_sin_iva'] += descuento_sin_iva
-                    ventas_sesion[venta_nombre]['ventas_iva'] += ventas_iva
-                    ventas_sesion[venta_nombre]['descuento_iva'] += descuento_iva
-                    ventas_sesion[venta_nombre]['iva'] += iva
-                    ventas_sesion[venta_nombre]['total'] += total
+                        ventas_sesion[venta_nombre]['ventas_sin_iva'] += venta_sin_iva
+                        ventas_sesion[venta_nombre]['descuento_sin_iva'] += descuento_sin_iva
+                        ventas_sesion[venta_nombre]['ventas_iva'] += ventas_iva
+                        ventas_sesion[venta_nombre]['descuento_iva'] += descuento_iva
+                        ventas_sesion[venta_nombre]['iva'] += iva
+                        ventas_sesion[venta_nombre]['total'] += total
 
-                else:
-                    logging.warning('con impuesto')
-                    venta_sin_iva = 0
-                    descuento_sin_iva = 0
-                    ventas_iva = 0
-                    descuento_iva = linea['price_discount']
-                    descuento = linea['price_discount']
-                    iva = linea['price_total_unit'] - linea['price_subtotal_unit']
-                    total = 0
+                    else:
+                        logging.warning('con impuesto')
+                        venta_sin_iva = 0
+                        descuento_sin_iva = 0
+                        ventas_iva = 0
+                        descuento_iva = linea['price_discount']
+                        descuento = linea['price_discount']
+                        iva = linea['price_total_unit'] - linea['price_subtotal_unit']
+                        total = 0
 
-                    ventas_sesion[venta_nombre]['ventas_sin_iva'] += venta_sin_iva
-                    ventas_sesion[venta_nombre]['descuento_sin_iva'] += descuento_sin_iva
-                    ventas_sesion[venta_nombre]['ventas_iva'] += ventas_iva
-                    ventas_sesion[venta_nombre]['descuento_iva'] += descuento_iva
-                    ventas_sesion[venta_nombre]['iva'] += iva
-                    ventas_sesion[venta_nombre]['total'] += total
-     
+                        ventas_sesion[venta_nombre]['ventas_sin_iva'] += venta_sin_iva
+                        ventas_sesion[venta_nombre]['descuento_sin_iva'] += descuento_sin_iva
+                        ventas_sesion[venta_nombre]['ventas_iva'] += ventas_iva
+                        ventas_sesion[venta_nombre]['descuento_iva'] += descuento_iva
+                        ventas_sesion[venta_nombre]['iva'] += iva
+                        ventas_sesion[venta_nombre]['total'] += total
+        logging.warning('ventas sesion')
+        logging.warning(ventas_sesion)
+
 
         for referencia in ventas:
             folio = referencia.name.split("/", 1)[1]

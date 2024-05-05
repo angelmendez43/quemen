@@ -10,3 +10,4 @@ class AccountMoveLine(models.Model):
     _inherit = "account.move.line"
 
     pedido_referencia = fields.Char('Pedido referencia')
+    sesion_id = fields.Many2one('pos.session')

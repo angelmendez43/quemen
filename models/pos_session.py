@@ -178,7 +178,7 @@ class PosSession(models.Model):
                 #                     (linea_gasto | linea_factura).reconcile()
                 #                     break
 
-        for sesion in self:
+        for sesion in sesiones:
             sesion.write({'factura_global_id': factura_id.id})
         return True
 
