@@ -21,7 +21,7 @@ class ReportProductosLaborVenta(models.AbstractModel):
         logging.warning(tienda_id)
         tienda_id = self.env['pos.config'].search([('id','=',tienda_id[0])])
         ubicacion_id = tienda_id.picking_type_id.default_location_src_id
-        stock_id = self.env['stock.quant'].search([('location_id','=',ubicacion_id.id),('lot_id','!=', False)], order='product_id asc')
+        stock_id = self.env['stock.quant'].search([('location_id','=',ubicacion_id.id),('lot_id','!=', False),('quantity','>',0)], order='product_id asc')
         inventario = []
         if stock_id:
             fecha = self.fecha()
