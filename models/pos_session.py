@@ -61,7 +61,7 @@ class PosSession(models.Model):
                 raise ValidationError(_('La sesión ' + sesion.name + ' actualmente ya contiene una factura global.'))
             if len(sesion.order_ids) > 0:
                 for pedido in sesion.order_ids:
-                    if pedido.state in ['done', 'paid'] and pedido.amount_total > 0:
+                    if pedido.state in ['done', 'paid'] and pedido.amount_total > 0 and pedido.is_refunded == False::
                         pedidos_facturar.append(pedido)
                         logging.warn("pedidos_facturar")
                         logging.warn(pedidos_facturar)
@@ -128,7 +128,7 @@ class PosSession(models.Model):
                 raise ValidationError(_('La sesión ' + sesion.name + ' actualmente ya contiene una factura global.'))
             if len(sesion.order_ids) > 0:
                 for pedido in sesion.order_ids:
-                    if pedido.state in ['done', 'paid'] and pedido.amount_total > 0:
+                    if pedido.state in ['done', 'paid'] and pedido.amount_total > 0 and pedido.is_refunded == False::
                         pedidos_facturar.append(pedido)
                         logging.warn("pedidos_facturar")
                         logging.warn(pedidos_facturar)
