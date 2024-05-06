@@ -50,47 +50,87 @@ class ReporteCorteCajaCarta(models.AbstractModel):
         facturas = ventas.account_move
         numero_recibo = []
         importe_descuento = 0
+
+        # DEV JEFFREPO
+
+        dic_formas_pago = {'Tarjeta credito': 'TC', 'Efectivo': 'E', '	Tarjeta debito': 'TD', '​Transferencia': 'T', 'Tarjeta crédito': 'TC',}
+        ventas_mostrador = {'folios': False, 'importe': 0.00, 'descuento': 0.00, 'total': 0}
+        total_ventas_mostrador = 0.00
         ventas_sesion = {}
+        totales_ventas_sesion = {'ventas_sin_iva': 0, 'descuento_sin_iva': 0, 'ventas_iva': 0, 'descuento_iva': 0, 'descuento': 0, 'iva': 0, 'total': 0}
+        resumen_facturas_expedidas = {'serie': '', 'folios': '', 'venta_sin_iva': 0.00, 'venta_iva': 0.00, 'iva': 0.00, 'total': 0.00}
+        resumen_factura_global = {'serie': '', 'folios': '', 'venta_sin_iva': 0.00, 'venta_iva': 0.00, 'iva': 0.00, 'total': 0.00}
+        total_facturas_expedidas = 0.00
+        detalle_facturas_expedidas = {}
+        total_detalle_facturas_expedidas = 0.00
+        diferencia = 0.00
+        apertura_efectivo = docs.cash_register_balance_start
+        retiro_efectivo = 0.00
+        venta_efectivo = 0.00
+        cierre_efectivo = docs.cash_register_balance_end_real
+        retiro_corte_previo = {}
 
         #SOLO OBTENEMOS INFORMACION DE PEDIDOS FACTURADOS
         for venta in ventas:
-            dic_ventas = {'serie':'', 'folio': '','ventas_sin_iva': 0, 'descuento_sin_iva': 0, 'ventas_iva': 0, 'descuento_iva': 0, 'descuento': 0, 'iva': 0, 'total': 0, 'fp': 0, 'e':0}
-            listado_productos.append(dic_ventas)
             venta_nombre = venta.name
-            if venta.name not in ventas_sesion:
-                ventas_sesion[venta_nombre] = dic_ventas
-
+            if venta_nombre not in ventas_sesion:
+                fp = False
+                for linea_pago in venta.payment_ids:
+                    if linea_pago.payment_method_id.name == 'Efectivo':
+                        venta_efectivo += linea_pago.amount
+                if len(venta.payment_ids) == 1:
+                    metodo_pago = venta.payment_ids.payment_method_id.name
+                    fp = dic_formas_pago[metodo_pago]
+                else:
+                    fp = 'M'
+                ventas_sesion[venta_nombre] = {'serie':'', 'folio': '','ventas_sin_iva': 0, 'descuento_sin_iva': 0, 'ventas_iva': 0, 'descuento_iva': 0, 'descuento': 0, 'iva': 0, 'total': 0, 'fp': fp, 'e':0}
 
             if venta.state == 'invoiced':
+
+                # Para facturas expedidias linea 82 y 83
+                if venta_nombre not in detalle_facturas_expedidas:
+                    serie = venta_nombre.split("/", 1)[0]
+                    folio = venta_nombre.split("/", 1)[1]
+                    detalle_facturas_expedidas[venta_nombre] = {'serie': serie, 'folio': folio,'ventas_sin_iva': 0.00, 'ventas_iva': 0.00, 'iva': 0.00, 'total': 0.00}
+
                 pedidos_facturados.append(venta.id)
                 cfdi_valores = self.env['account.edi.format']._l10n_mx_edi_get_invoice_cfdi_values(venta.account_move)
                 if len(cfdi_valores) > 0:
+                    logging.warning('-----')
+                    logging.warning(venta_nombre)
                     logging.warning('cfdi_valores quemen')
                     logging.warning(cfdi_valores)
                     for linea in cfdi_valores['invoice_line_vals_list']:
-                        logging.warning('linea')
-                        logging.warning(linea)
-                        serie = venta.name.split("/", 1)[0]
-                        folio = venta.name.split("/", 1)[1]
+                        serie = venta_nombre.split("/", 1)[0]
+                        folio = venta_nombre.split("/", 1)[1]
 
                         ventas_sesion[venta_nombre]['serie'] = serie
                         ventas_sesion[venta_nombre]['folio'] = folio
+                        venta_sin_iva= 0
+                        descuento_sin_iva= 0
+                        ventas_iva= 0
+                        descuento_iva= 0
+                        descuento= 0
+                        iva= 0
+                        total= 0
                         fp = 0
                         e = 0
+
                         if linea['price_subtotal_unit'] == linea['price_total_unit']:#es 0 impuesto
                             logging.warning('sin impuesto')
-                            venta_sin_iva = linea['price_total_unit']
+                            venta_sin_iva = linea['price_subtotal_before_discount']
                             descuento_sin_iva = linea['price_discount']
+                            descuento = linea['price_discount']
                             ventas_iva = 0
                             descuento_iva = 0
-                            descuento = 0
                             iva = 0
-                            total = linea['price_total_unit']
+                            total = venta_sin_iva - descuento_sin_iva
 
                             ventas_sesion[venta_nombre]['ventas_sin_iva'] += venta_sin_iva
                             ventas_sesion[venta_nombre]['descuento_sin_iva'] += descuento_sin_iva
                             ventas_sesion[venta_nombre]['ventas_iva'] += ventas_iva
                             ventas_sesion[venta_nombre]['descuento_iva'] += descuento_iva
+                            ventas_sesion[venta_nombre]['descuento'] += descuento
                             ventas_sesion[venta_nombre]['iva'] += iva
                             ventas_sesion[venta_nombre]['total'] += total
 
@@ -98,90 +138,134 @@ class ReporteCorteCajaCarta(models.AbstractModel):
                             logging.warning('con impuesto')
                             venta_sin_iva = 0
                             descuento_sin_iva = 0
-                            ventas_iva = 0
+                            ventas_iva = linea['price_subtotal_before_discount'] + linea['price_discount']
                             descuento_iva = linea['price_discount']
                             descuento = linea['price_discount']
-                            iva = linea['price_total_unit'] - linea['price_subtotal_unit']
-                            total = 0
+                            iva = linea['price_discount']
+                            total = ventas_iva - descuento_iva
 
-                            ventas_sesion[venta_nombre]['venta_sin_iva'] += venta_sin_iva
+                            ventas_sesion[venta_nombre]['ventas_sin_iva'] += venta_sin_iva
                             ventas_sesion[venta_nombre]['descuento_sin_iva'] += descuento_sin_iva
                             ventas_sesion[venta_nombre]['ventas_iva'] += ventas_iva
                             ventas_sesion[venta_nombre]['descuento_iva'] += descuento_iva
+                            ventas_sesion[venta_nombre]['descuento'] += descuento
                             ventas_sesion[venta_nombre]['iva'] += iva
                             ventas_sesion[venta_nombre]['total'] += total
 
-            else:
-                pedidos_no_facturados.append(venta.id)
+                        ventas_mostrador['importe'] += venta_sin_iva+ventas_iva+iva
+                        ventas_mostrador['descuento'] += descuento
 
-        logging.warning('ventas_sesion facturados')
-        logging.warning(ventas_sesion)
+                        totales_ventas_sesion['ventas_sin_iva'] += venta_sin_iva
+                        totales_ventas_sesion['descuento_sin_iva'] += descuento_sin_iva
+                        totales_ventas_sesion['ventas_iva'] += ventas_iva
+                        totales_ventas_sesion['descuento_iva'] += descuento_iva
+                        totales_ventas_sesion['descuento'] += descuento
+                        totales_ventas_sesion['iva'] += iva
+                        totales_ventas_sesion['total'] += total
+
+                        # resumen de facturas expedidias
+                        resumen_facturas_expedidas['venta_sin_iva'] += venta_sin_iva
+                        resumen_facturas_expedidas['venta_iva'] += ventas_iva
+                        resumen_facturas_expedidas['iva'] += iva
+                        resumen_facturas_expedidas['total'] += total
+
+                        #Detalle facturas expedidas
+                        detalle_facturas_expedidas[venta_nombre]['ventas_sin_iva'] += venta_sin_iva
+                        detalle_facturas_expedidas[venta_nombre]['ventas_iva'] += ventas_iva
+                        detalle_facturas_expedidas[venta_nombre]['iva'] += iva
+                        detalle_facturas_expedidas[venta_nombre]['total'] += total
+                        total_detalle_facturas_expedidas += total
+
 
          #SOLO OBTENEMOS INFORMACION DE FACTURA GLOBAL (PEDIDOS NO FACTURADOS)
-        cfdi_valores_factura_global = self.env['account.edi.format']._l10n_mx_edi_get_invoice_cfdi_values(docs.factura_global_id)
-        if cfdi_valores_factura_global:
-            logging.warning('valores factura global')
-            logging.warning(cfdi_valores_factura_global)
+        logging.warning('pedidos de factura global')
+        if docs.factura_global_id:
+            cfdi_valores_factura_global = self.env['account.edi.format']._l10n_mx_edi_get_invoice_cfdi_values(docs.factura_global_id)
+            if cfdi_valores_factura_global:
+                for linea in cfdi_valores_factura_global['invoice_line_vals_list']:
+                    if linea['line'].sesion_id.id == docs.id:
+
+                        logging.warning('venta Linea ')
+                        logging.warning(linea)
+                        venta_nombre = linea['line'].pedido_referencia
+                        logging.warning(venta_nombre)
+
+                        # if venta_nombre not in ventas_sesion:
+                        #     ventas_sesion[venta_nombre] = dic_ventas
+
+                        serie = venta_nombre.split("/", 1)[0]
+                        folio = venta_nombre.split("/", 1)[1]
+
+                        ventas_sesion[venta_nombre]['serie'] = serie
+                        ventas_sesion[venta_nombre]['folio'] = folio
+                        venta_sin_iva= 0
+                        descuento_sin_iva= 0
+                        ventas_iva= 0
+                        descuento_iva= 0
+                        descuento= 0
+                        iva= 0
+                        total= 0
+                        fp = 0
+                        e = 0
+                        fp = 0
+
+                        if linea['price_subtotal_unit'] == linea['price_total_unit']:#es 0 impuesto
+                            logging.warning('sin impuesto')
+                            venta_sin_iva = linea['price_subtotal_before_discount']
+                            descuento_sin_iva = linea['price_discount']
+                            ventas_iva = 0
+                            descuento_iva = 0
+                            descuento = linea['price_discount']
+                            iva = 0
+                            total = venta_sin_iva - descuento_sin_iva
+
+                            ventas_sesion[venta_nombre]['ventas_sin_iva'] += venta_sin_iva
+                            logging.warning(ventas_sesion[venta_nombre]['ventas_sin_iva'])
+                            ventas_sesion[venta_nombre]['descuento_sin_iva'] += descuento_sin_iva
+                            ventas_sesion[venta_nombre]['ventas_iva'] += ventas_iva
+                            ventas_sesion[venta_nombre]['descuento_iva'] += descuento_iva
+                            ventas_sesion[venta_nombre]['descuento'] += descuento
+                            ventas_sesion[venta_nombre]['iva'] += iva
+                            ventas_sesion[venta_nombre]['total'] += total
+
+                        else:
+                            logging.warning('con impuesto')
+                            venta_sin_iva = 0
+                            descuento_sin_iva = 0
+                            ventas_iva = linea['price_subtotal_before_discount'] + linea['price_discount']
+                            descuento_iva = linea['price_discount']
+                            descuento = linea['price_discount']
+                            iva = linea['price_total_unit'] - linea['price_subtotal_unit']
+                            total = ventas_iva - descuento_iva + iva
+
+                            ventas_sesion[venta_nombre]['ventas_sin_iva'] += venta_sin_iva
+                            ventas_sesion[venta_nombre]['descuento_sin_iva'] += descuento_sin_iva
+                            ventas_sesion[venta_nombre]['ventas_iva'] += ventas_iva
+                            ventas_sesion[venta_nombre]['descuento_iva'] += descuento_iva
+                            ventas_sesion[venta_nombre]['descuento'] += descuento
+                            ventas_sesion[venta_nombre]['iva'] += iva
+                            ventas_sesion[venta_nombre]['total'] += total
 
 
-            for linea in cfdi_valores_factura_global['invoice_line_vals_list']:
-                if linea['line'].sesion_id.id == docs.id:
-                    logging.warning('linea')
-                    logging.warning(linea)
-                    dic_ventas = {'serie':'', 'folio': '','ventas_sin_iva': 0, 'descuento_sin_iva': 0, 'ventas_iva': 0, 'descuento_iva': 0, 'descuento': 0, 'iva': 0, 'total': 0, 'fp': 0, 'e':0}
-                    # listado_productos.append(dic_ventas)
-                    venta_nombre = linea['line'].pedido_referencia
-                    if venta.name not in ventas_sesion:
-                        ventas_sesion[venta_nombre] = dic_ventas
+                        ventas_mostrador['importe'] += venta_sin_iva+ventas_iva+iva
+                        ventas_mostrador['descuento'] += descuento
+                        totales_ventas_sesion['ventas_sin_iva'] += venta_sin_iva
+                        totales_ventas_sesion['descuento_sin_iva'] += descuento_sin_iva
+                        totales_ventas_sesion['ventas_iva'] += ventas_iva
+                        totales_ventas_sesion['descuento_iva'] += descuento_iva
+                        totales_ventas_sesion['descuento'] += descuento
+                        totales_ventas_sesion['iva'] += iva
+                        totales_ventas_sesion['total'] += total
 
-                    logging.warning('venta Linea ')
-                    logging.warning(linea['line'].pedido_referencia)
-                    logging.warning(linea['price_unit_after_discount'])
-                    logging.warning(venta_nombre)
 
-                    serie = venta_nombre.split("/", 1)[0]
-                    folio = venta_nombre.split("/", 1)[1]
+                        resumen_factura_global['venta_sin_iva'] += venta_sin_iva
+                        resumen_factura_global['venta_iva'] += ventas_iva
+                        resumen_factura_global['iva'] += iva
+                        resumen_factura_global['total'] += total
 
-                    ventas_sesion[venta_nombre]['serie'] = serie
-                    ventas_sesion[venta_nombre]['folio'] = folio
-                    fp = 0
-                    e = 0
-                    if linea['price_subtotal_unit'] == linea['price_total_unit']:#es 0 impuesto
-                        logging.warning('sin impuesto')
-                        venta_sin_iva = linea['price_total_unit']
-                        descuento_sin_iva = linea['price_discount']
-                        ventas_iva = 0
-                        descuento_iva = 0
-                        descuento = 0
-                        iva = 0
-                        total = linea['price_total_unit']
-
-                        ventas_sesion[venta_nombre]['ventas_sin_iva'] += venta_sin_iva
-                        ventas_sesion[venta_nombre]['descuento_sin_iva'] += descuento_sin_iva
-                        ventas_sesion[venta_nombre]['ventas_iva'] += ventas_iva
-                        ventas_sesion[venta_nombre]['descuento_iva'] += descuento_iva
-                        ventas_sesion[venta_nombre]['iva'] += iva
-                        ventas_sesion[venta_nombre]['total'] += total
-
-                    else:
-                        logging.warning('con impuesto')
-                        venta_sin_iva = 0
-                        descuento_sin_iva = 0
-                        ventas_iva = 0
-                        descuento_iva = linea['price_discount']
-                        descuento = linea['price_discount']
-                        iva = linea['price_total_unit'] - linea['price_subtotal_unit']
-                        total = 0
-
-                        ventas_sesion[venta_nombre]['ventas_sin_iva'] += venta_sin_iva
-                        ventas_sesion[venta_nombre]['descuento_sin_iva'] += descuento_sin_iva
-                        ventas_sesion[venta_nombre]['ventas_iva'] += ventas_iva
-                        ventas_sesion[venta_nombre]['descuento_iva'] += descuento_iva
-                        ventas_sesion[venta_nombre]['iva'] += iva
-                        ventas_sesion[venta_nombre]['total'] += total
+        ventas_mostrador['total'] = ventas_mostrador['importe'] - ventas_mostrador['descuento']
         logging.warning('ventas sesion')
         logging.warning(ventas_sesion)
-
 
         for referencia in ventas:
             folio = referencia.name.split("/", 1)[1]
@@ -280,19 +364,35 @@ class ReporteCorteCajaCarta(models.AbstractModel):
         logging.warning(metodos_pago)
 
         # retiros = docs.retiros_ids
-        logging.warning('Que onda????????')
-        logging.warning(docs.name)
+
         listado_retiros = []
-        retiros = self.env['quemen.retiros_efectivo'].search([('sesion_id', '=', docs.id)], order='id asc')
+        retiros = self.env['quemen.retiros_efectivo'].search([('sesion_id', '=', docs.id)], order='fecha_hora asc')
         logging.warning(retiros)
         distint = 0
         for retiro in retiros:
             distint += 1
-            listado_retiros.append({'n_retiro': retiro.name, 'distintivo': distint, 'fecha_hora': retiro.fecha_hora, 'cantidad': retiro.total, 'cajero': retiro.cajero })
+            listado_retiros.append({'n_retiro': retiro.name, 'distintivo': retiro.motivo, 'fecha_hora': retiro.fecha_hora, 'cantidad': retiro.total, 'cajero': retiro.cajero })
+            retiro_efectivo += retiro.total
 
         logging.warning(listado_retiros)
         total_retiros = 0
         for list_ret in listado_retiros:
+            total_retiros += list_ret['cantidad']
+        folios_concatenados = folios[0] + ' - ' + folios[-1]
+
+
+        retiros_corte_previa = []
+        retiros = self.env['quemen.retiros_efectivo'].search([('sesion_id', '!=', docs.id),('entregado','=', False),('tienda_id','=',docs.config_id.id)], order='fecha_hora asc')
+        logging.warning(retiros)
+        distint = 0
+        for retiro in retiros:
+            distint += 1
+            retiros_corte_previa.append({'n_retiro': retiro.name, 'distintivo': retiro.motivo, 'fecha_hora': retiro.fecha_hora, 'cantidad': retiro.total, 'cajero': retiro.cajero })
+            retiro_efectivo += retiro.total
+
+        logging.warning(retiros_corte_previa)
+        total_retiros = 0
+        for list_ret in retiros_corte_previa:
             total_retiros += list_ret['cantidad']
         folios_concatenados = folios[0] + ' - ' + folios[-1]
 
@@ -457,6 +557,18 @@ class ReporteCorteCajaCarta(models.AbstractModel):
          'total_cancelado': total_cancelado
          })
 
+        for v in ventas_sesion:
+            logging.warning('----------------------------')
+            logging.warning(v)
+            logging.warning(ventas_sesion[v])
+
+        logging.warning('ventas mostrador')
+        logging.warning(ventas_mostrador)
+        total_ventas_mostrador = ventas_mostrador['total']
+        total_facturas_expedidas = resumen_facturas_expedidas['total'] + resumen_factura_global['total']
+
+        diferencia = apertura_efectivo + retiro_efectivo - venta_efectivo - cierre_efectivo
+
         return {
         'listado_productos': listado_productos,
         'listado_totales': listado_totales,
@@ -465,7 +577,19 @@ class ReporteCorteCajaCarta(models.AbstractModel):
         'listado_facturas_globales': listado_facturas_globales,
         'metodos_pago': metodos_pago,
         'listado_retiros': listado_retiros,
-        'listado_cancelados': listado_cancelados
+        'listado_cancelados': listado_cancelados,
+        'ventas_mostrador': ventas_mostrador,
+        'total_ventas_mostrador': total_ventas_mostrador,
+        'ventas_sesion': ventas_sesion,
+        'totales_ventas_sesion': totales_ventas_sesion,
+        'folios_concatenados': folios_concatenados,
+        'resumen_facturas_expedidas': resumen_facturas_expedidas,
+        'resumen_factura_global': resumen_factura_global,
+        'total_facturas_expedidas': total_facturas_expedidas,
+        'detalle_facturas_expedidas': detalle_facturas_expedidas,
+        'total_detalle_facturas_expedidas': total_detalle_facturas_expedidas,
+        'diferencia': diferencia,
+        'retiros_corte_previa': retiros_corte_previa,
         }
 
 
