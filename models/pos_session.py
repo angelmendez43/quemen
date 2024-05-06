@@ -115,7 +115,7 @@ class PosSession(models.Model):
             sesion.write({'factura_global_id': factura_id.id})
         return True
 
-    def _generar_factura_global(self):
+    def generar_factura_global(self, sesiones):
         pedidos_facturar =[]
         pagos = {}
         ids_pedidos = []
@@ -123,7 +123,7 @@ class PosSession(models.Model):
         factura_id = False
         logging.warning('generar_factura_global')
         logging.warning(self)
-        for sesion in self:
+        for sesion in sesiones:
             if sesion.factura_global_id:
                 raise ValidationError(_('La sesión ' + sesion.name + ' actualmente ya contiene una factura global.'))
             if len(sesion.order_ids) > 0:
@@ -178,8 +178,9 @@ class PosSession(models.Model):
                 #                     (linea_gasto | linea_factura).reconcile()
                 #                     break
 
-        for sesion in self:
+        for sesion in sesiones:
             sesion.write({'factura_global_id': factura_id.id})
+        return True
 
     # def action_pos_session_validate(self, balancing_account=False, amount_to_balance=0, bank_payment_method_diffs=None):
     #     logging.warn('test')
