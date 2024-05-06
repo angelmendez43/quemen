@@ -26,8 +26,7 @@ class ReportProductosLaborVenta(models.AbstractModel):
         if stock_id:
             fecha = self.fecha()
             for producto in stock_id:
-                if producto.lot_id and producto.lot_id.expiration_date and producto.lot_id.expiration_date.strftime('%Y-%m-%d') == str(fecha):
-                    logging.warn(producto.inventory_quantity)
+                if producto.lot_id and producto.lot_id.expiration_date and str(producto.lot_id.expiration_date.strftime('%Y-%m-%d')) == str(fecha):                    logging.warn(producto.inventory_quantity)
                     inventario.append(producto)
         logging.warn(inventario)
         return inventario
@@ -37,7 +36,7 @@ class ReportProductosLaborVenta(models.AbstractModel):
         fecha_hoy = datetime.datetime.now().astimezone(timezone).date()
         fecha_hoy = datetime.datetime.strptime(str(fecha_hoy),'%Y-%m-%d') + timedelta(days = 1)
         logging.warning(fecha_hoy.date())
-        return fecha_hoy
+        return fecha_hoy.date()
 
     def fecha_hora_actual(self):
         timezone = pytz.timezone(self._context.get('tz') or self.env.user.tz or 'UTC')
