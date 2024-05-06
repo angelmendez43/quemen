@@ -53,7 +53,7 @@ class ReporteCorteCajaCarta(models.AbstractModel):
 
         # DEV JEFFREPO
 
-        dic_formas_pago = {'Tarjeta credito': 'TC', 'Efectivo': 'E', '	Tarjeta debito': 'TD', '​Transferencia': 'T', 'Tarjeta crédito': 'TC',}
+        dic_formas_pago = {'Tarjeta credito': 'TC', 'Efectivo': 'E', 'Tarjeta debito': 'TD', '​Transferencia': 'T', 'Tarjeta crédito': 'TC',}
         ventas_mostrador = {'folios': False, 'importe': 0.00, 'descuento': 0.00, 'total': 0}
         total_ventas_mostrador = 0.00
         ventas_sesion = {}
