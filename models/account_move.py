@@ -11,3 +11,4 @@ class AccountMoveLine(models.Model):
 
     pedido_referencia = fields.Char('Pedido referencia')
     sesion_id = fields.Many2one('pos.session')
+    pedido_id = fields.Many2one('pos.order')
