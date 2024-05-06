@@ -29,7 +29,7 @@ class ReportProductosLaborVenta(models.AbstractModel):
                 # logging.warning(producto.product_id.name)
                 # logging.warning(producto.lot_id.name)
                 # logging.warning(producto.lot_id.expiration_date.strftime('%Y-%m-%d'))
-                if producto.lot_id and producto.lot_id.expiration_date and producto.lot_id.expiration_date.strftime('%Y-%m-%d') == str(fecha):
+                if producto.lot_id and producto.lot_id.expiration_date and producto.lot_id.expiration_date.strftime('%Y-%m-%d') > str(fecha):
                     logging.warn(producto.inventory_quantity)
                     inventario.append(producto)
         logging.warn(inventario)
