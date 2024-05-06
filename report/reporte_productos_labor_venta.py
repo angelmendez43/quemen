@@ -26,7 +26,7 @@ class ReportProductosLaborVenta(models.AbstractModel):
         if stock_id:
             fecha = self.fecha()
             for producto in stock_id:
-                if producto.lot_id and producto.lot_id.expiration_date and str(producto.lot_id.expiration_date.strftime('%Y-%m-%d')) == str(fecha):                    logging.warn(producto.inventory_quantity)
+                if producto.lot_id and producto.lot_id.expiration_date and str(producto.lot_id.expiration_date.strftime('%Y-%m-%d')) == str(fecha):
                     inventario.append(producto)
         logging.warn(inventario)
         return inventario
