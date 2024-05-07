@@ -212,10 +212,10 @@ class ReporteCorteCajaCarta(models.AbstractModel):
                         if linea['price_subtotal_unit'] == linea['price_total_unit']:#es 0 impuesto
                             logging.warning('sin impuesto')
                             venta_sin_iva = linea['price_subtotal_before_discount']
-                            descuento_sin_iva = linea['price_discount']
+                            descuento_sin_iva = linea['price_discount_unit']
                             ventas_iva = 0
                             descuento_iva = 0
-                            descuento = linea['price_discount']
+                            descuento = linea['price_discount_unit']
                             iva = 0
                             total = venta_sin_iva
 
