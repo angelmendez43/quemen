@@ -117,7 +117,7 @@ class ReporteCorteCajaCarta(models.AbstractModel):
                             descuento += descuento_sin_iva
                         else:
                             descuento_iva = linea.price_subtotal_incl * -1
-                            descuento += descuento_sin_iva
+                            descuento += descuento_iva
                 else:
                     if linea.price_subtotal == linea.price_subtotal_incl:
                         ventas_sin_iva = linea.price_subtotal_incl
