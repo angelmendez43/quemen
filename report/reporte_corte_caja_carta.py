@@ -217,7 +217,7 @@ class ReporteCorteCajaCarta(models.AbstractModel):
                             descuento_iva = 0
                             descuento = linea['price_discount']
                             iva = 0
-                            total = venta_sin_iva - descuento_sin_iva
+                            total = venta_sin_iva
 
                             ventas_sesion[venta_nombre]['ventas_sin_iva'] += venta_sin_iva
                             logging.warning(ventas_sesion[venta_nombre]['ventas_sin_iva'])
