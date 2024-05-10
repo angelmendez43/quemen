@@ -15,6 +15,20 @@ class PosOrder(models.Model):
     sucursal_entrega = fields.Char("Sucursal de entrega")
     autorizo_especial = fields.Char("Autorizó")
 
+    def buscar_inventario(self, lotes, ubicacion_id):
+        lote_no_existente = []
+        logging.warning('buscar_inventario')
+        logging.warning(lotes)
+        logging.warning(ubicacion_id)
+        for i in lotes:
+            logging.warning(i)
+            stock_quant = self.env['stock.quant'].search([('lot_id.name','=',i['lote']), ('location_id','=',ubicacion_id) ,('product_id','=', i['producto'])])
+            if len(stock_quant) == 0:
+                lote_no_existente.append(i['lote'])
+        logging.warning('lote no existe')
+        logging.warning(lote_no_existente)
+        return lote_no_existente
+
     @api.model
     def _order_fields(self, ui_order):
         res = super(PosOrder, self)._order_fields(ui_order)
