@@ -14,7 +14,7 @@
     'category': 'Uncategorized',
     'version': '1.01',
 
-    'depends': ['stock','base','point_of_sale','hr_payroll','mrp','sale_stock','l10n_mx_edi_stock', 'pos_coupon','l10n_mx_edi_stock'],
+    'depends': ['stock','base','point_of_sale','hr_payroll','mrp','sale_stock','l10n_mx_edi_stock', 'pos_coupon','l10n_mx_edi_stock','delivery'],
 
     'data': [
         'data/paperformat_ticket.xml',
