@@ -172,6 +172,7 @@ class PosSession(models.Model):
                 'invoice_origin': sesion.name,
                 'journal_id': sesion.config_id.invoice_journal_id.id,
                 'l10n_mx_edi_usage': 'S01',
+                'l10n_mx_edi_payment_method_id': self.env['l10n_mx_edi.payment.method'].search([('code','=','01')]).id,
                 'move_type': 'out_invoice',
                 'pos_order_ids': [(6, 0, ids_pedidos)],
                 'invoice_line_ids': lineas_facturar,
