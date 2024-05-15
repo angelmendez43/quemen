@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="quemen_cfdiv40_extended" inherit_id="l10n_mx_edi_40.cfdiv40">
+            <xpath expr="//*[name()='cfdi:Emisor']" position="before">
+                <cfdi:InformacionGlobal xmlns:cfdi="http://www.sat.gob.mx/cfd/4"
+                    t-att-Periodicidad="periodicidad"
+                    t-att-Meses="format_string(meses)"
+                    t-att-Año="anio"/>
+            </xpath>
+        </template>    
+    </data>    
+</odoo>

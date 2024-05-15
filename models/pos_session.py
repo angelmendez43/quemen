@@ -61,7 +61,7 @@ class PosSession(models.Model):
                 raise ValidationError(_('La sesión ' + sesion.name + ' actualmente ya contiene una factura global.'))
             if len(sesion.order_ids) > 0:
                 for pedido in sesion.order_ids:
-                    if pedido.state in ['done', 'paid'] and pedido.amount_total > 0 and pedido.is_refunded == False:
+                    if pedido.state in ['done', 'paid'] and pedido.amount_total > 0:
                         pedidos_facturar.append(pedido)
                         logging.warn("pedidos_facturar")
                         logging.warn(pedidos_facturar)
@@ -138,11 +138,33 @@ class PosSession(models.Model):
 
                                 pagos[linea.payment_method_id.id] = {'diario': linea.payment_method_id.journal_id, 'cantidad': 0}
                             pagos[linea.payment_method_id.id]['cantidad'] += linea.amount
+        producto_linea_factura = self.env['product.product'].search([('default_code','=','001')])
         if pedidos_facturar:
             for pedido in pedidos_facturar:
+                descuento = 0
+                precio_unitario = 0
+                linea_factura = {
+                    'product_id': producto_linea_factura.id,
+                    'quantity': 1,
+                    'discount': descuento,
+                    'price_unit': 0,
+                    'name': pedido.name,
+                    'tax_ids': [(6, 0, producto_linea_factura.taxes_id.ids)],
+                    'product_uom_id': producto_linea_factura.uom_id.id,
+                }
+
                 for linea in pedido.lines:
-                    linea.tax_ids = linea.product_id.taxes_id
-                    lineas_facturar.append(linea)
+                    if linea.price_subtotal_incl > 0:
+                        precio_unitario += linea.price_subtotal_incl
+                    # linea.tax_ids = linea.product_id.taxes_id
+
+                    # lineas_facturar.append(linea)
+                if precio_unitario != pedido.amount_total:
+                    descuento = ((precio_unitario - pedido.amount_total) / precio_unitario) * 100
+                linea_factura['price_unit'] = precio_unitario
+                linea_factura['discount'] = descuento
+                lineas_facturar.append((0,0,linea_factura))
+
             factura = {
                 'partner_id': sesion.config_id.cliente_id.id or 1,
                 'ref': sesion.name,
@@ -152,7 +174,7 @@ class PosSession(models.Model):
                 'l10n_mx_edi_usage': 'S01',
                 'move_type': 'out_invoice',
                 'pos_order_ids': [(6, 0, ids_pedidos)],
-                'invoice_line_ids': [(0, None, self.env['pos.order']._prepare_invoice_line(line)) for line in lineas_facturar],
+                'invoice_line_ids': lineas_facturar,
             }
             factura_id = self.env['account.move'].create(factura)
             logging.warning("Si llega?")

@@ -14,11 +14,12 @@
     'category': 'Uncategorized',
     'version': '1.01',
 
-    'depends': ['stock','base','point_of_sale','hr_payroll','mrp','sale_stock','l10n_mx_edi_stock', 'pos_coupon','l10n_mx_edi_stock','delivery'],
+    'depends': ['stock','base','point_of_sale','hr_payroll','mrp','sale_stock','l10n_mx_edi_stock', 'pos_coupon','l10n_mx_edi','l10n_mx_edi_40','delivery'],
 
     'data': [
         'data/paperformat_ticket.xml',
         'data/planificacion_productos_vencidos.xml',
+        'data/cfdi.xml',
         # 'security/ir.model.access.csv',
         # 'views/mrp_production_views.xml',
         'data/ir_sequence_data.xml',
