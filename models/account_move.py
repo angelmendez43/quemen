@@ -8,6 +8,8 @@ from datetime import datetime
 
 class AccountMove(models.Model):
     _inherit = "account.move"
+
+    factura_global = fields.Boolean('Factura global')
     
     def generar_factura_nueva(self, factura):
         for f in factura:

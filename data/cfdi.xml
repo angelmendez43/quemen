@@ -8,6 +8,14 @@
                     t-att-Meses="format_string(meses)"
                     t-att-Año="anio"/>
             </xpath>
-        </template>    
-    </data>    
+
+            <xpath expr="//*[name()='cfdi:Concepto']" position="attributes">
+                <t t-if="factura_global">
+                    <attribute name="t-att-NoIdentificacion">line.name</attribute>
+                    <attribute name="t-att-Descripcion">line.product_id.name</attribute>
+                </t>
+            </xpath>
+            
+        </template>
+    </data>
 </odoo>
