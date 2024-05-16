@@ -3,6 +3,7 @@
 from odoo import models, fields, api, _
 import logging
 from odoo.exceptions import UserError, ValidationError
+import ast
 
 class PosSession(models.Model):
     _inherit = 'pos.session'
@@ -82,6 +83,7 @@ class PosSession(models.Model):
                 'invoice_date': fields.Date.context_today(self),
                 'invoice_origin': sesion.name,
                 'journal_id': sesion.config_id.invoice_journal_id.id,
+                'l10n_mx_edi_payment_method_id': self.env['l10n_mx_edi.payment.method'].search([('code','=','01')]).id,
                 'l10n_mx_edi_usage': 'S01',
                 'move_type': 'out_invoice',
                 'pos_order_ids': [(6, 0, ids_pedidos)],
@@ -123,6 +125,7 @@ class PosSession(models.Model):
         factura_id = False
         logging.warning('generar_factura_global')
         logging.warning(self)
+        lineas_facturar_dic = {}
         for sesion in sesiones:
             if sesion.factura_global_id:
                 raise ValidationError(_('La sesión ' + sesion.name + ' actualmente ya contiene una factura global.'))
@@ -141,38 +144,80 @@ class PosSession(models.Model):
         producto_linea_factura = self.env['product.product'].search([('default_code','=','001')])
         if pedidos_facturar:
             for pedido in pedidos_facturar:
-                descuento = 0
-                precio_unitario = 0
-                linea_factura = {
-                    'product_id': producto_linea_factura.id,
-                    'quantity': 1,
-                    'discount': descuento,
-                    'price_unit': 0,
-                    'name': pedido.name,
-                    'tax_ids': [(6, 0, producto_linea_factura.taxes_id.ids)],
-                    'product_uom_id': producto_linea_factura.uom_id.id,
-                }
+                # descuento = 0
+                # precio_unitario = 0
+                impuesto_programa = False
+                producto_ids = False
+                total_descuento_0 = 0
+                impuesto_programa_0 = False
+                impuesto_programa_16 = False
+                total_descuento_16 = 0
+                for linea in pedido.lines:
+                    if linea.price_subtotal_incl < 0 and linea.program_id:
+                        dominio = linea.program_id.rule_products_domain
+                        dominio = ast.literal_eval(dominio)
+                        producto_ids = self.env['product.product'].search(dominio)
+                        if producto_ids[0].taxes_id[0].name == "IVA(16%) VENTAS":
+                            impuesto_programa_16 =  "IVA(16%) VENTAS"
+                            total_descuento_16 += (linea.price_subtotal_incl*-1)
+                        else:
+                            impuesto_programa_0 = "IVA(0%) VENTAS"
+                            total_descuento_0 += (linea.price_subtotal_incl*-1)
+                        producto_ids += linea.program_id.discount_specific_product_ids
 
                 for linea in pedido.lines:
+                    llave = str(linea.order_id.name)+str(linea.tax_ids_after_fiscal_position[0].name)
                     if linea.price_subtotal_incl > 0:
-                        precio_unitario += linea.price_subtotal_incl
+
+                        if llave not in lineas_facturar_dic:
+                            linea_factura = {
+                                'product_id': producto_linea_factura.id,
+                                'quantity': 1,
+                                'discount': 0,
+                                'price_unit': 0,
+                                'name': pedido.name,
+                                'tax_ids': False,
+                                'product_uom_id': producto_linea_factura.uom_id.id,
+                            }
+                            lineas_facturar_dic[llave] = linea_factura
+
+                        if (impuesto_programa_0 and producto_ids) and (linea.product_id.id in producto_ids.ids) and (linea.tax_ids_after_fiscal_position[0].name == impuesto_programa_0):
+                            lineas_facturar_dic[llave]['price_unit'] += linea.price_subtotal_incl
+                            precio_unitario = lineas_facturar_dic[llave]['price_unit']
+                            precio_con_descuento = precio_unitario - total_descuento_0
+                            descuento = ((precio_unitario - precio_con_descuento) / precio_unitario) * 100
+                            lineas_facturar_dic[llave]['discount'] = descuento
+                            lineas_facturar_dic[llave]['tax_ids'] = [(6, 0, linea.tax_ids_after_fiscal_position.ids)]
+                        elif (impuesto_programa_16 and producto_ids) and (linea.product_id.id in producto_ids.ids) and (linea.tax_ids_after_fiscal_position[0].name == impuesto_programa_16):
+                            lineas_facturar_dic[llave]['price_unit'] += linea.price_subtotal_incl
+                            precio_unitario = lineas_facturar_dic[llave]['price_unit']
+                            precio_con_descuento = precio_unitario - total_descuento_0
+                            descuento = ((precio_unitario - precio_con_descuento) / precio_unitario) * 100
+                            lineas_facturar_dic[llave]['discount'] = descuento
+                            lineas_facturar_dic[llave]['tax_ids'] = [(6, 0, linea.tax_ids_after_fiscal_position.ids)]
+
+                        else:
+                            lineas_facturar_dic[llave]['price_unit'] += linea.price_subtotal_incl
+                            lineas_facturar_dic[llave]['tax_ids'] = [(6, 0, linea.tax_ids_after_fiscal_position.ids)]
                     # linea.tax_ids = linea.product_id.taxes_id
 
                     # lineas_facturar.append(linea)
-                if precio_unitario != pedido.amount_total:
-                    descuento = ((precio_unitario - pedido.amount_total) / precio_unitario) * 100
-                linea_factura['price_unit'] = precio_unitario
-                linea_factura['discount'] = descuento
-                lineas_facturar.append((0,0,linea_factura))
+                # if precio_unitario != pedido.amount_total:
+                #     descuento = ((precio_unitario - pedido.amount_total) / precio_unitario) * 100
+                # linea_factura['price_unit'] = precio_unitario
+                # linea_factura['discount'] = descuento
+            for ticket in lineas_facturar_dic:
+                lineas_facturar.append((0,0,lineas_facturar_dic[ticket]))
 
             factura = {
                 'partner_id': sesion.config_id.cliente_id.id or 1,
                 'ref': sesion.name,
                 'invoice_date': fields.Date.context_today(self),
                 'invoice_origin': sesion.name,
+                'factura_global': True,
                 'journal_id': sesion.config_id.invoice_journal_id.id,
-                'l10n_mx_edi_usage': 'S01',
                 'l10n_mx_edi_payment_method_id': self.env['l10n_mx_edi.payment.method'].search([('code','=','01')]).id,
+                'l10n_mx_edi_usage': 'S01',
                 'move_type': 'out_invoice',
                 'pos_order_ids': [(6, 0, ids_pedidos)],
                 'invoice_line_ids': lineas_facturar,
