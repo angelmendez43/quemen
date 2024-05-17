@@ -5,9 +5,9 @@
         <field name="model">pos.session</field>
         <field name="inherit_id" ref="point_of_sale.view_pos_session_form"/>
         <field name="arch" type="xml">
-            <button name="action_pos_session_closing_control" position="after">
+            <!-- <button name="action_pos_session_closing_control" position="after">
                 <button name="generar_factura_global_sesion" type="object" string="Generar factura global" states="closed" class="oe_highlight"/>
-            </button>      
+            </button>       -->
         <group>
             <field name="factura_global_id"/>
               <field name="cash_register_total_entry_encoding"/>
