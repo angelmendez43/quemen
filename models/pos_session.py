@@ -211,6 +211,8 @@ class PosSession(models.Model):
                 if lineas_facturar_dic[ticket]['total_descuento_16'] > 0:
                     precio_con_descuento = lineas_facturar_dic[ticket]['price_unit'] - lineas_facturar_dic[ticket]['total_descuento_16']
                 descuento = ((precio_unitario - precio_con_descuento) / precio_unitario)*100
+                del lineas_facturar_dic[ticket]['total_descuento_0']
+                del lineas_facturar_dic[ticket]['total_descuento_16']
                 lineas_facturar_dic[ticket]['descuento'] = descuento
                 lineas_facturar.append((0,0,lineas_facturar_dic[ticket]))
 
