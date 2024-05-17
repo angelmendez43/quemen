@@ -131,7 +131,7 @@ class PosSession(models.Model):
                 raise ValidationError(_('La sesión ' + sesion.name + ' actualmente ya contiene una factura global.'))
             if len(sesion.order_ids) > 0:
                 for pedido in sesion.order_ids:
-                    if pedido.state in ['done', 'paid'] and pedido.amount_total > 0 and pedido.is_refunded == False:   
+                    if pedido.state in ['done', 'paid'] and pedido.amount_total > 0 and (pedido.has_refundable_lines==False):
                         pedidos_facturar.append(pedido)
                         logging.warn("pedidos_facturar")
                         logging.warn(pedidos_facturar)
@@ -178,35 +178,40 @@ class PosSession(models.Model):
                                 'name': pedido.name,
                                 'tax_ids': False,
                                 'product_uom_id': producto_linea_factura.uom_id.id,
+                                'total_descuento_0': total_descuento_0,
+                                'total_descuento_16': total_descuento_16,
                             }
                             lineas_facturar_dic[llave] = linea_factura
 
                         if (impuesto_programa_0 and producto_ids) and (linea.product_id.id in producto_ids.ids) and (linea.tax_ids_after_fiscal_position[0].name == impuesto_programa_0):
                             lineas_facturar_dic[llave]['price_unit'] += linea.price_subtotal_incl
-                            precio_unitario = lineas_facturar_dic[llave]['price_unit']
-                            precio_con_descuento = precio_unitario - total_descuento_0
-                            descuento = ((precio_unitario - precio_con_descuento) / precio_unitario) * 100
-                            lineas_facturar_dic[llave]['discount'] = descuento
+                            # precio_unitario = lineas_facturar_dic[llave]['price_unit']
+                            # precio_con_descuento = precio_unitario - total_descuento_0
+                            # descuento = ((precio_unitario - precio_con_descuento) / precio_unitario) * 100
+                            # lineas_facturar_dic[llave]['discount'] = descuento
                             lineas_facturar_dic[llave]['tax_ids'] = [(6, 0, linea.tax_ids_after_fiscal_position.ids)]
                         elif (impuesto_programa_16 and producto_ids) and (linea.product_id.id in producto_ids.ids) and (linea.tax_ids_after_fiscal_position[0].name == impuesto_programa_16):
                             lineas_facturar_dic[llave]['price_unit'] += linea.price_subtotal_incl
-                            precio_unitario = lineas_facturar_dic[llave]['price_unit']
-                            precio_con_descuento = precio_unitario - total_descuento_0
-                            descuento = ((precio_unitario - precio_con_descuento) / precio_unitario) * 100
-                            lineas_facturar_dic[llave]['discount'] = descuento
+                            # precio_unitario = lineas_facturar_dic[llave]['price_unit']
+                            # precio_con_descuento = precio_unitario - total_descuento_0
+                            # descuento = ((precio_unitario - precio_con_descuento) / precio_unitario) * 100
+                            # lineas_facturar_dic[llave]['discount'] = descuento
                             lineas_facturar_dic[llave]['tax_ids'] = [(6, 0, linea.tax_ids_after_fiscal_position.ids)]
 
                         else:
                             lineas_facturar_dic[llave]['price_unit'] += linea.price_subtotal_incl
                             lineas_facturar_dic[llave]['tax_ids'] = [(6, 0, linea.tax_ids_after_fiscal_position.ids)]
-                    # linea.tax_ids = linea.product_id.taxes_id
 
-                    # lineas_facturar.append(linea)
-                # if precio_unitario != pedido.amount_total:
-                #     descuento = ((precio_unitario - pedido.amount_total) / precio_unitario) * 100
-                # linea_factura['price_unit'] = precio_unitario
-                # linea_factura['discount'] = descuento
+
             for ticket in lineas_facturar_dic:
+                precio_unitario = lineas_facturar_dic[ticket]['price_unit']
+                precio_con_descuento = 0
+                if lineas_facturar_dic[ticket]['total_descuento_0'] > 0:
+                    precio_con_descuento = lineas_facturar_dic[ticket]['price_unit'] - lineas_facturar_dic[ticket]['total_descuento_0']
+                if lineas_facturar_dic[ticket]['total_descuento_16'] > 0:
+                    precio_con_descuento = lineas_facturar_dic[ticket]['price_unit'] - lineas_facturar_dic[ticket]['total_descuento_16']
+                descuento = ((precio_unitario - precio_con_descuento) / precio_unitario)*100
+                lineas_facturar_dic[ticket]['descuento'] = descuento
                 lineas_facturar.append((0,0,lineas_facturar_dic[ticket]))
 
             factura = {
