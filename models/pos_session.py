@@ -213,7 +213,7 @@ class PosSession(models.Model):
                 descuento = ((precio_unitario - precio_con_descuento) / precio_unitario)*100
                 del lineas_facturar_dic[ticket]['total_descuento_0']
                 del lineas_facturar_dic[ticket]['total_descuento_16']
-                lineas_facturar_dic[ticket]['descuento'] = descuento
+                lineas_facturar_dic[ticket]['discount'] = descuento
                 lineas_facturar.append((0,0,lineas_facturar_dic[ticket]))
 
             factura = {
