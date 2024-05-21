@@ -241,6 +241,7 @@ class PosSession(models.Model):
                 if 'total_descuento_16' in lineas_facturar_dic[ticket]:
                     logging.warning(ticket)
                     logging.warning(lineas_facturar_dic[ticket])
+                    del lineas_facturar_dic[ticket]['total_descuento_16']
                 lineas_facturar.append((0,0,lineas_facturar_dic[ticket]))
 
             factura = {
