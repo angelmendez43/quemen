@@ -203,10 +203,11 @@ class PosSession(models.Model):
                             lineas_facturar_dic[llave]['tax_ids'] = [(6, 0, linea.tax_ids_after_fiscal_position.ids)]
                             logging.warning('--')
                             logging.warning(llave)
-                            if 'total_descuento_0' in lineas_facturar_dic[llave]:
-                                del lineas_facturar_dic[llave]['total_descuento_0']
-                            if 'total_descuento_16' in lineas_facturar_dic[llave]:
-                                del lineas_facturar_dic[llave]['total_descuento_16']
+                            if (total_descuento_0 > 0 or total_descuento_16 > 0 )and pedido_impuesto != 0:
+                                if 'total_descuento_0' in lineas_facturar_dic[llave]:
+                                    del lineas_facturar_dic[llave]['total_descuento_0']
+                                if 'total_descuento_16' in lineas_facturar_dic[llave]:
+                                    del lineas_facturar_dic[llave]['total_descuento_16']
 
             for ticket in lineas_facturar_dic:
                 if ('total_descuento_0' and 'total_descuento_16') in lineas_facturar_dic[ticket]:
