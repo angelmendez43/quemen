@@ -223,6 +223,9 @@ class PosSession(models.Model):
                                         del lineas_facturar_dic[llave]['total_descuento_16']
 
             for ticket in lineas_facturar_dic:
+                logging.warning('lineas')
+                logging.warning(ticket)
+                logging.warning(lineas_facturar_dic[ticket])
                 if 'total_descuento_0' in lineas_facturar_dic[ticket] and lineas_facturar_dic[ticket]['total_descuento_0'] > 0:
                     precio_unitario = lineas_facturar_dic[ticket]['price_unit']
                     precio_con_descuento = 0
