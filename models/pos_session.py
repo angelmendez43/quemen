@@ -152,6 +152,7 @@ class PosSession(models.Model):
                 impuesto_programa_0 = False
                 impuesto_programa_16 = False
                 total_descuento_16 = 0
+                pedido_impuesto = pedido.amount_tax
                 for linea in pedido.lines:
                     if linea.price_subtotal_incl < 0 and linea.program_id:
                         dominio = linea.program_id.rule_products_domain
