@@ -215,6 +215,8 @@ class PosSession(models.Model):
                             else:
                                 # impuesto_linea = linea.tax_ids_after_fiscal_position[0].name
                                 if linea.tax_ids_after_fiscal_position[0].name != impuesto_programa_0:
+                                    if 'total_descuento_0' in lineas_facturar_dic[llave]:
+                                        del lineas_facturar_dic[llave]['total_descuento_0']
                                     if 'total_descuento_16' in lineas_facturar_dic[llave]:
                                         del lineas_facturar_dic[llave]['total_descuento_16']
 
