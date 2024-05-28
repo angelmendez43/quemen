@@ -123,6 +123,9 @@
                 Folio: <span t-field="o.name"/>
             </div>
             <div>
+                Tipo de operación: <span t-field="o.picking_type_id.name"/>
+            </div>
+            <div>
                 <strong>Dirección de envío</strong><br/>
                 <span t-field="o.partner_id.name"/><br/>
                 <span t-field="o.partner_id.street"/>
