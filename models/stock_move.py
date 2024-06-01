@@ -30,7 +30,7 @@ class StockMoveLine(models.Model):
                         lot_info = lot_id[0]
                     if len(lot_id) > 1:
                         for lot in lot_id:
-                            if lot.poduct_id.producto_porciones:
+                            if lot.product_id.producto_porciones:
                                 lot_info = lot
                     line.product_id = lot_info.product_id.id
                     line.lot_id = lot_info.id
