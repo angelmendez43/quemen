@@ -78,7 +78,7 @@ class QuemenRetirosEfectivo(models.Model):
         if len(sesion_id) > 0:
             sesion = sesion_id
         # else:
-        #     raise ValidationError(_('No puede retirar efectivo'))  
+        #     raise ValidationError(_('No puede retirar efectivo'))
         return sesion
 
     @api.depends('denominacion_ids')
@@ -88,7 +88,7 @@ class QuemenRetirosEfectivo(models.Model):
             for linea in retiro.denominacion_ids:
                 total += (linea.cantidad * linea.denominacion_id.value)
             retiro.total = total
-    
+
     name = fields.Char('Nombre', required=True, copy=False, readonly=True, index=True, default=lambda self: _('New'))
     usuario_id = fields.Many2one('res.users','usuario',default=lambda self: self.env.user)
     fecha_hora = fields.Datetime('Hora',default=fields.Datetime.now)
@@ -102,19 +102,21 @@ class QuemenRetirosEfectivo(models.Model):
     'Estado', readonly=True, copy=False, default= "borrador")
     cajero = fields.Char('Cajero', required=True)
     entregado = fields.Boolean('Entregado', readonly=True)
-    
+
     @api.model_create_multi
     def create(self, vals_list):
         logging.warning('valores')
         logging.warning(vals_list)
+        logging.warning(self)
         for vals in vals_list:
+            secuencia_id = self.env['pos.session'].search([('id', '=', vals['sesion_id'])]).config_id.secuencia_id
             if vals.get('name', _('New')) == _('New'):
                 seq_date = None
                 if 'company_id' in vals:
                     vals['name'] = self.env['ir.sequence'].with_context(force_company=vals['company_id']).next_by_code(
                         'quemen.retiros', sequence_date=seq_date) or _('New')
                 else:
-                    vals['name'] = self.env['ir.sequence'].next_by_code('quemen.retiros', sequence_date=seq_date) or _('New')
+                    vals['name'] = secuencia_id._next() or _('New')
         result = super(QuemenRetirosEfectivo, self).create(vals_list)
         return result
 
@@ -204,7 +206,7 @@ class QuemenOpLote(models.Model):
                         if lot_id:
                             line.write({'lot_barcode_id': lot_id})
 
-    
+
     def confirm_lot(self):
         for lot in self:
             logging.warning('LOTE')
@@ -212,7 +214,7 @@ class QuemenOpLote(models.Model):
             if lot.product_ids:
                 for line in lot.product_ids:
                     if line.lot_barcode_id == False:
-                        raise ValidationError(_('No puede validar productos sin Lote.'))                        
+                        raise ValidationError(_('No puede validar productos sin Lote.'))
                     logging.warning(line.product_id.name)
                     date_planed_start = datetime.fromisoformat(lot.date_mrp_production.isoformat() + ' 06:00:00')
                     mrp_order = {
@@ -249,7 +251,7 @@ class QuemenOpLoteLinea(models.Model):
     lot_barcode_id = fields.Many2one('stock.production.lot', 'Lote',tracking=True)
     lot_state = fields.Selection(
         [('borrador', 'Borrador'), ('confirmado', 'Confirmado')],
-        'Estado', readonly=True, copy=False, related='lot_id.state')    
+        'Estado', readonly=True, copy=False, related='lot_id.state')
     # wizard_id = fields.Many2one('quemen.reporte_codigo_barras.wizard', 'Wizard')
 
     @api.onchange('quantity')
