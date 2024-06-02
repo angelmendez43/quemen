@@ -141,8 +141,8 @@
             </tr>
 
             <tr height="15">
-              <th style="background-color:silver;color:black;font-size:100%;">Serie</th>
-              <th style="background-color:silver;color:black;font-size:100%; text-align:center">Folio</th>
+              <th style="background-color:silver;color:black;font-size:100%;">Venta</th>
+              <!-- <th style="background-color:silver;color:black;font-size:100%; text-align:center">Folio</th> -->
               <th style="background-color:silver;color:black;font-size:100%; text-align:right">Ventas al 0%</th>
               <th style="background-color:silver;color:black;font-size:100%; text-align:right">Descuento 0%</th>
               <th style="background-color:silver;color:black;font-size:100%; text-align:right">Ventas al 16%</th>
@@ -155,8 +155,8 @@
             </tr>
 
             <tr height="25" t-foreach="ventas_sesion" t-as="p">
-              <td style="font-size:100%"><span t-esc="ventas_sesion[p]['serie']"/></td>
-              <td style="font-size:100%"><span t-esc="ventas_sesion[p]['folio']"/></td>
+              <td style="font-size:100%"><span t-esc="ventas_sesion[p]['venta']"/></td>
+              <!-- <td style="font-size:100%"><span t-esc="ventas_sesion[p]['folio']"/></td> -->
               <td style="font-size:100%" align="right"><span t-esc="ventas_sesion[p]['ventas_sin_iva']" t-options = '{"widget": "float", "precision": 2}'/></td>
               <td style="font-size:100%" align="right"><span t-esc="ventas_sesion[p]['descuento_sin_iva']" t-options = '{"widget": "float", "precision": 2}'/></td>
               <td style="font-size:100%" align="right"><span t-esc="ventas_sesion[p]['ventas_iva']" t-options = '{"widget": "float", "precision": 2}'/></td>
@@ -173,7 +173,7 @@
             </tr>
 
             <tr height="45">
-              <td style="font-size:100%" colspan="2">Totales</td>
+              <td style="font-size:100%" colspan="1">Totales</td>
 
               <th style="font-size:100%; text-align:right"><span t-esc="totales_ventas_sesion['ventas_sin_iva']" t-options = '{"widget": "float", "precision": 2}'/></th>
               <th style="font-size:100%; text-align:right"><span t-esc="totales_ventas_sesion['descuento_sin_iva']" t-options = '{"widget": "float", "precision": 2}'/></th>
@@ -196,8 +196,8 @@
             </tr>
 
             <tr height="15">
-              <th style="background-color:silver;color:black;font-size:100%;">Serie</th>
-              <th style="background-color:silver;color:black;font-size:100%;">Folio</th>
+              <th style="background-color:silver;color:black;font-size:100%;">Venta</th>
+              <!-- <th style="background-color:silver;color:black;font-size:100%;">Folio</th> -->
               <th style="background-color:silver;color:black;font-size:100%;">Importe</th>
               <th style="background-color:silver;color:black;font-size:100%;">Descuento</th>
               <th style="background-color:silver;color:black;font-size:100%;">Subtotal</th>
@@ -218,14 +218,14 @@
             </tr>
 
             <tr height="15">
-              <th colspan="3" style="background-color:silver;color:black;font-size:100%;">Serie</th>
-              <th colspan="3" style="background-color:silver;color:black;font-size:100%;">Folio</th>
+              <th colspan="3" style="background-color:silver;color:black;font-size:100%;">Venta</th>
+              <!-- <th colspan="3" style="background-color:silver;color:black;font-size:100%;">Folio</th> -->
               <th colspan="5" style="background-color:silver;color:black;font-size:100%; text-align:center">Total</th>
             </tr>
 
             <tr height="15" t-foreach="listado_notas_credito" t-as="ln">
-              <td colspan="3" style="font-size:100%"><span t-esc="ln['serie_credito']"/></td>
-              <td colspan="3" style="font-size:100%"><span t-esc="ln['folio_credito']"/></td>
+              <td colspan="3" style="font-size:100%"><span t-esc="ln['venta']"/></td>
+              <!-- <td colspan="3" style="font-size:100%"><span t-esc="ln['folio_credito']"/></td> -->
               <td colspan="5" style="font-size:100%" align="right"><span t-esc="ln['total']"/></td>
             </tr>
 
@@ -244,8 +244,8 @@
 
               <tr style="height:15%">
                 <th style="background-color:silver;color:black;font-size:100%;">Concepto</th>
-                <th style="background-color:silver;color:black;font-size:100%; text-align: right">Serie</th>
-                <th style="background-color:silver;color:black;font-size:100%; text-align: right">Folios</th>
+                <th style="background-color:silver;color:black;font-size:100%; text-align: right">Venta</th>
+                <!-- <th style="background-color:silver;color:black;font-size:100%; text-align: right">Folios</th> -->
                 <th style="background-color:silver;color:black;font-size:100%; text-align:right">Ventas al 0% </th>
                 <th style="background-color:silver;color:black;font-size:100%; text-align:right">Ventas con IVA </th>
                 <th style="background-color:silver;color:black;font-size:100%; text-align:right">IVA </th>
@@ -255,7 +255,7 @@
               <tr height="15">
                 <td style="font-size:100%" align="left">Detalle de facturas expedidas</td>
                 <td ></td>
-                <td ></td>
+                <!-- <td ></td> -->
                 <td align="right" style="font-size:100%"><span t-esc="resumen_facturas_expedidas['venta_sin_iva']" t-options = '{"widget": "float", "precision": 2}'/></td>
                 <td align="right" style="font-size:100%"><span t-esc="resumen_facturas_expedidas['venta_iva']" t-options = '{"widget": "float", "precision": 2}'/></td>
                 <td align="right" style="font-size:100%"><span t-esc="resumen_facturas_expedidas['iva']" t-options = '{"widget": "float", "precision": 2}'/></td>
@@ -265,7 +265,7 @@
               <tr height="35">
                 <td style="font-size:100%;">Facturas global del dia <![CDATA[&nbsp;]]> <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y')"/></td>
                 <td ></td>
-                <td ></td>
+                <!-- <td ></td> -->
                 <td align="right" style="font-size:100%"><span t-esc="resumen_factura_global['venta_sin_iva']" t-options = '{"widget": "float", "precision": 2}'/></td>
                 <td align="right" style="font-size:100%"><span t-esc="resumen_factura_global['venta_iva']" t-options = '{"widget": "float", "precision": 2}'/></td>
                 <td align="right" style="font-size:100%"><span t-esc="resumen_factura_global['iva']" t-options = '{"widget": "float", "precision": 2}'/></td>
@@ -274,7 +274,7 @@
 
               <tr height="35">
                 <td ></td>
-                <td ></td>
+                <!-- <td ></td> -->
                 <td ></td>
                 <td ></td>
                 <td ></td>
@@ -295,8 +295,8 @@
             </tr>
 
             <tr height="15">
-              <th colspan="2" style="background-color:silver;color:black;font-size:100%">Serie</th>
-              <th style="background-color:silver;color:black;font-size:100%">Folios</th>
+              <!-- <th colspan="2" style="background-color:silver;color:black;font-size:100%">Serie</th> -->
+              <th style="background-color:silver;color:black;font-size:100%">Venta</th>
               <th style="background-color:silver;color:black;font-size:100% text-align:right">Ventas al 0%</th>
               <th style="background-color:silver;color:black;font-size:100% text-align:right">Ventas con IVA</th>
               <th style="background-color:silver;color:black;font-size:100% text-align:right">IVA</th>
@@ -305,8 +305,8 @@
             </tr>
 
             <tr height="35" t-foreach="detalle_facturas_expedidas" t-as="f">
-              <td colspan="2" style="font-size:100%"><span t-esc="detalle_facturas_expedidas[f]['serie']"/></td>
-              <td style="font-size:100%"><span t-esc="detalle_facturas_expedidas[f]['folio']"/></td>
+              <!-- <td colspan="2" style="font-size:100%"><span t-esc="detalle_facturas_expedidas[f]['serie']"/></td> -->
+              <td style="font-size:100%"><span t-esc="detalle_facturas_expedidas[f]['venta']"/></td>
               <td align="right" style="font-size:100%"><span t-esc="detalle_facturas_expedidas[f]['ventas_sin_iva']" t-options = '{"widget": "float", "precision": 2}'/></td>
               <td align="right" style="font-size:100%"><span t-esc="detalle_facturas_expedidas[f]['ventas_iva']" t-options = '{"widget": "float", "precision": 2}'/></td>
               <td align="right" style="font-size:100%"><span t-esc="detalle_facturas_expedidas[f]['iva']" t-options = '{"widget": "float", "precision": 2}'/></td>
@@ -315,7 +315,7 @@
             </tr>
 
             <tr height="35">
-              <td colspan="2"></td>
+              <!-- <td colspan="2"></td> -->
               <td ></td>
               <td ></td>
               <td ></td>
@@ -396,21 +396,21 @@
             </tr>
 
             <tr height="15">
-              <th colspan="2" style="background-color:silver;color:black;font-size:100%;">Serie</th>
-              <th colspan="1" style="background-color:silver;color:black;font-size:100%; text-align:center">Folio</th>
+              <th colspan="2" style="background-color:silver;color:black;font-size:100%;">Venta</th>
+              <!-- <th colspan="1" style="background-color:silver;color:black;font-size:100%; text-align:center">Folio</th> -->
               <th colspan="1" style="background-color:silver;color:black;font-size:100%; text-align:center">Importe</th>
               <th colspan="1" style="background-color:silver;color:black;font-size:100%; text-align:center">Autorizado</th>
             </tr>
 
             <tr height="15" t-foreach="listado_cancelados" t-as="lc">
-              <td colspan="2" style="font-size:100%"><span t-esc="lc['serie']"/></td>
-              <td colspan="1" align="right" style="font-size:100%"><span t-esc="lc['folio1']"/></td>
+              <td colspan="2" style="font-size:100%"><span t-esc="lc['vebta']"/></td>
+              <!-- <td colspan="1" align="right" style="font-size:100%"><span t-esc="lc['folio1']"/></td> -->
               <td colspan="1" align="right" style="font-size:100%"><span t-esc="lc['importe']" t-options = '{"widget": "float", "precision": 2}'/></td>
               <td colspan="1" ></td>
             </tr>
 
             <tr height="15" t-foreach="listado_totales" t-as="lt">
-              <td colspan="2" ></td>
+              <td colspan="1" ></td>
               <td colspan="1" align="center" style="font-size:100%">Total</td>
               <th colspan="1" style="text-align:right; font-size:100%"><span t-esc="lt['total_cancelado']" t-options = '{"widget": "float", "precision": 2}'/></th>
               <td colspan="1" ></td>

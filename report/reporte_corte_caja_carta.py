@@ -87,9 +87,9 @@ class ReporteCorteCajaCarta(models.AbstractModel):
                     fp = dic_formas_pago[metodo_pago]
                 else:
                     fp = 'M'
-                serie = venta_nombre.split("/", 1)[0]
-                folio = venta_nombre.split("/", 1)[1]
-                ventas_sesion[venta_nombre] = {'serie':serie, 'folio': folio,'ventas_sin_iva': 0, 'descuento_sin_iva': 0, 'ventas_iva': 0, 'descuento_iva': 0, 'descuento': 0, 'iva': 0, 'total': 0, 'fp': fp, 'e':0}
+                # serie = venta_nombre.split("/", 1)[0]
+                # folio = venta_nombre.split("/", 1)[1]
+                ventas_sesion[venta_nombre] = {'venta': venta_nombre,'ventas_sin_iva': 0, 'descuento_sin_iva': 0, 'ventas_iva': 0, 'descuento_iva': 0, 'descuento': 0, 'iva': 0, 'total': 0, 'fp': fp, 'e':0}
 
             for linea in venta.lines:
                 ventas_sin_iva = 0.00
@@ -155,9 +155,7 @@ class ReporteCorteCajaCarta(models.AbstractModel):
 
                 if venta.state == 'invoiced':
                     if venta_nombre not in detalle_facturas_expedidas:
-                        serie = venta_nombre.split("/", 1)[0]
-                        folio = venta_nombre.split("/", 1)[1]
-                        detalle_facturas_expedidas[venta_nombre] = {'serie':serie, 'folio': folio,'ventas_sin_iva': 0, 'descuento_sin_iva': 0, 'ventas_iva': 0, 'descuento_iva': 0, 'descuento': 0, 'iva': 0, 'total': 0, 'fp': fp, 'e':0}
+                        detalle_facturas_expedidas[venta_nombre] = {'venta': venta_nombre,'ventas_sin_iva': 0, 'descuento_sin_iva': 0, 'ventas_iva': 0, 'descuento_iva': 0, 'descuento': 0, 'iva': 0, 'total': 0, 'fp': fp, 'e':0}
                 # resumen de facturas expedidias
 
                     resumen_facturas_expedidas['venta_sin_iva'] += ventas_sin_iva
@@ -363,9 +361,9 @@ class ReporteCorteCajaCarta(models.AbstractModel):
         # logging.warning(ventas_sesion)
 
         for referencia in ventas:
-            folio = referencia.name.split("/", 1)[1]
-            serie = referencia.name.split("/", 1)[0]
-            folios.append(folio)
+            # folio = referencia.name.split("/", 1)[1]
+            # serie = referencia.name.split("/", 1)[0]
+            folios.append(referencia.name)
             folios.sort()
             total_suma_subtotal = 0
             calculo_precio_sin_iva = 0
@@ -379,7 +377,7 @@ class ReporteCorteCajaCarta(models.AbstractModel):
             else:
                 pedidos_facturados.append(referencia.id)
 
-            listado_productos.append({'serie':serie, 'folio': folio,'ventas_sin_iva': 0, 'descuento_sin_iva': 0, 'ventas_iva': 0, 'descuento_iva': 0, 'descuento': 0, 'iva': 0, 'total': 0, 'fp': 0, 'e':0})
+            listado_productos.append({'venta': referencia.name,'ventas_sin_iva': 0, 'descuento_sin_iva': 0, 'ventas_iva': 0, 'descuento_iva': 0, 'descuento': 0, 'iva': 0, 'total': 0, 'fp': 0, 'e':0})
 
             iva_venta = referencia.amount_tax
             total = referencia.amount_total
