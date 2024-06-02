@@ -15,12 +15,11 @@ class PosConfig(models.Model):
     ubicacion_id = fields.Many2one('stock.location', 'Ubicaciíon',store=True, related='picking_type_id.default_location_src_id' )
     terminos_condiciones = fields.Text(string="Terminos y condiciones para pedido espcial: ")
     secuencia_id = fields.Many2one('ir.sequence', 'Secuencia')
-    # cupones no se migra
-    # envio salida vencimiento pendiente
-    # promociones ids se elimina
 
-
-    # productos porciones se migra
-    # efectivo maximo si se migra
-    # Cliente por defecto se queda
-    # Tipo de venta se queda
+    def asignar_promociones(self, promociones):
+        promo = True
+        tienda_ids = self.env['pos.config'].search([])
+        if tienda_ids:
+            for tienda in tienda_ids:
+                tienda.write({'promo_program_ids': promociones})
+        return promo
