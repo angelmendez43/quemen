@@ -403,7 +403,7 @@
             </tr>
 
             <tr height="15" t-foreach="listado_cancelados" t-as="lc">
-              <td colspan="2" style="font-size:100%"><span t-esc="lc['vebta']"/></td>
+              <td colspan="2" style="font-size:100%"><span t-esc="lc['venta']"/></td>
               <!-- <td colspan="1" align="right" style="font-size:100%"><span t-esc="lc['folio1']"/></td> -->
               <td colspan="1" align="right" style="font-size:100%"><span t-esc="lc['importe']" t-options = '{"widget": "float", "precision": 2}'/></td>
               <td colspan="1" ></td>
