@@ -79,6 +79,7 @@
             'quemen/static/src/js/Popups/PedidoEspecialPopup.js',
             'quemen/static/src/js/Screens/ReceiptScreen/SpecialOrderReceipt.js',
             'quemen/static/src/js/Popups/ErrorPopup.js',
+            'quemen/static/src/js/coupon.js',
             'quemen/static/src/js/Screens/ClientListScreen/ClientDetailsEdit.js',
             # 'quemen/static/src/js/Misc/AbstractReceiptScreen.js',
             'quemen/static/src/xml/Popups/PedidoEspecialPopup.xml',
