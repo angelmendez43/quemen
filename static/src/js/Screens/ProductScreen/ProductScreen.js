@@ -56,15 +56,15 @@ odoo.define('quemen.ProductScreen', function(require) {
 
                 var ubicacion_id = this.env.pos.config.ubicacion_id[0];
 
-                const stock_quant = await this.lineasLote(this.env.pos.get_order().orderlines, ubicacion_id);
-                console.log('stock_quant')
-                console.log(stock_quant)
-                if (stock_quant.length > 0){
-                        return this.showPopup('ErrorPopup', {
-                            title: this.env._t('Error en lote'),
-                            body: this.env._t("Lote de producto incorrecto"),
-                        });
-                }
+                // const stock_quant = await this.lineasLote(this.env.pos.get_order().orderlines, ubicacion_id);
+                // console.log('stock_quant')
+                // console.log(stock_quant)
+                // if (stock_quant.length > 0){
+                //         return this.showPopup('ErrorPopup', {
+                //             title: this.env._t('Error en lote'),
+                //             body: this.env._t("Lote de producto incorrecto"),
+                //         });
+                // }
 
                 if (this.env.pos.get_order().orderlines.any(line => line.get_quantity() == 0)) {
                     const { confirmed } = await this.showPopup('ConfirmPopup', {
