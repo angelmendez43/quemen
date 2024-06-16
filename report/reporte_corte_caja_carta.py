@@ -605,7 +605,7 @@ class ReporteCorteCajaCarta(models.AbstractModel):
         suma_columna_total_facturas_totales = 0
         suma_columna_total_facturas_totales = suma_columna_total_expedido + total_factura_global
 
-        listado_pedidos = self.env['pos.order'].search([('pos_reference', 'in', numero_recibo), ('amount_total', '>=', 0 )])
+        listado_pedidos = self.env['pos.order'].search([('session_id','=', docs.id),('amount_total', '<', 0 )])
 
         logging.warning("listado_pedidos")
         logging.warning(listado_pedidos)
@@ -615,9 +615,8 @@ class ReporteCorteCajaCarta(models.AbstractModel):
         serie1 = []
 
         for list_pedidos in listado_pedidos:
-            folio1 = list_pedidos.name.split("/", 1)[1]
-            serie = list_pedidos.name.split("/", 1)[0]
-            listado_cancelados.append({'serie': serie,'folio1': folio1,'importe': list_pedidos.amount_total})
+            if len(list_pedidos.refunded_order_ids) > 0:
+                listado_cancelados.append({'venta': list_pedidos.name,'importe': list_pedidos.refunded_order_ids.amount_total})
 
 
         total_cancelado = 0
