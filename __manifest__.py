@@ -93,6 +93,9 @@
             'quemen/static/src/xml/Screens/ReceiptScreen/SpecialOrderReceipt.xml',
             'quemen/static/src/xml/Screens/ClientListScreen/ClientDetailsEdit.xml',
         ],
+        'web.assets_backend': [
+            'quemen/static/src/css/navbar.scss',
+        ],        
         # 'web.assets_qweb':[
         #     'pos_ticket_mx/static/src/xml/**/*',
         # ],

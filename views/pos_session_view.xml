@@ -9,6 +9,7 @@
                 <button name="generar_factura_global_sesion" type="object" string="Generar factura global" states="closed" class="oe_highlight"/>
             </button>       -->
         <group>
+            <field name="pendiente_facturar"/>
             <field name="factura_global_id"/>
               <field name="cash_register_total_entry_encoding"/>
               <field name="saldo_apartura"/>

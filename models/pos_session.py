@@ -14,6 +14,7 @@ class PosSession(models.Model):
     total_efectivo_caja = fields.Float('Total efectivo caja', store=True)
     pagos_efectivo = fields.Float('Pagos efectivo',  compute='_calcular_pagos_efectivo', store=True)
     retiros_efectivo = fields.Float('Retiros efectivo', compute='_calcular_apertura_retiro_efectivo')
+    pendiente_facturar = fields.Float('Pendiente facturar')
 
     @api.depends('cash_register_total_entry_encoding', 'cash_register_id.line_ids')
     def _calcular_apertura_retiro_efectivo(self):
@@ -126,6 +127,7 @@ class PosSession(models.Model):
         logging.warning('generar_factura_global')
         logging.warning(self)
         lineas_facturar_dic = {}
+        pendiente_facturar = 0
         for sesion in sesiones:
             if sesion.factura_global_id:
                 raise ValidationError(_('La sesión ' + sesion.name + ' actualmente ya contiene una factura global.'))
@@ -144,10 +146,12 @@ class PosSession(models.Model):
         producto_linea_factura = self.env['product.product'].search([('default_code','=','001')])
         if pedidos_facturar:
             for pedido in pedidos_facturar:
+                pendiente_facturar += pedido.amount_total
                 # descuento = 0
                 # precio_unitario = 0
                 impuesto_programa = False
-                producto_ids = False
+                producto_0_ids = False
+                producto_16_ids = False
                 total_descuento_0 = 0
                 impuesto_programa_0 = False
                 impuesto_programa_16 = False
@@ -161,16 +165,21 @@ class PosSession(models.Model):
                         if producto_ids[0].taxes_id[0].name == "IVA(16%) VENTAS":
                             impuesto_programa_16 =  "IVA(16%) VENTAS"
                             total_descuento_16 += (linea.price_subtotal_incl*-1)
+                            producto_16_ids = self.env['product.product'].search(dominio)
+                            producto_16_ids += linea.program_id.discount_specific_product_ids
                         else:
                             impuesto_programa_0 = "IVA(0%) VENTAS"
                             total_descuento_0 += (linea.price_subtotal_incl*-1)
-                        producto_ids += linea.program_id.discount_specific_product_ids
+                            producto_0_ids = self.env['product.product'].search(dominio)
+                            producto_0_ids += linea.program_id.discount_specific_product_ids
 
                 for linea in pedido.lines:
                     llave = str(linea.order_id.name)+str(linea.tax_ids_after_fiscal_position[0].name)
                     if linea.price_subtotal_incl > 0:
 
                         if llave not in lineas_facturar_dic:
+                            linea_0 = True if linea.tax_ids_after_fiscal_position[0].name == "IVA(0%) VENTAS" else False
+                            linea_16 = True if linea.tax_ids_after_fiscal_position[0].name == "IVA(16%) VENTAS" else False
                             linea_factura = {
                                 'product_id': producto_linea_factura.id,
                                 'quantity': 1,
@@ -181,34 +190,44 @@ class PosSession(models.Model):
                                 'product_uom_id': producto_linea_factura.uom_id.id,
                                 'total_descuento_0': total_descuento_0,
                                 'total_descuento_16': total_descuento_16,
+                                'linea_0': linea_0,
+                                'linea_16': linea_16,
                             }
                             lineas_facturar_dic[llave] = linea_factura
+                        if llave == "Tienda 1 GONZALEZ ORTEGA/0626IVA(16%) VENTAS":
+                            logging.warning('esta es**')
+                            logging.warning(linea.product_id.name)
+                            logging.warning(lineas_facturar_dic[llave])
+                            logging.warning(impuesto_programa_0)
 
-                        if (impuesto_programa_0 and producto_ids) and (linea.product_id.id in producto_ids.ids) and (linea.tax_ids_after_fiscal_position[0].name == impuesto_programa_0):
+                            logging.warning(linea.tax_ids_after_fiscal_position[0].name)
+                            logging.warning(impuesto_programa_16)
+                            logging.warning(producto_16_ids)
+                            logging.warning(linea.product_id.id)
+                        if (impuesto_programa_0 and producto_0_ids) and (linea.product_id.id in producto_0_ids.ids) and (linea.tax_ids_after_fiscal_position[0].name == impuesto_programa_0):
                             lineas_facturar_dic[llave]['price_unit'] += linea.price_subtotal_incl
                             # precio_unitario = lineas_facturar_dic[llave]['price_unit']
                             # precio_con_descuento = precio_unitario - total_descuento_0
                             # descuento = ((precio_unitario - precio_con_descuento) / precio_unitario) * 100
                             # lineas_facturar_dic[llave]['discount'] = descuento
                             lineas_facturar_dic[llave]['tax_ids'] = [(6, 0, linea.tax_ids_after_fiscal_position.ids)]
-                        elif (impuesto_programa_16 and producto_ids) and (linea.product_id.id in producto_ids.ids) and (linea.tax_ids_after_fiscal_position[0].name == impuesto_programa_16):
+                        elif (impuesto_programa_16 and producto_16_ids) and (linea.product_id.id in producto_16_ids.ids) and (linea.tax_ids_after_fiscal_position[0].name == impuesto_programa_16):
                             lineas_facturar_dic[llave]['price_unit'] += linea.price_subtotal_incl
                             # precio_unitario = lineas_facturar_dic[llave]['price_unit']
                             # precio_con_descuento = precio_unitario - total_descuento_0
                             # descuento = ((precio_unitario - precio_con_descuento) / precio_unitario) * 100
                             # lineas_facturar_dic[llave]['discount'] = descuento
                             lineas_facturar_dic[llave]['tax_ids'] = [(6, 0, linea.tax_ids_after_fiscal_position.ids)]
-
                         else:
                             lineas_facturar_dic[llave]['price_unit'] += linea.price_subtotal_incl
                             lineas_facturar_dic[llave]['tax_ids'] = [(6, 0, linea.tax_ids_after_fiscal_position.ids)]
-                            logging.warning('--')
-                            logging.warning(llave)
-                            # if (total_descuento_0 > 0 or total_descuento_16 > 0 )and pedido_impuesto != 0:
-                            #     if 'total_descuento_0' in lineas_facturar_dic[llave]:
-                            #         del lineas_facturar_dic[llave]['total_descuento_0']
-                            #     if 'total_descuento_16' in lineas_facturar_dic[llave]:
-                            #         del lineas_facturar_dic[llave]['total_descuento_16']
+                            if llave == "Tienda 1 GONZALEZ ORTEGA/0626IVA(16%) VENTAS":
+                                logging.warning('--')
+                                logging.warning(linea.product_id.name)
+                                logging.warning(linea.price_subtotal_incl)
+                                logging.warning(lineas_facturar_dic[llave])
+                                logging.warning(llave)
+
                             if total_descuento_0 == 0:
                                 if 'total_descuento_0' in lineas_facturar_dic[llave]:
                                     del lineas_facturar_dic[llave]['total_descuento_0']
@@ -217,8 +236,9 @@ class PosSession(models.Model):
                                 if linea.tax_ids_after_fiscal_position[0].name != impuesto_programa_0:
                                     if 'total_descuento_0' in lineas_facturar_dic[llave]:
                                         del lineas_facturar_dic[llave]['total_descuento_0']
-                                    if 'total_descuento_16' in lineas_facturar_dic[llave]:
-                                        del lineas_facturar_dic[llave]['total_descuento_16']
+                                    if total_descuento_16 == 0:
+                                        if 'total_descuento_16' in lineas_facturar_dic[llave]:
+                                            del lineas_facturar_dic[llave]['total_descuento_16']
 
                             if total_descuento_16 == 0:
                                     if 'total_descuento_16' in lineas_facturar_dic[llave]:
@@ -228,14 +248,14 @@ class PosSession(models.Model):
                 logging.warning('lineas')
                 logging.warning(ticket)
                 logging.warning(lineas_facturar_dic[ticket])
-                if 'total_descuento_0' in lineas_facturar_dic[ticket] and lineas_facturar_dic[ticket]['total_descuento_0'] > 0:
+                if 'total_descuento_0' in lineas_facturar_dic[ticket] and lineas_facturar_dic[ticket]['total_descuento_0'] > 0 and lineas_facturar_dic[ticket]['linea_0']:
                     precio_unitario = lineas_facturar_dic[ticket]['price_unit']
                     precio_con_descuento = 0
                     precio_con_descuento = lineas_facturar_dic[ticket]['price_unit'] - lineas_facturar_dic[ticket]['total_descuento_0']
                     descuento = ((precio_unitario - precio_con_descuento) / precio_unitario)*100
                     lineas_facturar_dic[ticket]['discount'] = descuento
                     del lineas_facturar_dic[ticket]['total_descuento_0']
-                if 'total_descuento_16' in lineas_facturar_dic[ticket] and lineas_facturar_dic[ticket]['total_descuento_16'] > 0:
+                if 'total_descuento_16' in lineas_facturar_dic[ticket] and lineas_facturar_dic[ticket]['total_descuento_16'] > 0 and lineas_facturar_dic[ticket]['linea_16']:
                     precio_unitario = lineas_facturar_dic[ticket]['price_unit']
                     precio_con_descuento = 0
                     precio_con_descuento = lineas_facturar_dic[ticket]['price_unit'] - lineas_facturar_dic[ticket]['total_descuento_16']
@@ -251,6 +271,9 @@ class PosSession(models.Model):
                     logging.warning(ticket)
                     logging.warning(lineas_facturar_dic[ticket])
                     del lineas_facturar_dic[ticket]['total_descuento_0']
+
+                del lineas_facturar_dic[ticket]['linea_0']
+                del lineas_facturar_dic[ticket]['linea_16']
                 lineas_facturar.append((0,0,lineas_facturar_dic[ticket]))
 
             factura = {
@@ -269,7 +292,9 @@ class PosSession(models.Model):
             factura_id = self.env['account.move'].create(factura)
             logging.warning("Si llega?")
             logging.warning(factura_id)
+            
             if factura_id:
+                
                 factura_id.action_post()
                 # self.factura_global_id = factura_id.id
                 # for pago in pagos:
@@ -291,6 +316,7 @@ class PosSession(models.Model):
                 #                     break
 
         for sesion in sesiones:
+            sesion.write({'pendiente_facturar': pendiente_facturar})
             sesion.write({'factura_global_id': factura_id.id})
         return True
 
