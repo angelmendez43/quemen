@@ -14,6 +14,7 @@ class PosOrder(models.Model):
     observaciones_especial = fields.Char("Observaciones")
     sucursal_entrega = fields.Char("Sucursal de entrega")
     autorizo_especial = fields.Char("Autorizó")
+    invalido = fields.Boolean('Invalido')
 
     def buscar_inventario(self, lotes, ubicacion_id):
         lote_no_existente = []
