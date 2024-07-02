@@ -44,10 +44,10 @@ class ReporteCorteCajaCarta(models.AbstractModel):
         pedidos_facturados = []
         listado_referencia_facturas = []
         metodos_pago = {}
-        productos = docs.order_ids.lines
+        productos = docs.order_ids.filtered(lambda order: order.invalido is False).lines
         pago_efectivo = 0
         contador_efectivo = 0
-        ventas = docs.order_ids
+        ventas = docs.order_ids.filtered(lambda order: order.invalido is False)
         facturas = ventas.account_move
         numero_recibo = []
         importe_descuento = 0
@@ -84,6 +84,8 @@ class ReporteCorteCajaCarta(models.AbstractModel):
                         venta_efectivo += linea_pago.amount
                 if len(venta.payment_ids) == 1:
                     metodo_pago = venta.payment_ids.payment_method_id.name
+                    if metodo_pago not in dic_formas_pago:
+                        dic_formas_pago[metodo_pago] = "T"
                     fp = dic_formas_pago[metodo_pago]
                 else:
                     fp = 'M'
@@ -359,7 +361,8 @@ class ReporteCorteCajaCarta(models.AbstractModel):
         # ventas_mostrador['total'] = ventas_mostrador['importe'] - ventas_mostrador['descuento']
         # logging.warning('ventas sesion')
         # logging.warning(ventas_sesion)
-
+        logging.warning('ventas')
+        logging.warning(ventas)
         for referencia in ventas:
             # folio = referencia.name.split("/", 1)[1]
             # serie = referencia.name.split("/", 1)[0]
@@ -471,6 +474,9 @@ class ReporteCorteCajaCarta(models.AbstractModel):
         total_retiros = 0
         for list_ret in listado_retiros:
             total_retiros += list_ret['cantidad']
+            
+        logging.warning('Los folios')
+        logging.warning(folios)
         folios_concatenados = folios[0] + ' - ' + folios[-1]
 
 
@@ -552,8 +558,8 @@ class ReporteCorteCajaCarta(models.AbstractModel):
             total_factura_expedida = fex.amount_total
             producto_iva1 = 0
             producto_sin_iva1 = 0
-            folio_expedido = fex.invoice_origin.split("/", 1)[1]
-            serie_expedido = fex.invoice_origin.split("/", 1)[0]
+            # folio_expedido = fex.ref
+            # serie_expedido = fex.ref
             for lineas in fex.invoice_line_ids:
                 if lineas.tax_ids.id != False:
                     producto_iva1 += lineas.price_subtotal
@@ -565,8 +571,9 @@ class ReporteCorteCajaCarta(models.AbstractModel):
             suma_iva_expedido += round(iva_factura_expedida, 2)
             suma_total_expedido += round(total_factura_expedida, 2)
             listado_facturas_expedidas.append({
-                'serie_expedido': serie_expedido,
-                'folio_expedido': folio_expedido,
+                # 'serie_expedido': serie_expedido,
+                # 'folio_expedido': folio_expedido,
+                'pedido': fex.ref,
                 'producto_iva1': producto_iva1,
                 'producto_sin_iva1': producto_sin_iva1,
                 'iva_factura_expedida': iva_factura_expedida,

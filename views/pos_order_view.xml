@@ -9,6 +9,7 @@
             <page name="pedido_especial" string="Pedido especial">  
                 <!-- <field name="pedido_especial"/> -->
                 <group>
+                    <field name="invalido"/>
                     <field name="fecha_especial"/>
                     <field name="hora_especial"/>
                     <field name="observaciones_especial"/>
