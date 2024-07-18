@@ -16,8 +16,25 @@
                     <attribute name="t-att-NoIdentificacion">line.name</attribute>
                     <attribute name="t-att-Descripcion">line.product_id.name</attribute>
                 </t>
+            </xpath>    
+        </template>
+
+        <template id="cfdi_cartaporte" inherit_id="l10n_mx_edi_stock.cfdi_cartaporte">
+            <xpath expr="//*[name()='cartaporte20:Mercancia']" position="attributes">
+                <attribute name="t-att-ValorMercancia">move.sale_price</attribute>
             </xpath>
-            
+            <xpath expr="//*[name()='cfdi:Concepto']" position="replace">
+                <cfdi:Concepto  
+                    xmlns:cfdi="http://www.sat.gob.mx/cfd/3"
+                    t-att-Cantidad="format_float(move.quantity_done, 6)"
+                    t-att-ClaveProdServ="move.product_id.unspsc_code_id.code"
+                    t-att-ClaveUnidad="move.product_uom.unspsc_code_id.code"
+                    t-att-Descripcion="move.description_picking or move.product_id.name"
+                    Importe="0.00"
+                    ValorUnitario="0.00"
+                    t-att-Unidad="move.product_uom.name"
+                    NoIdentificacion="move.product_id.default_code"/>
+            </xpath>
         </template>
     </data>
 </odoo>
