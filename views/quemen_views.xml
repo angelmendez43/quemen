@@ -145,7 +145,7 @@
                                           </tree>
                                     </field>
                                 </page>
-                            </notebook>                            
+                            </notebook>
 
                         </sheet>
                     </form>
@@ -336,7 +336,7 @@
                 name="Reportes de tienda"
                 parent="point_of_sale.menu_point_root"
                 sequence="75"/>
-        
+
             <menuitem
                 id="menu_quemen_retiros"
                 name="Retiros POS"
