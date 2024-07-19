@@ -21,7 +21,7 @@
 
         <template id="cfdi_cartaporte_extras_quemen" inherit_id="l10n_mx_edi_stock_30.cfdi_cartaporte_30">
             <xpath expr="//*[name()='cartaporte20:Mercancia']" position="attributes">
-                <attribute name="t-att-ValorMercancia">format_float(move.quantity_done*move.product_id.list_price, 6)</attribute>
+                <attribute name="t-att-ValorMercancia">format_float(move.quantity_done*move.product_id.list_price, 2)</attribute>
             </xpath>
             <xpath expr="//*[name()='cfdi:Concepto']" position="replace">
                 <cfdi:Concepto  
