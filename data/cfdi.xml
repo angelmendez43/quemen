@@ -19,7 +19,7 @@
             </xpath>    
         </template>
 
-        <template id="cfdi_cartaporte" inherit_id="l10n_mx_edi_stock.cfdi_cartaporte">
+        <template id="cfdi_cartaporte_extras_quemen" inherit_id="l10n_mx_edi_stock_30.cfdi_cartaporte_30">
             <xpath expr="//*[name()='cartaporte20:Mercancia']" position="attributes">
                 <attribute name="t-att-ValorMercancia">move.sale_price</attribute>
             </xpath>
