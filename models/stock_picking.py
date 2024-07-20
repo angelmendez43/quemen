@@ -8,6 +8,30 @@ from datetime import datetime
 class Picking(models.Model):
     _inherit = "stock.picking"
 
+    def _l10n_mx_edi_dg_render(self, values):
+        # OVERRIDES 'l10n_mx_edi_stock'
+        cfdi = self.env.ref('l10n_mx_edi_stock_extended_31.cfdi_cartaporte_comex_31')._render(values)
+        logging.warning('cfdi')
+        logging.warning(cfdi)
+        # Due to the multiple inherits and position="replace" used in the XML templates,
+        # we need to manually rearrange the order of the CartaPorte node's children using lxml etree.
+        carta_porte_20_etree = etree.fromstring(str(cfdi))
+        logging.warning('carta_porte_20_etree')
+        logging.warning(carta_porte_20_etree)
+        carta_porte_element = carta_porte_20_etree.find('.//{*}CartaPorte')
+        logging.warning(carta_porte_element)
+        regimenes_aduanero_element = carta_porte_element.find('.//{*}RegimenesAduaneros')
+        if regimenes_aduanero_element is not None:
+            carta_porte_element.remove(regimenes_aduanero_element)
+            carta_porte_element.insert(0, regimenes_aduanero_element)
+        carta_porte_20 = etree.tostring(carta_porte_20_etree).decode()
+
+        # Since we are inheriting versions 2.0 and 3.0 of the Carta Porte template,
+        # we need to update both the namespace prefix and its URI to version 3.1.
+        carta_porte_31 = re.sub(r'([cC]arta[pP]orte)[23]0', r'\g<1>31', carta_porte_20)
+
+        return bytes(carta_porte_31, 'utf-8')
+
     # def button_validate(self):
     #     logging.warn('123456789')
     #     logging.warn(self.env.user)
