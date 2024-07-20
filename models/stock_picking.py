@@ -5,6 +5,7 @@ import logging
 import pytz
 from datetime import datetime
 from lxml import etree
+import re
 
 class Picking(models.Model):
     _inherit = "stock.picking"
