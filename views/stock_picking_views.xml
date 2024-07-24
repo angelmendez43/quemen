@@ -41,7 +41,7 @@
 
 
 
-        <record id="quemen_view_stock_picking_form" model="ir.ui.view">
+        <!-- <record id="quemen_view_stock_picking_form" model="ir.ui.view">
             <field name="name">stock.picking.form</field>
             <field name="model">stock.picking</field>
             <field name="inherit_id" ref="stock.view_picking_form" />
@@ -51,7 +51,7 @@
                     <attribute name="domain">[('name','=','Entrada')]</attribute>
                 </xpath>
             </field>
-        </record>
+        </record> -->
 
         <record id="quemen_view_picking_edi_form" model="ir.ui.view">
             <field name="model">stock.picking</field>
