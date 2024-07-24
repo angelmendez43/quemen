@@ -23,7 +23,7 @@
             <xpath expr="//*[name()='cartaporte20:Mercancia']" position="attributes">
                 <attribute name="t-att-ValorMercancia">format_float(move.quantity_done*move.product_id.list_price, 2)</attribute>
             </xpath>
-            <xpath expr="//*[name()='cfdi:Concepto']" position="replace">
+            <!-- <xpath expr="//*[name()='cfdi:Concepto']" position="replace">
                 <cfdi:Concepto  
                     xmlns:cfdi="http://www.sat.gob.mx/cfd/3"
                     t-att-Cantidad="format_float(move.quantity_done, 6)"
@@ -34,7 +34,7 @@
                     ValorUnitario="0.00"
                     t-att-Unidad="move.product_uom.name"
                     NoIdentificacion="move.product_id.default_code"/>
-            </xpath>
+            </xpath> -->
         </template>
     </data>
 </odoo>
