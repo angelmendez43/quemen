@@ -10,6 +10,13 @@ import re
 class Picking(models.Model):
     _inherit = "stock.picking"
 
+    l10n_mx_edi_customs_regime_ids = fields.Many2many(
+        string="Customs Regimes",
+        help="Regimes associated to the good's transfer (import or export).",
+        comodel_name='l10n_mx_edi.customs.regime',
+        ondelete='restrict',
+    )
+
     @api.model
     def create(self, vals):
         res = super(Picking, self).create(vals)
