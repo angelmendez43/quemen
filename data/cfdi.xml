@@ -22,6 +22,7 @@
         <template id="cfdi_cartaporte_extras_quemen" inherit_id="l10n_mx_edi_stock_30.cfdi_cartaporte_30">
             <xpath expr="//*[name()='cartaporte20:Mercancia']" position="attributes">
                 <attribute name="t-att-ValorMercancia">format_float(move.quantity_done*move.product_id.list_price, 2)</attribute>
+                <attribute name="t-att-Moneda">'MXN'</attribute>
             </xpath>
             <!-- <xpath expr="//*[name()='cfdi:Concepto']" position="replace">
                 <cfdi:Concepto  
@@ -35,6 +36,21 @@
                     t-att-Unidad="move.product_uom.name"
                     NoIdentificacion="move.product_id.default_code"/>
             </xpath> -->
+        </template>
+
+        <template id="cfdi_cartaporte_extras_quemen_31" inherit_id="l10n_mx_edi_stock_extended_31.cfdi_cartaporte_comex_31">
+            <xpath expr="//*[name()='cfdi:Concepto']" position="replace">
+                <cfdi:Concepto  
+                    xmlns:cfdi="http://www.sat.gob.mx/cfd/3"
+                    t-att-Cantidad="format_float(move.quantity_done, 6)"
+                    t-att-ClaveProdServ="move.product_id.unspsc_code_id.code"
+                    t-att-ClaveUnidad="move.product_uom.unspsc_code_id.code"
+                    t-att-Descripcion="move.description_picking or move.product_id.name"
+                    Importe="0.00"
+                    ValorUnitario="0.00"
+                    t-att-Unidad="move.product_uom.name"
+                    NoIdentificacion="move.product_id.default_code"/>
+            </xpath>
         </template>
     </data>
 </odoo>
