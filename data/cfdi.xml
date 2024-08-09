@@ -41,15 +41,16 @@
         <template id="cfdi_cartaporte_extras_quemen_31" inherit_id="l10n_mx_edi_stock_extended_31.cfdi_cartaporte_comex_31">
             <xpath expr="//*[name()='cfdi:Concepto']" position="replace">
                 <cfdi:Concepto  
-                    xmlns:cfdi="http://www.sat.gob.mx/cfd/3"
+                    xmlns:cfdi="http://www.sat.gob.mx/cfd/4"
                     t-att-Cantidad="format_float(move.quantity_done, 6)"
                     t-att-ClaveProdServ="move.product_id.unspsc_code_id.code"
                     t-att-ClaveUnidad="move.product_uom.unspsc_code_id.code"
                     t-att-Descripcion="move.description_picking or move.product_id.name"
                     Importe="0.00"
                     ValorUnitario="0.00"
+                    ObjetoImp="01"
                     t-att-Unidad="move.product_uom.name"
-                    NoIdentificacion="move.product_id.default_code"/>
+                    t-att-NoIdentificacion="move.product_id.default_code"/>
             </xpath>
         </template>
     </data>
