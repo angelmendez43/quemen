@@ -5,6 +5,7 @@ odoo.define('quemen.ProductScreen', function(require) {
     const ProductScreen = require('point_of_sale.ProductScreen');
     // const PosCouponProductScreen = require('pos_coupon.PosCouponProductScreen')
     var { Gui } = require('point_of_sale.Gui');
+    const NumberBuffer = require('point_of_sale.NumberBuffer');
     var core = require('web.core');
     var _t = core._t;
 
@@ -35,7 +36,55 @@ odoo.define('quemen.ProductScreen', function(require) {
                 super(...arguments);
             }
 
+            async _clickProduct(event) {
+                const productSelected = event.detail;
+                var productLot = [];
+                var location_id = this.env.pos.config.ubicacion_id[0];
+                var lot_list = []
+                var optionsProduct = await this._getAddProductOptions(productSelected);
+                if (productSelected.tracking == "lot"){
+                    productLot = await this.rpc({
+                        model: 'stock.quant',
+                        method: 'search_read',
+                        args: [[
+                            ['product_id', '=', productSelected.id],
+                            ['location_id', '=', location_id]
+                        ]],
+                        context: this.env.session.user_context,
+                    });                    
+                    if (productLot.length > 0){
+                        productLot.forEach(result => {
 
+                            lot_list.push({'id': result.lot_id[0],'label': 'Lote: 'result.lot_id[1] + ' Disponible: ' + result.quantity.toString(), isSelected: false, item: result})
+                        });
+                        
+                        const { confirmed, payload } = await this.showPopup('SelectionPopup', {
+                            title: this.env._t('Seleccione un Lote'),
+                            list: lot_list,
+                            confirmText: this.env._t('Aceptar'),
+                        });
+                        if (confirmed) {
+                            var optionsProduct = {'descrption': false, 'draftPackLotLines': {'newPackLotLines': [{'lot_name': payload.lot_id[1]}]},'pirce_extra':0 }
+                            await this.currentOrder.add_product(productSelected, optionsProduct);
+                            NumberBuffer.reset();
+                        }
+                        
+                        
+                    }else{
+                        return
+                    }
+                    
+                }else{
+                    var actionClickProduct = super._clickProduct(...arguments);
+                    return actionClickProduct
+                }
+
+            }
+
+            async _getLots(product, location){
+                
+            }
+            
             async _barcodeProductAction(code){
                 const product = await this._getProductByBarcode(code);
                 if (!product) {
@@ -48,8 +97,6 @@ odoo.define('quemen.ProductScreen', function(require) {
 
 
             async _onClickPay() {
-                console.log('on click pay')
-                console.log(this.env.pos.get_order().orderlines)
                 // var lote_existe = await this.verificarLote(a,b,c)
                 var lote_invalido = false;
 
@@ -57,8 +104,6 @@ odoo.define('quemen.ProductScreen', function(require) {
                 var ubicacion_id = this.env.pos.config.ubicacion_id[0];
 
                 const stock_quant = await this.lineasLote(this.env.pos.get_order().orderlines, ubicacion_id);
-                console.log('stock_quant')
-                console.log(stock_quant)
                 if (stock_quant.length > 0){
                         return this.showPopup('ErrorPopup', {
                             title: this.env._t('Error en lote'),
@@ -109,7 +154,6 @@ odoo.define('quemen.ProductScreen', function(require) {
                 })
 
                 const stock_quant = await this.verificarLote(lotes, ubicacion_id,productos)
-                console.log(stock_quant)
                 return stock_quant
 
             }
@@ -121,108 +165,107 @@ odoo.define('quemen.ProductScreen', function(require) {
                     args: [[], lotes,ubicacion_id],
                 })
             }
-            // async _getAddProductOptions(product, base_code) {
-            //     let price_extra = 0.0;
-            //     var self = this;
+            async _getAddProductOptions(product, base_code) {
+                let price_extra = 0.0;
+                var self = this;
 
-            //     let draftPackLotLines, weight, description, packLotLinesToEdit;
-            //     if (_.some(product.attribute_line_ids, (id) => id in this.env.pos.attributes_by_ptal_id)) {
-            //         let attributes = _.map(product.attribute_line_ids, (id) => this.env.pos.attributes_by_ptal_id[id])
-            //                           .filter((attr) => attr !== undefined);
-            //         let { confirmed, payload } = await this.showPopup('ProductConfiguratorPopup', {
-            //             product: product,
-            //             attributes: attributes,
-            //         });
+                let draftPackLotLines, weight, description, packLotLinesToEdit;
+                if (_.some(product.attribute_line_ids, (id) => id in this.env.pos.attributes_by_ptal_id)) {
+                    let attributes = _.map(product.attribute_line_ids, (id) => this.env.pos.attributes_by_ptal_id[id])
+                                      .filter((attr) => attr !== undefined);
+                    let { confirmed, payload } = await this.showPopup('ProductConfiguratorPopup', {
+                        product: product,
+                        attributes: attributes,
+                    });
 
-            //         if (confirmed) {
-            //             description = payload.selected_attributes.join(', ');
-            //             price_extra += payload.price_extra;
-            //         } else {
-            //             return;
-            //         }
-            //     }
+                    if (confirmed) {
+                        description = payload.selected_attributes.join(', ');
+                        price_extra += payload.price_extra;
+                    } else {
+                        return;
+                    }
+                }
 
-            //     // Gather lot information if required.
-            //     if (['serial', 'lot'].includes(product.tracking) && (this.env.pos.picking_type.use_create_lots || this.env.pos.picking_type.use_existing_lots)) {
-            //         const isAllowOnlyOneLot = product.isAllowOnlyOneLot();
-            //         if (isAllowOnlyOneLot) {
-            //             packLotLinesToEdit = [];
-            //         } else {
-            //             const orderline = this.currentOrder
-            //                 .get_orderlines()
-            //                 .filter(line => !line.get_discount())
-            //                 .find(line => line.product.id === product.id);
-            //             if (orderline) {
-            //                 packLotLinesToEdit = orderline.getPackLotLinesToEdit();
-            //             } else {
-            //                 packLotLinesToEdit = [];
-            //             }
-            //         }
-            //         const { confirmed, payload } = await this.showPopup('EditListPopup', {
-            //             title: this.env._t('Lot/Serial Number(s) Required'),
-            //             isSingleItem: isAllowOnlyOneLot,
-            //             array: packLotLinesToEdit,
-            //         });
+                // Gather lot information if required.
+                // if (['serial', 'lot'].includes(product.tracking) && (this.env.pos.picking_type.use_create_lots || this.env.pos.picking_type.use_existing_lots)) {
+                //     const isAllowOnlyOneLot = product.isAllowOnlyOneLot();
+                //     if (isAllowOnlyOneLot) {
+                //         packLotLinesToEdit = [];
+                //     } else {
+                //         const orderline = this.currentOrder
+                //             .get_orderlines()
+                //             .filter(line => !line.get_discount())
+                //             .find(line => line.product.id === product.id);
+                //         if (orderline) {
+                //             packLotLinesToEdit = orderline.getPackLotLinesToEdit();
+                //         } else {
+                //             packLotLinesToEdit = [];
+                //         }
+                //     }
+                //     const { confirmed, payload } = await this.showPopup('EditListPopup', {
+                //         title: this.env._t('Lot/Serial Number(s) Required'),
+                //         isSingleItem: isAllowOnlyOneLot,
+                //         array: packLotLinesToEdit,
+                //     });
 
-            //         if (confirmed) {
-            //             // Segregate the old and new packlot lines
-            //             const modifiedPackLotLines = Object.fromEntries(
-            //                 payload.newArray.filter(item => item.id).map(item => [item.id, item.text])
-            //             );
-            //             const newPackLotLines = payload.newArray
-            //                 .filter(item => !item.id)
-            //                 .map(item => ({ lot_name: item.text }));
-
-
-            //             var ubicacion_id = this.env.pos.config.warehouse_id[0];
-            //             var lot_name = newPackLotLines[0].lot_name
-            //             var lote_existe = await this.verificarLote(lot_name, ubicacion_id, product)
-
-            //             if (lote_existe.length > 0){
-            //                 draftPackLotLines = { modifiedPackLotLines, newPackLotLines };
-            //             }else {
-            //                 const { confirmed, payload } = Gui.showPopup('ErrorPopup', {
-            //                                         'title': 'Número de serie inválido '+ lot_name,
-            //                                     });
-            //                 return ;
-            //             }
-
-            //         } else {
-            //             // We don't proceed on adding product.
-            //             return;
-            //         }
+                //     if (confirmed) {
+                //         // Segregate the old and new packlot lines
+                //         const modifiedPackLotLines = Object.fromEntries(
+                //             payload.newArray.filter(item => item.id).map(item => [item.id, item.text])
+                //         );
+                //         const newPackLotLines = payload.newArray
+                //             .filter(item => !item.id)
+                //             .map(item => ({ lot_name: item.text }));
 
 
-            //     }
+                //         var ubicacion_id = this.env.pos.config.warehouse_id[0];
+                //         var lot_name = newPackLotLines[0].lot_name
+                //         var lote_existe = await this.verificarLote(lot_name, ubicacion_id, product)
 
-            //     // Take the weight if necessary.
-            //     if (product.to_weight && this.env.pos.config.iface_electronic_scale) {
-            //         // Show the ScaleScreen to weigh the product.
-            //         if (this.isScaleAvailable) {
-            //             const { confirmed, payload } = await this.showTempScreen('ScaleScreen', {
-            //                 product,
-            //             });
-            //             if (confirmed) {
-            //                 weight = payload.weight;
-            //             } else {
-            //                 // do not add the product;
-            //                 return;
-            //             }
-            //         } else {
-            //             await this._onScaleNotAvailable();
-            //         }
-            //     }
+                //         if (lote_existe.length > 0){
+                //             draftPackLotLines = { modifiedPackLotLines, newPackLotLines };
+                //         }else {
+                //             const { confirmed, payload } = Gui.showPopup('ErrorPopup', {
+                //                                     'title': 'Número de serie inválido '+ lot_name,
+                //                                 });
+                //             return ;
+                //         }
 
-            //     if (base_code && this.env.pos.db.product_packaging_by_barcode[base_code.code]) {
-            //         weight = this.env.pos.db.product_packaging_by_barcode[base_code.code].qty;
-            //     }
+                //     } else {
+                //         // We don't proceed on adding product.
+                //         return;
+                //     }
 
-            //     return { draftPackLotLines, quantity: weight, description, price_extra };
 
-            // }
+                // }
+
+                // Take the weight if necessary.
+                if (product.to_weight && this.env.pos.config.iface_electronic_scale) {
+                    // Show the ScaleScreen to weigh the product.
+                    if (this.isScaleAvailable) {
+                        const { confirmed, payload } = await this.showTempScreen('ScaleScreen', {
+                            product,
+                        });
+                        if (confirmed) {
+                            weight = payload.weight;
+                        } else {
+                            // do not add the product;
+                            return;
+                        }
+                    } else {
+                        await this._onScaleNotAvailable();
+                    }
+                }
+
+                if (base_code && this.env.pos.db.product_packaging_by_barcode[base_code.code]) {
+                    weight = this.env.pos.db.product_packaging_by_barcode[base_code.code].qty;
+                }
+
+                return { draftPackLotLines, quantity: weight, description, price_extra };
+
+            }
 
             async _getProductByBarcode(code) {
-                console.log('QuemenProductScreen')
                 var product_barcode = super._getProductByBarcode(...arguments);
 
                 let NewfoundProductIds = [];
@@ -249,10 +292,6 @@ odoo.define('quemen.ProductScreen', function(require) {
                         throw error;
                     }
                 }
-                console.log('NewfoundProductIds')
-                console.log(NewfoundProductIds)
-                console.log(FoundProduct)
-
 
                 if (FoundProduct.length) {
                     var ProductLot = [NewfoundProductIds[0].product_id[0]];
@@ -269,9 +308,6 @@ odoo.define('quemen.ProductScreen', function(require) {
                         context: this.env.session.user_context,
                     });
 
-                    console.log('ProductLot')
-                    console.log(ProductStock)
-                    console.log(this)
                     if (ProductStock.length == 1){
 
                         if (ProductStock[0].available_quantity > 0){
