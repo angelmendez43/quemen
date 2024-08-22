@@ -2,6 +2,7 @@
 import base64
 from odoo import api, fields, models, SUPERUSER_ID, _
 from odoo.exceptions import UserError
+from base64 import b64encode
 import logging
 
 import pytz
@@ -80,42 +81,73 @@ class AccountMove(models.Model):
                     if invoice.id:
                         _logger.info(f"ID de la factura {invoice.name} es {invoice.id}. Se procederá a enviar.")
                         
-                        # Configurar el contexto como lo hace `action_invoice_sent`
-                        ctx = dict(
-                            default_model='account.move',
-                            default_res_id=invoice.id,
-                            default_res_model='account.move',
-                            default_use_template=True,
-                            default_template_id=self.env.ref('account.email_template_edi_invoice').id,
-                            default_composition_mode='comment',
-                            mark_invoice_as_sent=True,
-                            custom_layout="mail.mail_notification_paynow",
-                            model_description=invoice.type_name,
-                            force_email=True,
-                            active_ids=[invoice.id],
-                        )
+                        # Generar el PDF de la factura
+                        report = self.env.ref('account.account_invoices')._render_qweb_pdf([invoice.id])
+                        pdf = report[0]
+                        filename = f'{invoice.name}.pdf'
 
-                        # Crear una instancia de account.invoice.send con el contexto adecuado
-                        send_wizard = self.env['account.invoice.send'].with_context(ctx).create({
-                            'invoice_ids': [(6, 0, [invoice.id])],
+                        # Codificar el PDF en base64
+                        pdf_base64 = b64encode(pdf).decode('utf-8')
+
+                        # Adjuntar el PDF al correo
+                        attachment = self.env['ir.attachment'].create({
+                            'name': filename,
+                            'type': 'binary',
+                            'datas': pdf_base64,
+                            'res_model': 'account.move',
+                            'res_id': invoice.id,
+                            'mimetype': 'application/pdf',
                         })
 
-                        # Asegúrate de que el wizard se ha creado correctamente
-                        if send_wizard:
-                            _logger.info(f"Wizard creado con éxito para la factura {invoice.name}. Se procederá a enviar e imprimir.")
-                            try:
-                                result = send_wizard.send_and_print_action()
-                                _logger.info(f"send_and_print_action() result: {result}")
-                            except Exception as e:
-                                _logger.error(f"Error en send_and_print_action() para la factura {invoice.name}: {str(e)}")
+                        _logger.info(f"PDF generado y adjuntado para la factura {invoice.name}.")
+
+                        # Configurar el contexto como lo hace `action_invoice_sent`
+                        template = self.env.ref('account.email_template_edi_invoice', raise_if_not_found=False)
+                        if template:
+                            email_values = template.generate_email(invoice.id, ['subject', 'body_html', 'email_from', 'email_to', 'partner_to', 'email_cc', 'reply_to', 'attachment_ids'])
+                            body_html = email_values.get('body_html')
+
+                            ctx = dict(
+                                default_model='account.move',
+                                default_res_id=invoice.id,
+                                default_res_model='account.move',
+                                default_use_template=True,
+                                default_template_id=template.id,
+                                default_composition_mode='comment',
+                                mark_invoice_as_sent=True,
+                                custom_layout="mail.mail_notification_paynow",
+                                model_description=invoice.type_name,
+                                force_email=True,
+                                active_ids=[invoice.id],
+                                default_attachment_ids=[attachment.id],  # Adjuntar el PDF
+                                default_body=body_html,  # Agregar el cuerpo del correo generado
+                            )
+
+                            # Crear una instancia de account.invoice.send con el contexto adecuado
+                            send_wizard = self.env['account.invoice.send'].with_context(ctx).create({
+                                'invoice_ids': [(6, 0, [invoice.id])],
+                            })
+
+                            # Asegúrate de que el wizard se ha creado correctamente
+                            if send_wizard:
+                                _logger.info(f"Wizard creado con éxito para la factura {invoice.name}. Se procederá a enviar e imprimir.")
+                                try:
+                                    result = send_wizard.send_and_print_action()
+                                    _logger.info(f"send_and_print_action() result: {result}")
+                                except Exception as e:
+                                    _logger.error(f"Error en send_and_print_action() para la factura {invoice.name}: {str(e)}")
+                            else:
+                                _logger.error(f"El wizard no se creó correctamente para la factura {invoice.name}.")
                         else:
-                            _logger.error(f"El wizard no se creó correctamente para la factura {invoice.name}.")
+                            _logger.error(f"No se encontró la plantilla para la factura {invoice.name}.")
                     else:
                         _logger.warning(f"ID de la factura {invoice.name} no es válido: {invoice.id}.")
                 else:
                     _logger.warning(f"La factura {invoice.name} no está en el estado 'sent' después de procesar EDI.")
             except Exception as e:
                 _logger.error(f"Error al enviar la factura {invoice.name}: {str(e)}")
+
+
                 
 class AccountMoveLine(models.Model):
     _inherit = "account.move.line"
