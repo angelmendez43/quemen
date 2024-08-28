@@ -6,7 +6,7 @@
                 <t t-call="web.external_layout">
                     <div class="page">
                         <br/>
-                        <h2>Inventory Count Sheet</h2>
+                        <h2>Hoja de recuento de inventario</h2>
                         <t t-set="locations" t-value="docs.mapped('location_id')"/>
                         <table class="table table-sm">
                             <thead>
