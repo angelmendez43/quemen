@@ -11,14 +11,14 @@
                         <table class="table table-sm">
                             <thead>
                                 <tr>
-                                    <th groups="stock.group_stock_multi_locations"><strong>Location</strong></th>
-                                    <th><strong>Product</strong></th>
-                                    <th groups="stock.group_production_lot"><strong>Lot/Serial Number</strong></th>
+                                    <th groups="stock.group_stock_multi_locations"><strong>UBICACIÓN</strong></th>
+                                    <th><strong>PRODUCTO</strong></th>
+                                    <th groups="stock.group_production_lot"><strong>NÚMERO DE LOTE/SERIE</strong></th>
                                     <th groups="stock.group_tracking_lot"><strong>Package</strong></th>
-                                    <th class="text-right"><strong>Available Quantity</strong></th>
-                                    <th class="text-right"><strong>On hand Quantity</strong></th>
-                                    <th class="text-right"><strong>Counted Quantity</strong></th>
-                                    <th class="text-right"><strong>Diferencia</strong></th>
+                                    <th class="text-right"><strong>CANTIDAD DISPONIBLE</strong></th>
+                                    <th class="text-right"><strong>CANTIDAD A LA MANO</strong></th>
+                                    <th class="text-right"><strong>CANTIDAD CONTADA</strong></th>
+                                    <th class="text-right"><strong>DIFERENCIA</strong></th>
                                 </tr>
                             </thead>
                             <tbody>
